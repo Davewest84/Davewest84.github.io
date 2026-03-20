@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eurocamp Matrix — Epic Waterparks, 27°C+, Near Airport</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f1117;
+    color: #e0e0e0;
+    padding: 30px;
+    line-height: 1.5;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #8892a4;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+  }
+
+  .filters-note {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.75rem;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    min-width: 1600px;
+    border: 1px solid #2d3748;
+  }
+
+  thead th {
+    background: #1a1f2e;
+    color: #a0aec0;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    padding: 12px 10px;
+    text-align: left;
+    border: 1px solid #2d3748;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid #2d3748;
+    white-space: nowrap;
+  }
+
+  thead th.score-col {
+    text-align: center;
+    min-width: 40px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #2d3748;
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: #1a1f2e; }
+
+  tbody td {
+    padding: 10px 10px;
+    vertical-align: top;
+    border: 1px solid #2d3748;
+  }
+
+  .site-name {
+    font-weight: 600;
+    color: #93c5fd;
+    white-space: nowrap;
+  }
+
+  .site-name a {
+    color: #93c5fd;
+    text-decoration: none;
+  }
+
+  .site-name a:hover { text-decoration: underline; }
+
+  .stars { color: #fbbf24; white-space: nowrap; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    margin: 1px 2px;
+  }
+
+  .badge-lake { background: #1e3a5f; color: #60a5fa; }
+  .badge-beach { background: #1e4d3a; color: #34d399; }
+  .badge-river { background: #3b2f1e; color: #fbbf24; }
+  .badge-country { background: #2d1e3a; color: #a78bfa; }
+  .badge-mountain { background: #3a2f1e; color: #fb923c; }
+
+  .temp-high { color: #f87171; font-weight: 600; }
+  .temp-low { color: #60a5fa; }
+
+  .yes { color: #34d399; font-weight: 600; }
+  .no { color: #6b7280; }
+  .limited { color: #fbbf24; }
+
+  .pro { color: #6ee7b7; }
+  .con { color: #fca5a5; }
+
+  .score-cell {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .score-10 { color: #34d399; }
+  .score-9 { color: #6ee7b7; }
+  .score-8 { color: #a7f3d0; }
+  .score-7 { color: #fbbf24; }
+  .score-6 { color: #f59e0b; }
+  .score-5 { color: #fb923c; }
+  .score-low { color: #f87171; }
+
+  .total-score {
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  .rank-1 td:first-child { box-shadow: inset 4px 0 0 #34d399; }
+  .rank-2 td:first-child { box-shadow: inset 4px 0 0 #6ee7b7; }
+  .rank-3 td:first-child { box-shadow: inset 4px 0 0 #a7f3d0; }
+  .rank-1 { background: rgba(52, 211, 153, 0.06); }
+  .rank-2 { background: rgba(110, 231, 124, 0.04); }
+  .rank-3 { background: rgba(167, 243, 208, 0.03); }
+
+  .country-flag { margin-right: 4px; }
+
+  .footer-note {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.7rem;
+    margin-top: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Sort indicators */
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: #e2e8f0; }
+  th.sort-asc::after { content: ' ▲'; font-size: 0.6rem; }
+  th.sort-desc::after { content: ' ▼'; font-size: 0.6rem; }
+</style>
+</head>
+<body>
+
+<h1>Eurocamp Showdown: Epic Waterparks in Warm Sunshine</h1>
+<p class="subtitle">Every Eurocamp site with an Epic Waterpark, within 75 min of a UK-flight airport, with 27&deg;C+ August highs, and a lake, beach, river or countryside setting</p>
+<p class="filters-note">Filters applied: Epic Waterpark (Eurocamp API tag) &bull; August avg high &ge; 27&deg;C &bull; &le; 75 min drive to airport with regular UK flights &bull; At least one of: lakeside, beach, riverside, countryside, mountainside. Sorted by total score descending. Click column headers to re-sort.</p>
+
+<div class="table-wrap">
+<table id="matrix">
+<thead>
+<tr>
+  <th class="sortable" data-col="0">Site</th>
+  <th>Country</th>
+  <th>Setting</th>
+  <th class="sortable score-col" data-col="3" data-type="num">Slides</th>
+  <th class="sortable score-col" data-col="4">Lazy River</th>
+  <th class="sortable" data-col="5" data-type="num">Aug Temps</th>
+  <th>Natural Surroundings</th>
+  <th>Kids Club</th>
+  <th class="sortable" data-col="8">Airport</th>
+  <th>Other Activities</th>
+  <th>Reviews +</th>
+  <th>Reviews &ndash;</th>
+  <th class="sortable score-col" data-col="12" data-type="num" title="Waterpark">💦</th>
+  <th class="sortable score-col" data-col="13" data-type="num" title="Setting/Scenery">🏔️</th>
+  <th class="sortable score-col" data-col="14" data-type="num" title="Temperature">🌡️</th>
+  <th class="sortable score-col" data-col="15" data-type="num" title="Kids Club">👶</th>
+  <th class="sortable score-col" data-col="16" data-type="num" title="Access">✈️</th>
+  <th class="sortable score-col" data-col="17" data-type="num" title="Reviews">⭐</th>
+  <th class="sortable score-col" data-col="18" data-type="num" title="Value">💷</th>
+  <th class="sortable score-col" data-col="19" data-type="num" title="Total Score">TOTAL</th>
+</tr>
+</thead>
+<tbody>
+
+<!-- 1. Marina di Venezia -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/italy/adriatic/marina-di-venezia-campsite" target="_blank">Marina di Venezia</a> <span class="stars">★★★★★</span></td>
+  <td>🇮🇹 Italy</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">7</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">22°C</span></td>
+  <td>Blue Flag beach, direct access. One of Europe's largest sites. Adriatic coast near Venice.</td>
+  <td><span class="yes">Leo Miniclub (4–8) &amp; Junior Club (9–12)</span>. Free. Huge Leo World adventure playground. Nightly baby dance.</td>
+  <td>Venice Marco Polo — <strong>47 min</strong><br><span class="yes">easyJet from Gatwick (daily)</span></td>
+  <td>Ferry to Venice, 6 pools, Olympic pool, pony trekking, windsurfing, beach sports, evening shows</td>
+  <td class="pro">Playground "massive &amp; fantastic." Won ACSI best for children. Exceptional cleanliness. Outstanding food.</td>
+  <td class="con">Mosquitoes. Club closed in wet weather. Very large site. Premium price (~£2,540/wk).</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-5">5</td>
+  <td class="score-cell total-score score-8">54</td>
+</tr>
+
+<!-- 2. Union Lido Mare -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/italy/adriatic/union-lido-mare-campsite" target="_blank">Union Lido Mare</a> <span class="stars">★★★★★</span></td>
+  <td>🇮🇹 Italy</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">6+</td>
+  <td class="yes">Yes</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">22°C</span></td>
+  <td>Private stretch of beach. Same Cavallino-Treporti area as Marina di Venezia. Pine-shaded.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Ages 4–12. Animation team active in summer.</td>
+  <td>Venice Marco Polo — <strong>47 min</strong><br><span class="yes">easyJet from Gatwick (daily)</span></td>
+  <td>Spa &amp; wellness centre, aqua park, water sports, tennis, cycling, evening entertainment</td>
+  <td class="pro">Hard-to-beat aquatics. Spa is excellent. Beautiful private beach. Well organised.</td>
+  <td class="con">Very large site. Can feel crowded in peak. Some facilities ageing. Pricey.</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-5">5</td>
+  <td class="score-cell total-score score-8">52</td>
+</tr>
+
+<!-- 3. Esterel -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/riviera/esterel-campsite" target="_blank">Esterel</a> <span class="stars">★★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-mountain">Mountain</span></td>
+  <td class="score-cell">8</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">28°C</span> / <span class="temp-low">21°C</span></td>
+  <td>Set in the red-rock Esterel massif. Dramatic rocky hills near the coast. Gorgeous &amp; peaceful.</td>
+  <td><span class="yes">Free parc clubs from 4 months to 18</span>. Baby club, mini club &amp; teens. First-come first-served.</td>
+  <td>Nice — <strong>55 min</strong><br><span class="yes">easyJet + BA from Gatwick (daily)</span></td>
+  <td>Tropical pool, indoor jungle pool, spa, sports, evening entertainment, near St Raphaël beaches</td>
+  <td class="pro">"Kids were spoilt for choice!" Baby Club a favourite. Jungle Pool brilliant for under-6s.</td>
+  <td class="con">Club places first-come. Reduced activities off-season. Some ageing mobiles. Sells out early.</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell total-score score-8">55</td>
+</tr>
+
+<!-- 4. Holiday Green -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/riviera/holiday-green-campsite" target="_blank">Holiday Green</a> <span class="stars">★★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-mountain">Mountain</span></td>
+  <td class="score-cell">6</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">28°C</span> / <span class="temp-low">21°C</span></td>
+  <td>Wooded hills near Fréjus. Peaceful Provençal setting among pines and cork oaks.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Activities for all ages Jul/Aug. Animation team.</td>
+  <td>Nice — <strong>50 min</strong><br><span class="yes">easyJet + BA from Gatwick (daily)</span></td>
+  <td>Huge pool complex, indoor &amp; toddler pools, bus to local towns, sports courts, evening shows</td>
+  <td class="pro">Big pool complex with toddler areas. All-day activities Jul/Aug. Bus to towns handy.</td>
+  <td class="con">More relaxing vibe — less lively entertainment. Hilly site. Some older accommodation.</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell total-score score-7">52</td>
+</tr>
+
+<!-- 5. Le Sérignan Plage -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/languedoc/le-serignan-plage-campsite" target="_blank">Le Sérignan Plage</a> <span class="stars">★★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">5+</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">28°C</span> / <span class="temp-low">19°C</span></td>
+  <td>Direct beach access on the Mediterranean. Sand dunes and pine forests. Roman-themed spa area.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Water playground a highlight for younger children.</td>
+  <td>Béziers — <strong>16 min</strong><br><span class="limited">Ryanair from Stansted/Bristol (no Gatwick)</span><br>Also Montpellier — 60 min <span class="yes">(easyJet/BA Gatwick)</span></td>
+  <td>Roman-themed outdoor spa, restaurants, water playground, cycling, beach sports, evening shows</td>
+  <td class="pro">Incredible beach location. Superb spa. "Let the kids loose in the water playground."</td>
+  <td class="con">Béziers has no Gatwick flights (use Montpellier 60 min). Naturist section nearby. Can be pricey.</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell total-score score-7">52</td>
+</tr>
+
+<!-- 6. Les Dunes -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/roussillon/les-dunes-campsite" target="_blank">Les Dunes</a> <span class="stars">★★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-beach">Beach</span><span class="badge badge-country">Countryside</span></td>
+  <td class="score-cell">4+</td>
+  <td class="yes">Yes</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">19°C</span></td>
+  <td>Mediterranean beach with Pyrenees foothills backdrop. Vineyards and countryside nearby. Near Spanish border.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Parc entertainment team active in summer.</td>
+  <td>Perpignan — <strong>16 min</strong><br><span class="limited">Ryanair from Stansted only (no Gatwick)</span></td>
+  <td>Mediterranean swimming, parc disco, live shows, cycling, Perpignan &amp; Spanish border trips</td>
+  <td class="pro">Swim in Med or pool — both on parc. Lazy river. Catch live shows. Near Perpignan &amp; Spain.</td>
+  <td class="con">More relaxing vibe — less entertainment than livelier sites. No Gatwick flights.</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell total-score score-7">52</td>
+</tr>
+
+<!-- 7. Le Castellas -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/languedoc/le-castellas-campsite" target="_blank">Le Castellas</a> <span class="stars">★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">4</td>
+  <td class="yes">Yes</td>
+  <td><span class="temp-high">27°C</span> / <span class="temp-low">19°C</span></td>
+  <td>Near Sète lagoon and Mediterranean beaches. Languedoc coast with canal du Midi nearby.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Activity programme in summer.</td>
+  <td>Montpellier — <strong>30 min</strong><br><span class="yes">easyJet + BA from Gatwick</span></td>
+  <td>Spa &amp; wellness, jet ski, paddleboard, kite surfing, beach access, cycling</td>
+  <td class="pro">Race the kids on waterslides. Lazy river. Great water sports at beach. Spa on site.</td>
+  <td class="con">Borderline 27°C — coastal breeze. 4-star not 5. Less well-known.</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell total-score score-7">51</td>
+</tr>
+
+<!-- 8. Lou Souleï -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/provence/lou-soulei-campsite" target="_blank">Lou Souleï</a> <span class="stars">★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">3+</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">27°C</span> / <span class="temp-low">20°C</span></td>
+  <td>Direct beach access at Sanary-sur-Mer. Clear Mediterranean waters. Provençal charm.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Fitness classes, dance classes, cocktail games, themed shows.</td>
+  <td>Marseille — <strong>58 min</strong><br><span class="yes">easyJet from Gatwick</span></td>
+  <td>3 pools, aqua playground, direct beach, dance &amp; fitness classes, themed shows, local markets</td>
+  <td class="pro">Direct beach in clear Med. All-ages entertainment. Provençal setting. Good beach access.</td>
+  <td class="con">Borderline 27°C. 4-star. Fewer slides than top sites. Smaller scale.</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell total-score score-7">49</td>
+</tr>
+
+<!-- 9. Sant'Angelo Village -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/italy/adriatic/santangelo-village-campsite" target="_blank">Sant'Angelo Village</a> <span class="stars">★★★★</span></td>
+  <td>🇮🇹 Italy</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">4</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">22°C</span></td>
+  <td>Near Lido di Jesolo. Sandy Adriatic beach. Close to shops, bars &amp; restaurants.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Animation in summer season.</td>
+  <td>Venice Marco Polo — <strong>50 min</strong><br><span class="yes">easyJet from Gatwick (daily)</span></td>
+  <td>Bike hire, water sports (windsurfing, sailing), Lido di Jesolo nightlife, Venice day trips</td>
+  <td class="pro">Close to Jesolo attractions. Good water sports. Easy Venice access.</td>
+  <td class="con">4-star. Less impressive pool than Marina di Venezia/Union Lido. Smaller scale.</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell total-score score-7">47</td>
+</tr>
+
+<!-- 10. Camping Lanterna -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/croatia/istria/camping-lanterna-campsite" target="_blank">Camping Lanterna</a> <span class="stars">★★★★</span></td>
+  <td>🇭🇷 Croatia</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">5+</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">28°C</span> / <span class="temp-low">20°C</span></td>
+  <td>Pine-shaded Istrian coastline near Poreč. Crystal-clear Adriatic. Historic Venetian towns.</td>
+  <td><span class="yes">Kids club on site</span>. Free. Animation programme. Maro Club for children.</td>
+  <td>Pula — <strong>45 min</strong><br><span class="yes">Jet2 from Gatwick (Sat, new 2026)</span></td>
+  <td>Bike hire, boat trips to Venice, water sports at beach, Poreč old town, cycling trails</td>
+  <td class="pro">Beautiful Istrian setting. Bike hire excellent. Book boat trips to Venice. Clear sea.</td>
+  <td class="con">4-star. Aquapark is extra cost. Rocky beaches (typical Croatia). Can be windy.</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell total-score score-7">51</td>
+</tr>
+
+<!-- 11. Amadria Park Šibenik -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/croatia/dalmatia/amadria-park-camping-sibenik" target="_blank">Amadria Park Šibenik</a> <span class="stars">★★★★</span></td>
+  <td>🇭🇷 Croatia</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">4</td>
+  <td class="yes">Yes</td>
+  <td><span class="temp-high">28°C</span> / <span class="temp-low">22°C</span></td>
+  <td>Five themed beaches along 4km of azure Dalmatian coastline. Krka waterfalls nearby.</td>
+  <td><span class="limited">Mini-club (4+) at hotel area; limited at camping</span>. "Animation very limited and only for toddlers" at camping.</td>
+  <td>Split — <strong>50 min</strong><br><span class="yes">easyJet from Gatwick (daily)</span></td>
+  <td>Aqua park, historic Šibenik old town, Krka National Park, beach sports, restaurants</td>
+  <td class="pro">Stunning Dalmatian scenery. "Kids enjoyed the kids club &amp; night entertainment."</td>
+  <td class="con">"Animation very limited" at camping. Some pools hotel-only. Prices high.</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-5">5</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell total-score score-7">48</td>
+</tr>
+
+<!-- 12. Terme Čatež -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/slovenia/lower-carniola/terme-catez-campsite" target="_blank">Terme Čatež</a> <span class="stars">★★★★★</span></td>
+  <td>🇸🇮 Slovenia</td>
+  <td><span class="badge badge-country">Countryside</span></td>
+  <td class="score-cell">8+</td>
+  <td class="yes">Yes</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">16°C</span></td>
+  <td>Thermal springs in the Slovenian countryside. Near Croatia &amp; Italy borders. Green rolling hills.</td>
+  <td><span class="con">No formal kids club</span>. Pirate splash zone (under-8s), playgrounds, trampolines only.</td>
+  <td>Zagreb — <strong>35 min</strong><br><span class="limited">Ryanair from Stansted (no Gatwick direct)</span><br>Also Ljubljana — 75 min <span class="limited">(easyJet Stansted)</span></td>
+  <td>Largest water park in Central Europe, thermal pools, tennis, volleyball, football, hiking, day trips to Croatia/Italy</td>
+  <td class="pro">Enormous water park. "Brilliantly designed splash zones." Award-winning 16 years running.</td>
+  <td class="con">No structured kids club. No Gatwick flights. Pools can get overcrowded.</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-low">3</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell total-score score-7">48</td>
+</tr>
+
+<!-- 13. Saint Avit Loisirs -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/france/dordogne/st-avit-loisirs-campsite" target="_blank">Saint Avit Loisirs</a> <span class="stars">★★★★★</span></td>
+  <td>🇫🇷 France</td>
+  <td><span class="badge badge-country">Countryside</span></td>
+  <td class="score-cell">4</td>
+  <td class="yes">Yes</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">15°C</span></td>
+  <td>Breathtaking Dordogne hills. Near medieval Sarlat. Rolling wooded countryside.</td>
+  <td><span class="yes">Free Eurocamp Fun Station (6m–17yrs)</span>. Dedicated fenced area. Go-kart track. English-speaking staff.</td>
+  <td>Bergerac — <strong>45 min</strong><br><span class="limited">Ryanair from Stansted only (2x/wk, no Gatwick)</span></td>
+  <td>Splash park, indoor pool, driving range, mini golf, learn-to-swim &amp; cycle, Sarlat day trips</td>
+  <td class="pro">Gorgeous setting. English-speaking kids club. Learn-to-swim &amp; cycle sessions. Good value.</td>
+  <td class="con">No Gatwick flights. Bergerac only 2x/wk from Stansted. Car essential (6km to town).</td>
+  <td class="score-cell score-7">7</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell score-5">5</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-9">9</td>
+  <td class="score-cell total-score score-8">55</td>
+</tr>
+
+<!-- 14. Spiaggia E Mare -->
+<tr>
+  <td class="site-name"><a href="https://www.eurocamp.co.uk/campsites/italy/emilia-romagna/spiaggia-e-mare-campsite" target="_blank">Spiaggia E Mare</a> <span class="stars">★★★</span></td>
+  <td>🇮🇹 Italy</td>
+  <td><span class="badge badge-beach">Beach</span></td>
+  <td class="score-cell">3</td>
+  <td class="no">No</td>
+  <td><span class="temp-high">29°C</span> / <span class="temp-low">20°C</span></td>
+  <td>Porto Garibaldi, Venetian lagoon area. Sandy Adriatic beach. Fishing village character.</td>
+  <td><span class="yes">Kids club on site</span>. Entertainment provided by owners.</td>
+  <td>Bologna — <strong>71 min</strong> (borderline)<br><span class="yes">easyJet from Gatwick</span></td>
+  <td>Venetian lagoon by waterbus, Venice trips, water sports, beach</td>
+  <td class="pro">Explore Venetian lagoon gems. Venice trips organised. Character fishing village.</td>
+  <td class="con">3-star — more basic. Fewer slides. Bologna 71 min is borderline. Smaller site.</td>
+  <td class="score-cell score-5">5</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-5">5</td>
+  <td class="score-cell score-6">6</td>
+  <td class="score-cell score-8">8</td>
+  <td class="score-cell total-score score-6">44</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<p class="footer-note">
+  <strong>Scoring guide:</strong> Each category rated 1–10. 💦 Waterpark = slides, pools, variety. 🏔️ Setting = natural beauty. 🌡️ Temp = August warmth. 👶 Kids Club = quality, age range, language. ✈️ Access = drive time to UK-flight airport. ⭐ Reviews = overall reviewer sentiment. 💷 Value = price relative to quality. Total is sum of all 7 scores (max 70).<br><br>
+  <strong>Also considered but excluded:</strong> Bella Italia (IL019, Lake Garda) and Norcenni Girasole (IN017, Tuscany) — excellent sites with great pools but not tagged "Epic waterpark" by Eurocamp API. Le Ranc Davaine (MC013, Ardèche) — stunning scenery and great waterpark but nearest UK-flight airport is 90 min+ drive. La Rive (GA011), Le Vieux Port (GA013) — Atlantic coast, Aug highs only 24–25°C. TerSpegelt (HL042), Duinrell (HL012) — great parks but Aug highs ~22–23°C. Le Ruisseau (GA015) — not tagged as having a setting feature by Eurocamp.<br><br>
+  Data sourced from Eurocamp GraphQL API, review sites, and climate databases. March 2026.
+</p>
+
+<script>
+  // Sort table by clicking headers
+  document.querySelectorAll('th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const table = document.getElementById('matrix');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const col = parseInt(th.dataset.col);
+      const isNum = th.dataset.type === 'num';
+      const currentDir = th.classList.contains('sort-asc') ? 'asc' : th.classList.contains('sort-desc') ? 'desc' : 'none';
+      const newDir = currentDir === 'desc' ? 'asc' : 'desc';
+
+      // Clear all sort indicators
+      document.querySelectorAll('th.sortable').forEach(h => { h.classList.remove('sort-asc', 'sort-desc'); });
+      th.classList.add('sort-' + newDir);
+
+      rows.sort((a, b) => {
+        let va = a.cells[col].textContent.trim();
+        let vb = b.cells[col].textContent.trim();
+        if (isNum) {
+          va = parseFloat(va.replace(/[^0-9.]/g, '')) || 0;
+          vb = parseFloat(vb.replace(/[^0-9.]/g, '')) || 0;
+        }
+        if (newDir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
+        return va < vb ? 1 : va > vb ? -1 : 0;
+      });
+
+      rows.forEach(r => tbody.appendChild(r));
+
+      // Update rank styling
+      rows.forEach((r, i) => { r.classList.remove('rank-1', 'rank-2', 'rank-3'); });
+      if (newDir === 'desc' && isNum) {
+        if (rows[0]) rows[0].classList.add('rank-1');
+        if (rows[1]) rows[1].classList.add('rank-2');
+        if (rows[2]) rows[2].classList.add('rank-3');
+      }
+    });
+  });
+
+  // Initial sort by total score descending
+  const totalCol = document.querySelector('th[data-col="19"]');
+  if (totalCol) { totalCol.click(); }
+</script>
+
+</body>
+</html>
