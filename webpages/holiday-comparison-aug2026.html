@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Holiday Comparison — August 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --warm-bg: #FDF6EE;
+    --card-bg: #FFFFFF;
+    --accent: #D97706;
+    --accent-light: #FEF3C7;
+    --accent-dark: #92400E;
+    --text: #1C1917;
+    --text-light: #78716C;
+    --green: #059669;
+    --green-light: #D1FAE5;
+    --blue: #2563EB;
+    --blue-light: #DBEAFE;
+    --pink: #DB2777;
+    --pink-light: #FCE7F3;
+    --border: #E7E5E4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 10px 30px rgba(0,0,0,0.08);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--warm-bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5016 50%, #5c3d0e 100%);
+    color: white;
+    padding: 60px 24px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+  .hero-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 17px;
+    opacity: 0.85;
+    max-width: 520px;
+    margin: 0 auto 24px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 14px;
+    opacity: 0.75;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* TOP PICKS BANNER */
+  .top-picks {
+    max-width: 1200px;
+    margin: -28px auto 32px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .top-picks-inner {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .pick {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .pick-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .pick h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .pick p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
+
+  /* CARDS GRID */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .section-subtitle {
+    color: var(--text-light);
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .card-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+  .card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+  .card-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-pink { background: var(--pink-light); color: var(--pink); }
+  .badge-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .card-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .card-location {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-desc {
+    font-size: 14px;
+    color: #44403C;
+    margin-bottom: 16px;
+    line-height: 1.55;
+  }
+  .card-details { margin-bottom: 16px; }
+  .detail-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label {
+    font-weight: 600;
+    color: var(--text);
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+  .detail-value { color: #57534E; }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .price {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .price span {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-light);
+  }
+  .btn-book {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 22px;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .btn-book:hover { background: var(--accent-dark); }
+
+  /* TOP PICK RIBBON */
+  .card.top-pick { border: 2px solid var(--accent); }
+  .ribbon {
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 16px;
+    text-align: center;
+  }
+
+  /* COMPARISON TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: white;
+    margin-bottom: 48px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 900px;
+  }
+  thead { background: #1e3a5f; color: white; }
+  th {
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:hover { background: #FEFBF6; }
+  tbody tr:nth-child(even) { background: #FAFAF9; }
+  tbody tr:nth-child(even):hover { background: #FEFBF6; }
+  .table-name { font-weight: 600; }
+  .table-pick {
+    background: var(--accent-light) !important;
+  }
+  .table-pick:hover { background: #FDE68A !important; }
+
+  /* FOOTER */
+  .page-footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero { padding: 40px 16px 36px; }
+    .cards { grid-template-columns: 1fr; }
+    .top-picks-inner { grid-template-columns: 1fr; padding: 20px; }
+    .container { padding: 0 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-label">&#127796; Summer 2026 Shortlist</div>
+    <h1>Family Holiday Comparison</h1>
+    <p>10 handpicked cottages, cabins & glamping spots across England and Wales for an unforgettable August adventure.</p>
+    <div class="hero-meta">
+      <span>&#128197; 22–29 August 2026</span>
+      <span>&#128106; 2 adults + kids (7 & 9)</span>
+      <span>&#127468;&#127463; England & Wales</span>
+    </div>
+  </div>
+</header>
+
+<!-- TOP PICKS -->
+<div class="top-picks">
+  <div class="top-picks-inner">
+    <div class="pick">
+      <div class="pick-icon" style="background:#D1FAE5;">&#127795;</div>
+      <div>
+        <h3>Best for Nature — Beck Cottage</h3>
+        <p>Stream running through the grounds, Go Ape 5 mins, Lake District magic.</p>
+      </div>
+    </div>
+    <div class="pick">
+      <div class="pick-icon" style="background:#FEF3C7;">&#11088;</div>
+      <div>
+        <h3>Best All-Rounder — Bosinver</h3>
+        <p>30-acre farm estate, fishing lake, farm animals, beaches 5 mins.</p>
+      </div>
+    </div>
+    <div class="pick">
+      <div class="pick-icon" style="background:#DBEAFE;">&#128142;</div>
+      <div>
+        <h3>Best Luxury — Coulscott House</h3>
+        <p>17-acre AONB valley, streams & ponds, Woolacombe Beach 15 mins.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="container">
+  <h2 class="section-title">All 10 Properties</h2>
+  <p class="section-subtitle">Click "Book" to visit each property's website. Prices are approximate for August peak season.</p>
+
+  <div class="cards">
+
+    <!-- 1. Maigold Cottage -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=800&q=80" alt="Peak District rolling hills and green valleys" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#128176; Budget Pick</span>
+          <span class="badge badge-blue">Farm Stay</span>
+        </div>
+        <div class="card-num">#1</div>
+        <h2>Maigold Cottage</h2>
+        <div class="card-location">&#128205; Brushfield nr Bakewell, Peak District</div>
+        <p class="card-desc">Single-storey cottage on a working farm with stunning Peak District views. Perfect base for exploring Chatsworth and the Dales on a budget.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottage, single-storey</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Working farm, open moorland, Dales walks</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Chatsworth House (8 min), Alton Towers (30 min), Bakewell (7 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Farm animals, Chatsworth playground, Bakewell pudding shops</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£670–880 <span>/week</span></div>
+          <a href="https://www.independentcottages.co.uk/peak_district/maigold-cottage-ref983" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Benar Cottages -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Snowdonia mountains and lake" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-blue">Stone Cottage</span>
+          <span class="badge badge-amber">Snowdonia</span>
+        </div>
+        <div class="card-num">#2</div>
+        <h2>Benar Cottages</h2>
+        <div class="card-location">&#128205; Penmachno, nr Betws-y-Coed, Snowdonia</div>
+        <p class="card-desc">Traditional stone cottages nestled 3 miles from Betws-y-Coed in the heart of Snowdonia. Mountains, waterfalls, and adventure on the doorstep.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Traditional stone cottages</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Mountain valley, rivers, Snowdonia National Park</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Zip World (9 min), Greenwood Family Park (~30 min), Anglesey beaches (~35 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Zip World adventures, river paddling, forest trails</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£600–1,000 <span>/week</span></div>
+          <a href="https://www.benarcottages.com/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Beck Cottage ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Best for Nature</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80" alt="Lake District countryside with stream and green meadows" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#127795; Stream in Grounds!</span>
+          <span class="badge badge-blue">Cottage</span>
+        </div>
+        <div class="card-num">#3</div>
+        <h2>Beck Cottage</h2>
+        <div class="card-location">&#128205; Satterthwaite, Lake District</div>
+        <p class="card-desc">A magical traditional cottage with a beck (stream) running right through the grounds. Riverside garden, stone-built charm, and Go Ape Grizedale just 5 minutes away.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Traditional cottage, riverside garden</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Beck through grounds, Grizedale Forest, Lake District fells</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Go Ape Grizedale (5 min), Hawkshead (5 min), Windermere cruises (10–15 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Stream paddling, Go Ape, forest sculpture trail, boat trips</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£1,000–1,500 <span>/week</span></div>
+          <a href="https://www.sykescottages.co.uk/cottage/Lake-District-Cumbria-The-Lake-District-Satterthwaite/Beck-Cottage-1151427.html" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Bosinver ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Best All-Rounder</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&q=80" alt="Cornwall coast with turquoise sea and golden cliffs" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-pink">&#11088; Best All-Rounder</span>
+          <span class="badge badge-blue">Farm Estate</span>
+        </div>
+        <div class="card-num">#4</div>
+        <h2>Bosinver Farm Cottages</h2>
+        <div class="card-location">&#128205; St Austell, Cornwall</div>
+        <p class="card-desc">An incredible 30-acre farm estate with woodland, fishing lake, farm animals, play areas, and beaches just minutes away. The gold standard for family holidays.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottages, 30-acre estate</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Woodland, fishing lake, farm animals, 30 acres</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Beaches (5–10 min), Eden Project (10 min), Lost Gardens of Heligan (10 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Farm animals, fishing, woodland play, Eden Project, beach days</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£1,300–1,700 <span>/week</span></div>
+          <a href="https://bosinver.co.uk/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Maes-y-Coed -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="Sunlight streaming through dense forest canopy" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">Eco Luxury</span>
+          <span class="badge badge-amber">Snowdonia</span>
+        </div>
+        <div class="card-num">#5</div>
+        <h2>Maes-y-Coed</h2>
+        <div class="card-location">&#128205; Coed y Brenin Forest, Snowdonia</div>
+        <p class="card-desc">A stunning luxury eco-cottage set in a forest clearing within Coed y Brenin. Total immersion in nature with all the modern comforts.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Luxury eco-cottage in forest</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Ancient forest, mountain trails, river walks</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Zip World Blaenau Ffestiniog (~25 min), Barmouth beach (20 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Forest exploration, mountain biking trails, Zip World</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£1,500+ <span>/week</span></div>
+          <a href="https://www.dioni.co.uk/cottage/maes-y-coed/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Coulscott House ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Luxury AONB</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=800&q=80" alt="North Devon green hills meeting the coastline" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-pink">&#128142; Luxury AONB</span>
+          <span class="badge badge-blue">Estate Cottages</span>
+        </div>
+        <div class="card-num">#6</div>
+        <h2>Coulscott House</h2>
+        <div class="card-location">&#128205; North Devon</div>
+        <p class="card-desc">Seven luxury cottages on a stunning 17-acre AONB estate with streams, ponds, and ancient woodland. Woolacombe Beach is just 15 minutes drive.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Luxury cottages, 17-acre AONB estate</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Streams, ponds, woodland, AONB valley</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Woolacombe Beach (~15 min), Crealy Theme Park (~25 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Stream dams, pond dipping, Woolacombe surfing, Crealy park</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£1,200–1,800 <span>/week</span></div>
+          <a href="https://coulscott.co.uk/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Forest Holidays -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80" alt="Log cabin in an ancient forest" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">Hot Tub</span>
+          <span class="badge badge-blue">Log Cabin</span>
+        </div>
+        <div class="card-num">#7</div>
+        <h2>Forest Holidays, Forest of Dean</h2>
+        <div class="card-location">&#128205; Forest of Dean, Gloucestershire</div>
+        <p class="card-desc">A log cabin with hot tub set among ancient oaks in one of England's most atmospheric forests. The Wye Valley and caves are nearby.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Log cabin with hot tub</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Ancient oak forest, Wye Valley, Forest of Dean</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Forest activities on-site, Clearwell Caves (~20 min), Wye Valley</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Forest ranger activities, den building, hot tub, cave exploring</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£2,100–4,200 <span>/week</span></div>
+          <a href="https://www.forestholidays.co.uk/locations/gloucestershire/forest-of-dean/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Forest Lodges, Zip World -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80" alt="Snowdonia mountain road with dramatic peaks" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">Hot Tub</span>
+          <span class="badge badge-pink">Glamping</span>
+        </div>
+        <div class="card-num">#8</div>
+        <h2>Forest Lodges at Zip World</h2>
+        <div class="card-location">&#128205; Betws-y-Coed, Snowdonia</div>
+        <p class="card-desc">Luxury glamping lodges with hot tubs right next to Zip World — the ultimate adventure basecamp in the heart of Snowdonia.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Luxury glamping lodge with hot tub</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Forest setting, Snowdonia National Park</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Zip World (5 min), Greenwood (~25 min), Anglesey beaches (~40 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Zip lines, bounce below, hot tub, adventure playground</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£2,150–2,400 <span>/week</span></div>
+          <a href="https://www.zipworld.co.uk/basecamps/forest-lodges" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. The Hideaway, Dorset -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80" alt="Sandy beach with blue sea and sunny sky" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-blue">Holiday Home</span>
+          <span class="badge badge-amber">Jurassic Coast</span>
+        </div>
+        <div class="card-num">#9</div>
+        <h2>The Hideaway</h2>
+        <div class="card-location">&#128205; Westbourne, Dorset (nr Bournemouth)</div>
+        <p class="card-desc">A modern 4-bed holiday home near Bournemouth with beaches within walking distance and the Jurassic Coast on the doorstep.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Modern 4-bed holiday home</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Jurassic Coast, beaches walking distance</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Monkey World (~15 min), Lulworth Cove (~20 min), Bournemouth beaches (walking)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Beach days, Monkey World, fossil hunting, Oceanarium</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">£1,414–2,897 <span>/week</span></div>
+          <a href="https://www.independentcottages.co.uk/dorset/the-hideaway-ref7339" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. Watermeadows Eco Glamping -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80" alt="Bell tent in a green meadow at golden hour" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-pink">Glamping</span>
+          <span class="badge badge-green">Eco</span>
+        </div>
+        <div class="card-num">#10</div>
+        <h2>Watermeadows Eco Glamping</h2>
+        <div class="card-location">&#128205; Pembrokeshire, Wales</div>
+        <p class="card-desc">Bell tents and geodomes on an 8-acre wildflower meadow with spring-fed lakes. Pembrokeshire's stunning coast and Tenby are a short drive away.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Bell tents & geodomes, 8-acre meadow</span></div>
+          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Wildflower meadow, spring-fed lakes, wildlife</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Folly Farm (nearby), Tenby beaches (~20 min)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Pond dipping, wildlife spotting, Folly Farm, Tenby harbour</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">TBC <span>/week</span></div>
+          <a href="https://watermeadowsglamping.co.uk/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .cards -->
+
+  <!-- COMPARISON TABLE -->
+  <h2 class="section-title">Quick Comparison</h2>
+  <p class="section-subtitle">Scroll right on mobile to see all columns.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Property</th>
+          <th>Region</th>
+          <th>Type</th>
+          <th>Price/week</th>
+          <th>Top Attraction</th>
+          <th>Best For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td class="table-name">Maigold Cottage</td>
+          <td>Peak District</td>
+          <td>Farm cottage</td>
+          <td>£670–880</td>
+          <td>Chatsworth House (8 min)</td>
+          <td>Budget families</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td class="table-name">Benar Cottages</td>
+          <td>Snowdonia</td>
+          <td>Stone cottages</td>
+          <td>£600–1,000</td>
+          <td>Zip World (9 min)</td>
+          <td>Mountain adventure</td>
+        </tr>
+        <tr class="table-pick">
+          <td>3 &#11088;</td>
+          <td class="table-name">Beck Cottage</td>
+          <td>Lake District</td>
+          <td>Traditional cottage</td>
+          <td>£1,000–1,500</td>
+          <td>Go Ape Grizedale (5 min)</td>
+          <td>Nature lovers</td>
+        </tr>
+        <tr class="table-pick">
+          <td>4 &#11088;</td>
+          <td class="table-name">Bosinver Farm</td>
+          <td>Cornwall</td>
+          <td>Farm estate</td>
+          <td>£1,300–1,700</td>
+          <td>Eden Project (10 min)</td>
+          <td>Best all-rounder</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td class="table-name">Maes-y-Coed</td>
+          <td>Snowdonia</td>
+          <td>Eco-cottage</td>
+          <td>£1,500+</td>
+          <td>Zip World (~25 min)</td>
+          <td>Forest immersion</td>
+        </tr>
+        <tr class="table-pick">
+          <td>6 &#11088;</td>
+          <td class="table-name">Coulscott House</td>
+          <td>North Devon</td>
+          <td>Luxury cottages</td>
+          <td>£1,200–1,800</td>
+          <td>Woolacombe Beach (~15 min)</td>
+          <td>Luxury + nature</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td class="table-name">Forest Holidays</td>
+          <td>Forest of Dean</td>
+          <td>Log cabin + hot tub</td>
+          <td>£2,100–4,200</td>
+          <td>Clearwell Caves (~20 min)</td>
+          <td>Forest escapism</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td class="table-name">Forest Lodges, Zip World</td>
+          <td>Snowdonia</td>
+          <td>Glamping lodge + hot tub</td>
+          <td>£2,150–2,400</td>
+          <td>Zip World (5 min)</td>
+          <td>Adventure seekers</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td class="table-name">The Hideaway</td>
+          <td>Dorset</td>
+          <td>Holiday home</td>
+          <td>£1,414–2,897</td>
+          <td>Bournemouth beaches (walk)</td>
+          <td>Beach holiday</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td class="table-name">Watermeadows Glamping</td>
+          <td>Pembrokeshire</td>
+          <td>Bell tents / geodomes</td>
+          <td>TBC</td>
+          <td>Tenby beaches (~20 min)</td>
+          <td>Eco glamping</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- .container -->
+
+<footer class="page-footer">
+  <p>Compiled for the West family &middot; August 2026 &middot; Prices approximate for peak season</p>
+</footer>
+
+</body>
+</html>
