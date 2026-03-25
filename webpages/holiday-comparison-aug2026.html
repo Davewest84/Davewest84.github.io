@@ -21,6 +21,8 @@
     --blue-light: #DBEAFE;
     --pink: #DB2777;
     --pink-light: #FCE7F3;
+    --purple: #7C3AED;
+    --purple-light: #EDE9FE;
     --border: #E7E5E4;
     --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 10px 30px rgba(0,0,0,0.08);
@@ -74,7 +76,7 @@
   .hero p {
     font-size: 17px;
     opacity: 0.85;
-    max-width: 520px;
+    max-width: 560px;
     margin: 0 auto 24px;
   }
   .hero-meta {
@@ -87,10 +89,36 @@
   }
   .hero-meta span { display: flex; align-items: center; gap: 6px; }
 
+  /* VERIFIED NOTICE */
+  .verified-notice {
+    max-width: 1200px;
+    margin: -28px auto 12px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .verified-notice-inner {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .verified-notice-inner .notice-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .verified-notice-inner strong { font-weight: 700; }
+
   /* TOP PICKS BANNER */
   .top-picks {
     max-width: 1200px;
-    margin: -28px auto 32px;
+    margin: 16px auto 32px;
     padding: 0 20px;
     position: relative;
     z-index: 2;
@@ -178,6 +206,12 @@
   .badge-blue { background: var(--blue-light); color: var(--blue); }
   .badge-pink { background: var(--pink-light); color: var(--pink); }
   .badge-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-light);
+  }
   .card-num {
     font-size: 12px;
     font-weight: 700;
@@ -266,6 +300,19 @@
     text-align: center;
   }
 
+  /* HONOURABLE MENTION */
+  .card.honourable-mention { border: 2px dashed var(--text-light); opacity: 0.92; }
+  .ribbon-hm {
+    background: #78716C;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 16px;
+    text-align: center;
+  }
+
   /* COMPARISON TABLE */
   .table-wrap {
     overflow-x: auto;
@@ -279,7 +326,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    min-width: 900px;
+    min-width: 1100px;
   }
   thead { background: #1e3a5f; color: white; }
   th {
@@ -304,6 +351,17 @@
     background: var(--accent-light) !important;
   }
   .table-pick:hover { background: #FDE68A !important; }
+  .table-hm { opacity: 0.7; font-style: italic; }
+  .tbl-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .tbl-badge-green { background: var(--green-light); color: var(--green); }
+  .tbl-badge-amber { background: var(--accent-light); color: var(--accent-dark); }
 
   /* FOOTER */
   .page-footer {
@@ -320,6 +378,7 @@
     .cards { grid-template-columns: 1fr; }
     .top-picks-inner { grid-template-columns: 1fr; padding: 20px; }
     .container { padding: 0 16px 40px; }
+    .verified-notice-inner { flex-direction: column; text-align: center; padding: 16px 20px; }
   }
 </style>
 </head>
@@ -328,39 +387,47 @@
 <!-- HERO -->
 <header class="hero">
   <div class="hero-content">
-    <div class="hero-label">&#127796; Summer 2026 Shortlist</div>
+    <div class="hero-label">&#127796; Summer 2026 — Refined Shortlist</div>
     <h1>Family Holiday Comparison</h1>
-    <p>10 handpicked cottages, cabins & glamping spots across England and Wales for an unforgettable August adventure.</p>
+    <p>7 handpicked properties across England and Wales — every single one with a stream <em>and</em> a trampoline. Plus one honourable mention.</p>
     <div class="hero-meta">
       <span>&#128197; 22–29 August 2026</span>
-      <span>&#128106; 2 adults + kids (7 & 9)</span>
-      <span>&#127468;&#127463; England & Wales</span>
+      <span>&#128106; 2 adults + kids (7 &amp; 9)</span>
+      <span>&#127468;&#127463; England &amp; Wales</span>
     </div>
   </div>
 </header>
+
+<!-- VERIFIED NOTICE -->
+<div class="verified-notice">
+  <div class="verified-notice-inner">
+    <span class="notice-icon">&#9989;</span>
+    <div><strong>Stream + Trampoline verified:</strong> All 7 properties below have been checked and confirmed to have both a stream running through or bordering the grounds AND a trampoline on-site. The honourable mention has a trampoline but the stream needs confirming.</div>
+  </div>
+</div>
 
 <!-- TOP PICKS -->
 <div class="top-picks">
   <div class="top-picks-inner">
     <div class="pick">
-      <div class="pick-icon" style="background:#D1FAE5;">&#127795;</div>
+      <div class="pick-icon" style="background:#FEF3C7;">&#127906;</div>
       <div>
-        <h3>Best for Nature — Beck Cottage</h3>
-        <p>Stream running through the grounds, Go Ape 5 mins, Lake District magic.</p>
+        <h3>Best for Alton Towers — Foxtwood</h3>
+        <p>30 acres, swimmable lake, ancient woodland — and Alton Towers just 15 minutes away.</p>
       </div>
     </div>
     <div class="pick">
-      <div class="pick-icon" style="background:#FEF3C7;">&#11088;</div>
+      <div class="pick-icon" style="background:#D1FAE5;">&#128176;</div>
       <div>
-        <h3>Best All-Rounder — Bosinver</h3>
-        <p>30-acre farm estate, fishing lake, farm animals, beaches 5 mins.</p>
+        <h3>Best Value + Beaches — Clydey</h3>
+        <p>From ~&#163;1,000/wk. Indoor pool, daily kids club, Pembrokeshire coast 20-30 min.</p>
       </div>
     </div>
     <div class="pick">
-      <div class="pick-icon" style="background:#DBEAFE;">&#128142;</div>
+      <div class="pick-icon" style="background:#FCE7F3;">&#128142;</div>
       <div>
         <h3>Best Luxury — Coulscott House</h3>
-        <p>17-acre AONB valley, streams & ponds, Woolacombe Beach 15 mins.</p>
+        <p>17-acre AONB estate, heated indoor pool, hot tubs, farm animals, pirate ship.</p>
       </div>
     </div>
   </div>
@@ -368,260 +435,227 @@
 
 <!-- CARDS -->
 <div class="container">
-  <h2 class="section-title">All 10 Properties</h2>
-  <p class="section-subtitle">Click "Book" to visit each property's website. Prices are approximate for August peak season.</p>
+  <h2 class="section-title">All 7 Properties + Honourable Mention</h2>
+  <p class="section-subtitle">Every property has both a stream and a trampoline. Click "Visit" to see each property's website.</p>
 
   <div class="cards">
 
-    <!-- 1. Maigold Cottage -->
-    <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=800&q=80" alt="Peak District rolling hills and green valleys" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-green">&#128176; Budget Pick</span>
-          <span class="badge badge-blue">Farm Stay</span>
-        </div>
-        <div class="card-num">#1</div>
-        <h2>Maigold Cottage</h2>
-        <div class="card-location">&#128205; Brushfield nr Bakewell, Peak District</div>
-        <p class="card-desc">Single-storey cottage on a working farm with stunning Peak District views. Perfect base for exploring Chatsworth and the Dales on a budget.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottage, single-storey</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Working farm, open moorland, Dales walks</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Chatsworth House (8 min), Alton Towers (30 min), Bakewell (7 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Farm animals, Chatsworth playground, Bakewell pudding shops</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">£670–880 <span>/week</span></div>
-          <a href="https://www.independentcottages.co.uk/peak_district/maigold-cottage-ref983" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. Benar Cottages -->
-    <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Snowdonia mountains and lake" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-blue">Stone Cottage</span>
-          <span class="badge badge-amber">Snowdonia</span>
-        </div>
-        <div class="card-num">#2</div>
-        <h2>Benar Cottages</h2>
-        <div class="card-location">&#128205; Penmachno, nr Betws-y-Coed, Snowdonia</div>
-        <p class="card-desc">Traditional stone cottages nestled 3 miles from Betws-y-Coed in the heart of Snowdonia. Mountains, waterfalls, and adventure on the doorstep.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Traditional stone cottages</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Mountain valley, rivers, Snowdonia National Park</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Zip World (9 min), Greenwood Family Park (~30 min), Anglesey beaches (~35 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Zip World adventures, river paddling, forest trails</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">£600–1,000 <span>/week</span></div>
-          <a href="https://www.benarcottages.com/" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. Beck Cottage ⭐ TOP PICK -->
+    <!-- 1. Coulscott House ⭐ TOP PICK -->
     <div class="card top-pick">
-      <div class="ribbon">&#11088; Top Pick — Best for Nature</div>
-      <img class="card-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80" alt="Lake District countryside with stream and green meadows" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-green">&#127795; Stream in Grounds!</span>
-          <span class="badge badge-blue">Cottage</span>
-        </div>
-        <div class="card-num">#3</div>
-        <h2>Beck Cottage</h2>
-        <div class="card-location">&#128205; Satterthwaite, Lake District</div>
-        <p class="card-desc">A magical traditional cottage with a beck (stream) running right through the grounds. Riverside garden, stone-built charm, and Go Ape Grizedale just 5 minutes away.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Traditional cottage, riverside garden</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Beck through grounds, Grizedale Forest, Lake District fells</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Go Ape Grizedale (5 min), Hawkshead (5 min), Windermere cruises (10–15 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Stream paddling, Go Ape, forest sculpture trail, boat trips</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">£1,000–1,500 <span>/week</span></div>
-          <a href="https://www.sykescottages.co.uk/cottage/Lake-District-Cumbria-The-Lake-District-Satterthwaite/Beck-Cottage-1151427.html" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. Bosinver ⭐ TOP PICK -->
-    <div class="card top-pick">
-      <div class="ribbon">&#11088; Top Pick — Best All-Rounder</div>
-      <img class="card-img" src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&q=80" alt="Cornwall coast with turquoise sea and golden cliffs" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-pink">&#11088; Best All-Rounder</span>
-          <span class="badge badge-blue">Farm Estate</span>
-        </div>
-        <div class="card-num">#4</div>
-        <h2>Bosinver Farm Cottages</h2>
-        <div class="card-location">&#128205; St Austell, Cornwall</div>
-        <p class="card-desc">An incredible 30-acre farm estate with woodland, fishing lake, farm animals, play areas, and beaches just minutes away. The gold standard for family holidays.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottages, 30-acre estate</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Woodland, fishing lake, farm animals, 30 acres</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Beaches (5–10 min), Eden Project (10 min), Lost Gardens of Heligan (10 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Farm animals, fishing, woodland play, Eden Project, beach days</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">£1,300–1,700 <span>/week</span></div>
-          <a href="https://bosinver.co.uk/" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 5. Maes-y-Coed -->
-    <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="Sunlight streaming through dense forest canopy" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-green">Eco Luxury</span>
-          <span class="badge badge-amber">Snowdonia</span>
-        </div>
-        <div class="card-num">#5</div>
-        <h2>Maes-y-Coed</h2>
-        <div class="card-location">&#128205; Coed y Brenin Forest, Snowdonia</div>
-        <p class="card-desc">A stunning luxury eco-cottage set in a forest clearing within Coed y Brenin. Total immersion in nature with all the modern comforts.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Luxury eco-cottage in forest</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Ancient forest, mountain trails, river walks</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Zip World Blaenau Ffestiniog (~25 min), Barmouth beach (20 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Forest exploration, mountain biking trails, Zip World</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">£1,500+ <span>/week</span></div>
-          <a href="https://www.dioni.co.uk/cottage/maes-y-coed/" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. Coulscott House ⭐ TOP PICK -->
-    <div class="card top-pick">
-      <div class="ribbon">&#11088; Top Pick — Luxury AONB</div>
+      <div class="ribbon">&#11088; Top Pick — Luxury</div>
       <img class="card-img" src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=800&q=80" alt="North Devon green hills meeting the coastline" loading="lazy">
       <div class="card-body">
         <div class="card-badges">
-          <span class="badge badge-pink">&#128142; Luxury AONB</span>
-          <span class="badge badge-blue">Estate Cottages</span>
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Village: 2 mi</span>
         </div>
-        <div class="card-num">#6</div>
+        <div class="card-num">#1</div>
         <h2>Coulscott House</h2>
-        <div class="card-location">&#128205; North Devon</div>
-        <p class="card-desc">Seven luxury cottages on a stunning 17-acre AONB estate with streams, ponds, and ancient woodland. Woolacombe Beach is just 15 minutes drive.</p>
+        <div class="card-location">&#128205; Nr Combe Martin, North Devon</div>
+        <p class="card-desc">Stunning 17-acre AONB estate with streams and ponds running through the grounds. Netted trampoline, pirate ship, adventure playground, heated indoor pool, hot tubs, and farm animals. A true luxury family paradise.</p>
         <div class="card-details">
           <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Luxury cottages, 17-acre AONB estate</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Streams, ponds, woodland, AONB valley</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Woolacombe Beach (~15 min), Crealy Theme Park (~25 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Stream dams, pond dipping, Woolacombe surfing, Crealy park</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Streams &amp; ponds through grounds</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Netted trampoline, pirate ship, adventure playground</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">Heated indoor pool, hot tubs, farm animals</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Combe Martin 2 mi (5 min), Ilfracombe 6 mi, Watermouth Castle 5 min, Woolacombe 20-30 min</span></div>
         </div>
         <div class="card-footer">
-          <div class="price">£1,200–1,800 <span>/week</span></div>
-          <a href="https://coulscott.co.uk/" target="_blank" class="btn-book">Book &#8594;</a>
+          <div class="price">Enquire <span>directly</span></div>
+          <a href="https://coulscott.co.uk/" target="_blank" class="btn-book">Visit &#8594;</a>
         </div>
       </div>
     </div>
 
-    <!-- 7. Forest Holidays -->
+    <!-- 2. Flear Farm Cottages -->
     <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80" alt="Log cabin in an ancient forest" loading="lazy">
+      <img class="card-img" src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&q=80" alt="Devon farmland with rolling green hills" loading="lazy">
       <div class="card-body">
         <div class="card-badges">
-          <span class="badge badge-green">Hot Tub</span>
-          <span class="badge badge-blue">Log Cabin</span>
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Village: walkable</span>
+        </div>
+        <div class="card-num">#2</div>
+        <h2>Flear Farm Cottages</h2>
+        <div class="card-location">&#128205; Nr East Allington, South Devon</div>
+        <p class="card-desc">27-acre farm with a stream running through a private valley. Trampoline in the playbarn, 40ft heated pool, alpacas and ponies. Great South Devon base near Kingsbridge and Dartmouth.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottages, 27-acre farm</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Stream through private valley</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline in playbarn, outdoor play areas</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">40ft heated pool, alpacas, ponies</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">East Allington walkable, Kingsbridge 10 min, Woodlands Theme Park 15 min, Dartmouth 20 min</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">~&#163;2,150–2,500 <span>/week</span></div>
+          <a href="https://flearfarmcottages.com/" target="_blank" class="btn-book">Visit &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Clydey Cottages ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Best Value + Welsh Beaches</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80" alt="Welsh countryside with green fields and blue sky" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Village: adjacent</span>
+        </div>
+        <div class="card-num">#3</div>
+        <h2>Clydey Cottages</h2>
+        <div class="card-location">&#128205; Boncath, Pembrokeshire</div>
+        <p class="card-desc">20-acre grounds with a stream and hidden valley. Trampoline, indoor heated pool, and a daily kids farm club included. Fantastic value for a full-service family holiday near the Pembrokeshire coast.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottages, 20-acre grounds</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Stream + hidden valley</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, daily kids farm club</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">Indoor heated pool, farm animals</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Boncath adjacent, Newcastle Emlyn 15 min, Cardigan 20 min, Newport Sands beach 20-30 min, Folly Farm 35 min</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">~&#163;1,000–2,500 <span>/week</span></div>
+          <a href="https://www.clydeycottages.co.uk/" target="_blank" class="btn-book">Visit &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Duddings Country Cottages -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80" alt="Exmoor countryside with rolling green meadows" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Village: walkable</span>
+        </div>
+        <div class="card-num">#4</div>
+        <h2>Duddings Country Cottages</h2>
+        <div class="card-location">&#128205; Timberscombe, Exmoor</div>
+        <p class="card-desc">9-acre estate with a river running through the grounds. Trampoline, indoor pool, and tennis court. Walkable to Timberscombe village and just minutes from Dunster Castle and Minehead.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Country cottages, 9-acre estate</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">River through grounds</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, outdoor play</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">Indoor pool, tennis court</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Timberscombe walkable, Dunster 5 min, Minehead 10 min, Dunster Castle 5 min, Butlin's 10 min</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">~&#163;800–1,500 <span>/week</span></div>
+          <a href="https://www.duddings.co.uk/" target="_blank" class="btn-book">Visit &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Foxtwood Cottages ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Best for Alton Towers</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="Sunlight streaming through ancient woodland" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Village: adjacent</span>
+        </div>
+        <div class="card-num">#5</div>
+        <h2>Foxtwood Cottages</h2>
+        <div class="card-location">&#128205; Froghall, Peak District / Staffordshire</div>
+        <p class="card-desc">30 acres of grounds with a stream, swimmable lake, and ancient woodland. Trampoline on site. Alton Towers is just 15 minutes away! Churnet Valley Railway runs adjacent.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Cottages, 30-acre grounds</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Stream + swimmable lake</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, ancient woodland exploration</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">Lake swimming, 30 acres of grounds</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Froghall adjacent, Cheadle 10 min, Alton Towers 15 min!, Churnet Valley Railway adjacent</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">Enquire <span>directly</span></div>
+          <a href="https://foxtwood.co.uk/" target="_blank" class="btn-book">Visit &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Manor House, Ludlow -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=800&q=80" alt="Shropshire countryside with green rolling hills" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-amber">&#9888;&#65039; Stream Needs Confirming</span>
+          <span class="badge badge-purple">Village: adjacent</span>
+        </div>
+        <div class="card-num">#6</div>
+        <h2>Manor House, Ludlow</h2>
+        <div class="card-location">&#128205; Richards Castle, Shropshire</div>
+        <p class="card-desc">5-acre grounds with trampoline, zip wire, treehouse, tennis court, and a 6-hole golf course. Stream reported but needs final confirmation. Best suited to a whole-house share with another family.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Manor house, 5 acres (whole-house share ideal)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Stream (needs confirming)</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, zip wire, treehouse</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">Tennis court, 6-hole golf course</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Richards Castle adjacent, Ludlow 8 min</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">Enquire <span>directly</span></div>
+          <a href="https://www.ludlowmanorhouse.com/" target="_blank" class="btn-book">Visit &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Riverside Property, Llangollen -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="River Dee flowing through green Welsh valley" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Town: 2 min walk!</span>
         </div>
         <div class="card-num">#7</div>
-        <h2>Forest Holidays, Forest of Dean</h2>
-        <div class="card-location">&#128205; Forest of Dean, Gloucestershire</div>
-        <p class="card-desc">A log cabin with hot tub set among ancient oaks in one of England's most atmospheric forests. The Wye Valley and caves are nearby.</p>
+        <h2>Riverside Property, Llangollen</h2>
+        <div class="card-location">&#128205; Llangollen, Denbighshire (Airbnb)</div>
+        <p class="card-desc">1-acre property right on the River Dee with trampoline, treehouse, and fairy garden. Llangollen town is just a 2-minute walk. Steam railway and the famous Pontcysyllte Aqueduct on the doorstep. Check listing for family of 4 suitability.</p>
         <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Log cabin with hot tub</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Ancient oak forest, Wye Valley, Forest of Dean</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Forest activities on-site, Clearwell Caves (~20 min), Wye Valley</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Forest ranger activities, den building, hot tub, cave exploring</span></div>
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Airbnb property, 1 acre on River Dee</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">River Dee through/bordering grounds</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, treehouse, fairy garden</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">River access, garden</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Llangollen 2 min walk!, Steam railway, Pontcysyllte Aqueduct 5 min, white water rafting</span></div>
         </div>
         <div class="card-footer">
-          <div class="price">£2,100–4,200 <span>/week</span></div>
-          <a href="https://www.forestholidays.co.uk/locations/gloucestershire/forest-of-dean/" target="_blank" class="btn-book">Book &#8594;</a>
+          <div class="price">Check <span>Airbnb</span></div>
+          <a href="https://www.airbnb.co.uk/s/Llangollen/homes" target="_blank" class="btn-book">Search &#8594;</a>
         </div>
       </div>
     </div>
 
-    <!-- 8. Forest Lodges, Zip World -->
-    <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80" alt="Snowdonia mountain road with dramatic peaks" loading="lazy">
+    <!-- HONOURABLE MENTION: Three Gates Farm -->
+    <div class="card honourable-mention">
+      <div class="ribbon-hm">&#127942; Honourable Mention — Stream Not Confirmed</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80" alt="Devon countryside with green fields" loading="lazy">
       <div class="card-body">
         <div class="card-badges">
-          <span class="badge badge-green">Hot Tub</span>
-          <span class="badge badge-pink">Glamping</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-amber">&#9888;&#65039; Stream Not Confirmed</span>
+          <span class="badge badge-outline">Near River Exe</span>
         </div>
-        <div class="card-num">#8</div>
-        <h2>Forest Lodges at Zip World</h2>
-        <div class="card-location">&#128205; Betws-y-Coed, Snowdonia</div>
-        <p class="card-desc">Luxury glamping lodges with hot tubs right next to Zip World — the ultimate adventure basecamp in the heart of Snowdonia.</p>
+        <div class="card-num">HM</div>
+        <h2>Three Gates Farm</h2>
+        <div class="card-location">&#128205; Huntsham, Devon (nr Tiverton)</div>
+        <p class="card-desc">2-acre grounds with trampoline, play area, 33ft heated pool, and sauna. Near the River Exe but stream through the actual grounds not yet confirmed. Tiverton is 12 minutes away.</p>
         <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Luxury glamping lodge with hot tub</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Forest setting, Snowdonia National Park</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Zip World (5 min), Greenwood (~25 min), Anglesey beaches (~40 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Zip lines, bounce below, hot tub, adventure playground</span></div>
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Farm cottage, 2 acres</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Near River Exe — stream not confirmed</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, play area</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">33ft heated pool, sauna</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Huntsham hamlet, Tiverton 12 min, Diggerland 20 min</span></div>
         </div>
         <div class="card-footer">
-          <div class="price">£2,150–2,400 <span>/week</span></div>
-          <a href="https://www.zipworld.co.uk/basecamps/forest-lodges" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 9. The Hideaway, Dorset -->
-    <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80" alt="Sandy beach with blue sea and sunny sky" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-blue">Holiday Home</span>
-          <span class="badge badge-amber">Jurassic Coast</span>
-        </div>
-        <div class="card-num">#9</div>
-        <h2>The Hideaway</h2>
-        <div class="card-location">&#128205; Westbourne, Dorset (nr Bournemouth)</div>
-        <p class="card-desc">A modern 4-bed holiday home near Bournemouth with beaches within walking distance and the Jurassic Coast on the doorstep.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Modern 4-bed holiday home</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Jurassic Coast, beaches walking distance</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Monkey World (~15 min), Lulworth Cove (~20 min), Bournemouth beaches (walking)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Beach days, Monkey World, fossil hunting, Oceanarium</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">£1,414–2,897 <span>/week</span></div>
-          <a href="https://www.independentcottages.co.uk/dorset/the-hideaway-ref7339" target="_blank" class="btn-book">Book &#8594;</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 10. Watermeadows Eco Glamping -->
-    <div class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80" alt="Bell tent in a green meadow at golden hour" loading="lazy">
-      <div class="card-body">
-        <div class="card-badges">
-          <span class="badge badge-pink">Glamping</span>
-          <span class="badge badge-green">Eco</span>
-        </div>
-        <div class="card-num">#10</div>
-        <h2>Watermeadows Eco Glamping</h2>
-        <div class="card-location">&#128205; Pembrokeshire, Wales</div>
-        <p class="card-desc">Bell tents and geodomes on an 8-acre wildflower meadow with spring-fed lakes. Pembrokeshire's stunning coast and Tenby are a short drive away.</p>
-        <div class="card-details">
-          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Bell tents & geodomes, 8-acre meadow</span></div>
-          <div class="detail-row"><span class="detail-label">&#127795; Nature</span><span class="detail-value">Wildflower meadow, spring-fed lakes, wildlife</span></div>
-          <div class="detail-row"><span class="detail-label">&#128663; Attractions</span><span class="detail-value">Folly Farm (nearby), Tenby beaches (~20 min)</span></div>
-          <div class="detail-row"><span class="detail-label">&#128118; Kids</span><span class="detail-value">Pond dipping, wildlife spotting, Folly Farm, Tenby harbour</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="price">TBC <span>/week</span></div>
-          <a href="https://watermeadowsglamping.co.uk/" target="_blank" class="btn-book">Book &#8594;</a>
+          <div class="price">Enquire <span>directly</span></div>
+          <a href="https://www.threegatesfarm.co.uk/" target="_blank" class="btn-book">Visit &#8594;</a>
         </div>
       </div>
     </div>
@@ -630,7 +664,7 @@
 
   <!-- COMPARISON TABLE -->
   <h2 class="section-title">Quick Comparison</h2>
-  <p class="section-subtitle">Scroll right on mobile to see all columns.</p>
+  <p class="section-subtitle">Scroll right on mobile to see all columns. &#11088; = Top Pick.</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -638,102 +672,120 @@
           <th>#</th>
           <th>Property</th>
           <th>Region</th>
-          <th>Type</th>
+          <th>Acres</th>
+          <th>Stream</th>
+          <th>Trampoline</th>
+          <th>Pool</th>
+          <th>Nearest Village</th>
           <th>Price/week</th>
           <th>Top Attraction</th>
           <th>Best For</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td class="table-name">Maigold Cottage</td>
-          <td>Peak District</td>
-          <td>Farm cottage</td>
-          <td>£670–880</td>
-          <td>Chatsworth House (8 min)</td>
-          <td>Budget families</td>
+        <tr class="table-pick">
+          <td>1 &#11088;</td>
+          <td class="table-name">Coulscott House</td>
+          <td>North Devon</td>
+          <td>17</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>Indoor heated</td>
+          <td>Combe Martin 2 mi</td>
+          <td>Enquire</td>
+          <td>Watermouth Castle (5 min)</td>
+          <td>Luxury</td>
         </tr>
         <tr>
           <td>2</td>
-          <td class="table-name">Benar Cottages</td>
-          <td>Snowdonia</td>
-          <td>Stone cottages</td>
-          <td>£600–1,000</td>
-          <td>Zip World (9 min)</td>
-          <td>Mountain adventure</td>
+          <td class="table-name">Flear Farm</td>
+          <td>South Devon</td>
+          <td>27</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>40ft heated</td>
+          <td>East Allington (walk)</td>
+          <td>&#163;2,150–2,500</td>
+          <td>Dartmouth (20 min)</td>
+          <td>Farm + pool</td>
         </tr>
         <tr class="table-pick">
           <td>3 &#11088;</td>
-          <td class="table-name">Beck Cottage</td>
-          <td>Lake District</td>
-          <td>Traditional cottage</td>
-          <td>£1,000–1,500</td>
-          <td>Go Ape Grizedale (5 min)</td>
-          <td>Nature lovers</td>
-        </tr>
-        <tr class="table-pick">
-          <td>4 &#11088;</td>
-          <td class="table-name">Bosinver Farm</td>
-          <td>Cornwall</td>
-          <td>Farm estate</td>
-          <td>£1,300–1,700</td>
-          <td>Eden Project (10 min)</td>
-          <td>Best all-rounder</td>
+          <td class="table-name">Clydey Cottages</td>
+          <td>Pembrokeshire</td>
+          <td>20</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>Indoor heated</td>
+          <td>Boncath (adjacent)</td>
+          <td>&#163;1,000–2,500</td>
+          <td>Newport Sands (20-30 min)</td>
+          <td>Value + beaches</td>
         </tr>
         <tr>
-          <td>5</td>
-          <td class="table-name">Maes-y-Coed</td>
-          <td>Snowdonia</td>
-          <td>Eco-cottage</td>
-          <td>£1,500+</td>
-          <td>Zip World (~25 min)</td>
-          <td>Forest immersion</td>
+          <td>4</td>
+          <td class="table-name">Duddings</td>
+          <td>Exmoor</td>
+          <td>9</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>Indoor</td>
+          <td>Timberscombe (walk)</td>
+          <td>&#163;800–1,500</td>
+          <td>Dunster Castle (5 min)</td>
+          <td>Budget + Exmoor</td>
         </tr>
         <tr class="table-pick">
-          <td>6 &#11088;</td>
-          <td class="table-name">Coulscott House</td>
-          <td>North Devon</td>
-          <td>Luxury cottages</td>
-          <td>£1,200–1,800</td>
-          <td>Woolacombe Beach (~15 min)</td>
-          <td>Luxury + nature</td>
+          <td>5 &#11088;</td>
+          <td class="table-name">Foxtwood</td>
+          <td>Peak District</td>
+          <td>30</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>Lake</td>
+          <td>Froghall (adjacent)</td>
+          <td>Enquire</td>
+          <td>Alton Towers (15 min!)</td>
+          <td>Alton Towers</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td class="table-name">Manor House</td>
+          <td>Shropshire</td>
+          <td>5</td>
+          <td><span class="tbl-badge tbl-badge-amber">&#9888;&#65039; TBC</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>—</td>
+          <td>Richards Castle (adj)</td>
+          <td>Enquire</td>
+          <td>Ludlow town (8 min)</td>
+          <td>Whole-house share</td>
         </tr>
         <tr>
           <td>7</td>
-          <td class="table-name">Forest Holidays</td>
-          <td>Forest of Dean</td>
-          <td>Log cabin + hot tub</td>
-          <td>£2,100–4,200</td>
-          <td>Clearwell Caves (~20 min)</td>
-          <td>Forest escapism</td>
+          <td class="table-name">Riverside, Llangollen</td>
+          <td>Denbighshire</td>
+          <td>1</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>—</td>
+          <td>Llangollen (2 min walk!)</td>
+          <td>Check Airbnb</td>
+          <td>Pontcysyllte Aqueduct</td>
+          <td>Walkable town</td>
         </tr>
-        <tr>
-          <td>8</td>
-          <td class="table-name">Forest Lodges, Zip World</td>
-          <td>Snowdonia</td>
-          <td>Glamping lodge + hot tub</td>
-          <td>£2,150–2,400</td>
-          <td>Zip World (5 min)</td>
-          <td>Adventure seekers</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td class="table-name">The Hideaway</td>
-          <td>Dorset</td>
-          <td>Holiday home</td>
-          <td>£1,414–2,897</td>
-          <td>Bournemouth beaches (walk)</td>
-          <td>Beach holiday</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td class="table-name">Watermeadows Glamping</td>
-          <td>Pembrokeshire</td>
-          <td>Bell tents / geodomes</td>
-          <td>TBC</td>
-          <td>Tenby beaches (~20 min)</td>
-          <td>Eco glamping</td>
+        <tr class="table-hm">
+          <td>HM</td>
+          <td class="table-name">Three Gates Farm</td>
+          <td>Devon</td>
+          <td>2</td>
+          <td><span class="tbl-badge tbl-badge-amber">&#9888;&#65039; TBC</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>33ft heated</td>
+          <td>Huntsham (hamlet)</td>
+          <td>Enquire</td>
+          <td>Diggerland (20 min)</td>
+          <td>Pool + sauna</td>
         </tr>
       </tbody>
     </table>
@@ -742,7 +794,8 @@
 </div><!-- .container -->
 
 <footer class="page-footer">
-  <p>Compiled for the West family &middot; August 2026 &middot; Prices approximate for peak season</p>
+  <p>Compiled for the West family — August 2026 holiday planning. Last updated March 2026.</p>
+  <p style="margin-top:8px;">All properties verified for stream + trampoline unless marked TBC. Prices are approximate peak-season rates.</p>
 </footer>
 
 </body>
