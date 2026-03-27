@@ -23,6 +23,8 @@
     --pink-light: #FCE7F3;
     --purple: #7C3AED;
     --purple-light: #EDE9FE;
+    --airbnb: #FF5A5F;
+    --airbnb-light: #FFE4E6;
     --border: #E7E5E4;
     --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 10px 30px rgba(0,0,0,0.08);
@@ -212,6 +214,8 @@
     border: 1.5px solid var(--border);
     color: var(--text-light);
   }
+  .badge-airbnb { background: var(--airbnb-light); color: var(--airbnb); }
+  .tbl-badge-airbnb { background: var(--airbnb-light); color: var(--airbnb); }
   .card-num {
     font-size: 12px;
     font-weight: 700;
@@ -389,7 +393,7 @@
   <div class="hero-content">
     <div class="hero-label">&#127796; Summer 2026 — Refined Shortlist</div>
     <h1>Family Holiday Comparison</h1>
-    <p>7 handpicked properties across England and Wales — every single one with a stream <em>and</em> a trampoline. Plus one honourable mention.</p>
+    <p>9 handpicked properties across England and Wales — every single one with a stream <em>and</em> a trampoline. Plus one honourable mention.</p>
     <div class="hero-meta">
       <span>&#128197; 22–29 August 2026</span>
       <span>&#128106; 2 adults + kids (7 &amp; 9)</span>
@@ -402,7 +406,7 @@
 <div class="verified-notice">
   <div class="verified-notice-inner">
     <span class="notice-icon">&#9989;</span>
-    <div><strong>Stream + Trampoline verified:</strong> All 7 properties below have been checked and confirmed to have both a stream running through or bordering the grounds AND a trampoline on-site. The honourable mention has a trampoline but the stream needs confirming.</div>
+    <div><strong>Stream + Trampoline verified:</strong> All 9 properties below have been checked and confirmed to have both a stream running through or bordering the grounds AND a trampoline on-site. The honourable mention has a trampoline but the stream needs confirming.</div>
   </div>
 </div>
 
@@ -435,8 +439,8 @@
 
 <!-- CARDS -->
 <div class="container">
-  <h2 class="section-title">All 7 Properties + Honourable Mention</h2>
-  <p class="section-subtitle">Every property has both a stream and a trampoline. Click "Visit" to see each property's website.</p>
+  <h2 class="section-title">All 9 Properties + Honourable Mention</h2>
+  <p class="section-subtitle">Every property has both a stream and a trampoline. Click "Visit" or "Book" to see each property's listing.</p>
 
   <div class="cards">
 
@@ -632,7 +636,81 @@
       </div>
     </div>
 
-    <!-- HONOURABLE MENTION: Three Gates Farm -->
+  </div><!-- .cards -->
+
+  <!-- AIRBNB FINDS -->
+  <h2 class="section-title" style="margin-top:20px;">&#127968; Airbnb Finds</h2>
+  <p class="section-subtitle">Interesting Airbnb properties with stream + trampoline. Independently found — not traditional holiday cottage sites.</p>
+
+  <div class="cards">
+
+    <!-- 8. Dee Valley Yurt, Llangollen -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="River Dee flowing through the green Dee Valley near Llangollen" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-airbnb">&#127968; Airbnb</span>
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Town: 2 min walk!</span>
+        </div>
+        <div class="card-num">#8</div>
+        <h2>Dee Valley Yurt</h2>
+        <div class="card-location">&#128205; Llangollen, North Wales</div>
+        <p class="card-desc">Glamping yurt with proper kitchen and plumbed shower on a 1-acre riverside garden directly on the River Dee with fishing rights. Trampoline, treehouse, and fairy garden. Llangollen town is a 2-minute walk — shops, cafes, and restaurants on the doorstep. Note: this is a yurt, not a cottage — but has real kitchen and shower facilities.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">Glamping yurt, 1-acre riverside garden</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Directly on River Dee with fishing rights</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, treehouse, fairy garden</span></div>
+          <div class="detail-row"><span class="detail-label">&#128101; Sleeps</span><span class="detail-value">Up to 6</span></div>
+          <div class="detail-row"><span class="detail-label">&#11088; Rating</span><span class="detail-value">4.89 stars (219 reviews)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Llangollen 2 min walk!, Steam Railway 2 min, Pontcysyllte Aqueduct 10 min, Horseshoe Falls 10 min, white water rafting</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">Check <span>Airbnb</span></div>
+          <a href="https://www.airbnb.co.uk/rooms/913560674748581770" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Riversdale Lodge, Symonds Yat -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80" alt="River Wye winding through the wooded gorge at Symonds Yat" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-airbnb">&#127968; Airbnb</span>
+          <span class="badge badge-green">&#9989; Stream Confirmed</span>
+          <span class="badge badge-green">&#9989; Trampoline Confirmed</span>
+          <span class="badge badge-purple">Village: short walk</span>
+        </div>
+        <div class="card-num">#9</div>
+        <h2>Riversdale Lodge</h2>
+        <div class="card-location">&#128205; Symonds Yat, Wye Valley</div>
+        <p class="card-desc">Stunning 6-bedroom Edwardian lodge (c.1910) overlooking the River Wye rapids at Symonds Yat. Direct garden-to-river access, trampoline, zip wire, football goal, outdoor pool (May-Sept), pool table, and table tennis. Sleeps up to 14 — ideal if sharing with another family. May be oversized/overpriced for a family of 4 alone.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127968; Type</span><span class="detail-value">6-bed Edwardian lodge, overlooking Wye rapids</span></div>
+          <div class="detail-row"><span class="detail-label">&#128167; Water</span><span class="detail-value">Direct garden-to-river access on River Wye</span></div>
+          <div class="detail-row"><span class="detail-label">&#129336; Play</span><span class="detail-value">Trampoline, zip wire, football goal, pool table, table tennis</span></div>
+          <div class="detail-row"><span class="detail-label">&#127946; Facilities</span><span class="detail-value">Outdoor pool (May-Sept), 6 bedrooms</span></div>
+          <div class="detail-row"><span class="detail-label">&#128101; Sleeps</span><span class="detail-value">Up to 14 — best if sharing with another family</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Nearby</span><span class="detail-value">Symonds Yat West (walk to pubs/canoe launch), Symonds Yat Rock 5 min, Puzzlewood/Forest of Dean 15 min, Clearwell Caves, canoe hire</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">Check <span>Airbnb</span></div>
+          <a href="https://www.airbnb.co.uk/rooms/45854753" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .cards (airbnb) -->
+
+  <!-- HONOURABLE MENTION -->
+  <h2 class="section-title" style="margin-top:20px;">&#127942; Honourable Mention</h2>
+  <p class="section-subtitle">Promising but stream not yet confirmed.</p>
+
+  <div class="cards">
+
+    <!-- HM: Three Gates Farm -->
     <div class="card honourable-mention">
       <div class="ribbon-hm">&#127942; Honourable Mention — Stream Not Confirmed</div>
       <img class="card-img" src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80" alt="Devon countryside with green fields" loading="lazy">
@@ -660,7 +738,7 @@
       </div>
     </div>
 
-  </div><!-- .cards -->
+  </div><!-- .cards (honourable mention) -->
 
   <!-- COMPARISON TABLE -->
   <h2 class="section-title">Quick Comparison</h2>
@@ -773,6 +851,32 @@
           <td>Check Airbnb</td>
           <td>Pontcysyllte Aqueduct</td>
           <td>Walkable town</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td class="table-name">Dee Valley Yurt <span class="tbl-badge tbl-badge-airbnb">Airbnb</span></td>
+          <td>North Wales</td>
+          <td>1</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>—</td>
+          <td>Llangollen (2 min walk!)</td>
+          <td>Check Airbnb</td>
+          <td>Pontcysyllte Aqueduct (10 min)</td>
+          <td>Glamping + river</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td class="table-name">Riversdale Lodge <span class="tbl-badge tbl-badge-airbnb">Airbnb</span></td>
+          <td>Wye Valley</td>
+          <td>—</td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td><span class="tbl-badge tbl-badge-green">&#9989; Yes</span></td>
+          <td>Outdoor (May-Sept)</td>
+          <td>Symonds Yat West (walk)</td>
+          <td>Check Airbnb</td>
+          <td>Puzzlewood (15 min)</td>
+          <td>Large group / families</td>
         </tr>
         <tr class="table-hm">
           <td>HM</td>
