@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopover Hotels with Pools — Llangollen Route Home, August 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --warm-bg: #FDF6EE;
+    --card-bg: #FFFFFF;
+    --accent: #D97706;
+    --accent-light: #FEF3C7;
+    --accent-dark: #92400E;
+    --text: #1C1917;
+    --text-light: #78716C;
+    --green: #059669;
+    --green-light: #D1FAE5;
+    --blue: #2563EB;
+    --blue-light: #DBEAFE;
+    --pink: #DB2777;
+    --pink-light: #FCE7F3;
+    --purple: #7C3AED;
+    --purple-light: #EDE9FE;
+    --teal: #0D9488;
+    --teal-light: #CCFBF1;
+    --border: #E7E5E4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 10px 30px rgba(0,0,0,0.08);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--warm-bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #164e63 0%, #1e3a5f 40%, #312e81 100%);
+    color: white;
+    padding: 60px 24px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+  .hero-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 17px;
+    opacity: 0.85;
+    max-width: 560px;
+    margin: 0 auto 24px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 14px;
+    opacity: 0.75;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ROUTE INFO */
+  .route-notice {
+    max-width: 1200px;
+    margin: -28px auto 12px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .route-notice-inner {
+    background: linear-gradient(135deg, #164e63 0%, #0e7490 100%);
+    color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .route-notice-inner .notice-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .route-notice-inner strong { font-weight: 700; }
+
+  /* TOP PICKS BANNER */
+  .top-picks {
+    max-width: 1200px;
+    margin: 16px auto 32px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .top-picks-inner {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .pick {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .pick-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .pick h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .pick p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
+
+  /* CARDS GRID */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .section-subtitle {
+    color: var(--text-light);
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .card-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+  .card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+  .card-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-pink { background: var(--pink-light); color: var(--pink); }
+  .badge-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-teal { background: var(--teal-light); color: var(--teal); }
+  .badge-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-light);
+  }
+  .card-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .card-location {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-desc {
+    font-size: 14px;
+    color: #44403C;
+    margin-bottom: 16px;
+    line-height: 1.55;
+  }
+  .card-details { margin-bottom: 16px; }
+  .detail-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label {
+    font-weight: 600;
+    color: var(--text);
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+  .detail-value { color: #57534E; }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .price {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .price span {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-light);
+  }
+  .btn-book {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 22px;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .btn-book:hover { background: var(--accent-dark); }
+
+  /* TOP PICK RIBBON */
+  .card.top-pick { border: 2px solid var(--accent); }
+  .ribbon {
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 16px;
+    text-align: center;
+  }
+
+  /* COMPARISON TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: white;
+    margin-bottom: 48px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1000px;
+  }
+  thead { background: #164e63; color: white; }
+  th {
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:hover { background: #FEFBF6; }
+  tbody tr:nth-child(even) { background: #FAFAF9; }
+  tbody tr:nth-child(even):hover { background: #FEFBF6; }
+  .table-name { font-weight: 600; }
+  .table-pick {
+    background: var(--accent-light) !important;
+  }
+  .table-pick:hover { background: #FDE68A !important; }
+  .tbl-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .tbl-badge-green { background: var(--green-light); color: var(--green); }
+  .tbl-badge-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .tbl-badge-blue { background: var(--blue-light); color: var(--blue); }
+
+  /* FOOTER */
+  .page-footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero { padding: 40px 16px 36px; }
+    .cards { grid-template-columns: 1fr; }
+    .top-picks-inner { grid-template-columns: 1fr; padding: 20px; }
+    .container { padding: 0 16px 40px; }
+    .route-notice-inner { flex-direction: column; text-align: center; padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-label">&#127946; Summer 2026 — Stopover Hotels</div>
+    <h1>Hotels with Pools on the Route Home</h1>
+    <p>7 family-friendly hotels with swimming pools between Llangollen and home — perfect for breaking up the drive back.</p>
+    <div class="hero-meta">
+      <span>&#128197; August 2026</span>
+      <span>&#128106; 2 adults + 2 kids</span>
+      <span>&#128663; Route from Llangollen</span>
+    </div>
+  </div>
+</header>
+
+<!-- ROUTE NOTICE -->
+<div class="route-notice">
+  <div class="route-notice-inner">
+    <span class="notice-icon">&#128663;</span>
+    <div><strong>Route home from Llangollen:</strong> All hotels are on or near the route south/east from Llangollen. Drive times shown are from Llangollen town centre. All have heated indoor pools and family rooms.</div>
+  </div>
+</div>
+
+<!-- TOP PICKS -->
+<div class="top-picks">
+  <div class="top-picks-inner">
+    <div class="pick">
+      <div class="pick-icon" style="background:#DBEAFE;">&#128207;</div>
+      <div>
+        <h3>Closest — Village Chester</h3>
+        <p>Only 30 mins from Llangollen. Proper pool, jacuzzi, near Chester Zoo.</p>
+      </div>
+    </div>
+    <div class="pick">
+      <div class="pick-icon" style="background:#FEF3C7;">&#127965;</div>
+      <div>
+        <h3>Resort Feel — Telford Hotel</h3>
+        <p>Spa, golf, 15m pool. Near Ironbridge Gorge. Great family facilities.</p>
+      </div>
+    </div>
+    <div class="pick">
+      <div class="pick-icon" style="background:#D1FAE5;">&#128176;</div>
+      <div>
+        <h3>Best Value — HI Ellesmere Port</h3>
+        <p>From ~&#163;80/night. Kids free, under 13s eat free. Canalside location.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="container">
+  <h2 class="section-title">All 7 Hotels</h2>
+  <p class="section-subtitle">Every hotel has a heated indoor pool and family rooms. Sorted roughly by drive time from Llangollen.</p>
+
+  <div class="cards">
+
+    <!-- 1. Village Hotel Chester St David's ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Closest to Llangollen</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1580137189272-c9379f8864fd?w=800&q=80" alt="Historic Chester city with river and buildings" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; Pool + Jacuzzi + Sauna</span>
+          <span class="badge badge-blue">&#128663; 30 mins</span>
+          <span class="badge badge-amber">&#163;124–150/nt</span>
+        </div>
+        <div class="card-num">#1</div>
+        <h2>Village Hotel Chester St David's</h2>
+        <div class="card-location">&#128205; Ewloe, Flintshire CH5 3YB</div>
+        <p class="card-desc">The closest option to Llangollen with a proper pool setup including jacuzzi, sauna, and steam room. Family rooms sleep 4 comfortably. Great location near Chester Zoo and Cheshire Oaks outlet shopping.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">Heated indoor pool, jacuzzi, sauna, steam room. Pool access ~&#163;5/room/night extra</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">Two double beds OR double + sofa bed</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~30 mins from Llangollen</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Near Chester Zoo &amp; Cheshire Oaks, kids' meals at Pub &amp; Grill</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;124–150 <span>/night</span></div>
+          <a href="https://www.village-hotels.co.uk/chester-st-davids" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Albrighton Hall Hotel & Spa -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1587381420270-0e8e4a6b9b2e?w=800&q=80" alt="English country house in green parkland" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; Pool + Spa + Gym</span>
+          <span class="badge badge-blue">&#128663; 40 mins</span>
+          <span class="badge badge-amber">&#163;90–130/nt</span>
+        </div>
+        <div class="card-num">#2</div>
+        <h2>Albrighton Hall Hotel &amp; Spa</h2>
+        <div class="card-location">&#128205; Shrewsbury, Shropshire SY4 3AG</div>
+        <p class="card-desc">A Radisson-managed country house hotel set in beautiful grounds just 10 minutes from Shrewsbury. Indoor heated pool, spa facilities, and a proper restaurant. Elegant setting for a family stopover.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">Indoor heated pool, sauna, gym</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">Family rooms available (check configuration)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~40 mins from Llangollen</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Country house setting, spa, restaurant. 10 mins from Shrewsbury</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;90–130 <span>/night</span></div>
+          <a href="https://www.radissonhotels.com/en-us/hotels/radisson-individuals-spa-albrighton-shrewsbury" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. The Telford Hotel ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Resort Feel + Ironbridge</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&q=80" alt="Ironbridge Gorge area with lush greenery and bridge" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; 15m Pool + Spa + Golf</span>
+          <span class="badge badge-blue">&#128663; 45 mins</span>
+          <span class="badge badge-amber">&#163;100–130/nt</span>
+        </div>
+        <div class="card-num">#3</div>
+        <h2>The Telford Hotel, Spa &amp; Golf Resort</h2>
+        <div class="card-location">&#128205; Telford, Shropshire TF7 4DT</div>
+        <p class="card-desc">A proper resort experience with a 15-metre heated indoor pool, spa, sauna, and golf course. Family rooms sleep 4 with kids under 16 free. Right near Ironbridge Gorge — great for a morning explore before driving on.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">15m heated indoor pool with children's swim times</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">Double bed + two fold-away beds (sleeps 4). Kids under 16 free</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~45 mins from Llangollen</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Spa, sauna, golf course, kids' menu, near Ironbridge Gorge</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;100–130 <span>/night</span></div>
+          <a href="https://www.telfordhotelgolfresort.co.uk/family-friendly/" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Holiday Inn Ellesmere Port ⭐ TOP PICK -->
+    <div class="card top-pick">
+      <div class="ribbon">&#11088; Top Pick — Best Value</div>
+      <img class="card-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80" alt="Canal boats and waterside in Cheshire" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; Pool + Sauna + Gym</span>
+          <span class="badge badge-blue">&#128663; 45 mins</span>
+          <span class="badge badge-green">&#163;80–120/nt</span>
+        </div>
+        <div class="card-num">#4</div>
+        <h2>Holiday Inn Ellesmere Port</h2>
+        <div class="card-location">&#128205; Cheshire Oaks, CH65 9DS</div>
+        <p class="card-desc">The best-value option with kids under 18 staying free and under 13s eating free. Heated indoor pool (book 45-min slots), canalside setting, and right next to Cheshire Oaks and Chester Zoo. Free parking.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">Heated indoor pool (small, book 45-min slots). Sauna, gym</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">2 king beds OR king + corner sofa bed. Kids under 18 free, under 13 eat free</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~45 mins from Llangollen</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Canalside, near Cheshire Oaks &amp; Chester Zoo, free parking</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;80–120 <span>/night</span></div>
+          <a href="https://www.ihg.com/holidayinn/hotels/us/en/ellesmere-port/elluk/hoteldetail" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Village Hotel Wirral -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&q=80" alt="Port Sunlight village with green gardens" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; 25m Pool + Jacuzzi</span>
+          <span class="badge badge-blue">&#128663; 55–70 mins</span>
+          <span class="badge badge-amber">&#163;93–130/nt</span>
+        </div>
+        <div class="card-num">#5</div>
+        <h2>Village Hotel Wirral</h2>
+        <div class="card-location">&#128205; Bromborough, Wirral CH62 4UE</div>
+        <p class="card-desc">The biggest pool of the lot at 25 metres, plus jacuzzi, sauna, and steam room. Good family rooms and decent value. Near Chester Zoo, Cheshire Oaks, and the beautiful Port Sunlight village.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">25m heated indoor pool, jacuzzi, sauna, steam room. Pool access ~&#163;5/room/night extra</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">Double + two rollaway beds</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~55 mins to 1hr 10 from Llangollen</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Near Chester Zoo, Cheshire Oaks, Port Sunlight</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;93–130 <span>/night</span></div>
+          <a href="https://www.village-hotels.co.uk/wirral" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Village Hotel Liverpool -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1534695215921-52f8a19e7909?w=800&q=80" alt="Liverpool waterfront and skyline" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; 23m Pool + Whirlpool</span>
+          <span class="badge badge-blue">&#128663; 1hr 10</span>
+          <span class="badge badge-amber">&#163;124–150/nt</span>
+        </div>
+        <div class="card-num">#6</div>
+        <h2>Village Hotel Liverpool</h2>
+        <div class="card-location">&#128205; Prescot/Whiston, Merseyside</div>
+        <p class="card-desc">A 23-metre pool with whirlpool and steam room — great for a proper swim. Family rooms with sofa bed for kids up to 12. Handy for Knowsley Safari Park if you want to make a day of it.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">23m heated indoor pool, whirlpool, steam room, sauna. Pool access ~&#163;5/room/night extra</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">Double + sofa bed (kids up to 12)</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~1hr 10 from Llangollen</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Near Knowsley Safari Park</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;124–150 <span>/night</span></div>
+          <a href="https://www.village-hotels.co.uk/liverpool" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Holiday Inn Birmingham Bromsgrove -->
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="Worcestershire countryside with rolling hills" loading="lazy">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge badge-teal">&#127946; 15m Pool + Spa Pool</span>
+          <span class="badge badge-blue">&#128663; 1hr 30</span>
+          <span class="badge badge-green">&#163;80–110/nt</span>
+        </div>
+        <div class="card-num">#7</div>
+        <h2>Holiday Inn Birmingham — Bromsgrove</h2>
+        <div class="card-location">&#128205; Bromsgrove, Worcestershire B61 0JB</div>
+        <p class="card-desc">The furthest option but the best if heading south towards home. 15m pool, sauna, and spa pool. Kids under 18 free and under 13s eat free. Countryside setting with free parking.</p>
+        <div class="card-details">
+          <div class="detail-row"><span class="detail-label">&#127946; Pool</span><span class="detail-value">15m heated indoor pool, sauna, spa pool</span></div>
+          <div class="detail-row"><span class="detail-label">&#128719; Rooms</span><span class="detail-value">Family rooms available. Kids under 18 free, under 13 eat free</span></div>
+          <div class="detail-row"><span class="detail-label">&#128663; Drive</span><span class="detail-value">~1hr 30 from Llangollen (best if heading south)</span></div>
+          <div class="detail-row"><span class="detail-label">&#127775; Extras</span><span class="detail-value">Countryside setting, free parking</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="price">&#163;80–110 <span>/night</span></div>
+          <a href="https://www.ihg.com/holidayinn/hotels/gb/en/worcestershire/bhxbr/hoteldetail" target="_blank" class="btn-book">Book &#8594;</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <h2 class="section-title">Quick Comparison</h2>
+  <p class="section-subtitle">All 7 hotels side-by-side — pool sizes, prices, drive times, and key extras.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Hotel</th>
+          <th>Location</th>
+          <th>Pool</th>
+          <th>Family Room</th>
+          <th>Price/Night</th>
+          <th>Drive</th>
+          <th>Key Extras</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-pick">
+          <td>1</td>
+          <td class="table-name">Village Chester St David's <span class="tbl-badge tbl-badge-amber">Top Pick</span></td>
+          <td>Ewloe, Flintshire</td>
+          <td>Indoor + jacuzzi, sauna, steam</td>
+          <td>2 doubles OR double + sofa</td>
+          <td>&#163;124–150</td>
+          <td><strong>30 mins</strong></td>
+          <td>Chester Zoo, Cheshire Oaks</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td class="table-name">Albrighton Hall (Radisson)</td>
+          <td>Shrewsbury</td>
+          <td>Indoor + sauna, gym</td>
+          <td>Available (check config)</td>
+          <td>&#163;90–130</td>
+          <td>40 mins</td>
+          <td>Country house, spa, Shrewsbury</td>
+        </tr>
+        <tr class="table-pick">
+          <td>3</td>
+          <td class="table-name">Telford Hotel, Spa &amp; Golf <span class="tbl-badge tbl-badge-amber">Top Pick</span></td>
+          <td>Telford</td>
+          <td><strong>15m</strong> + spa, sauna</td>
+          <td>Double + 2 foldaway (sleeps 4)</td>
+          <td>&#163;100–130</td>
+          <td>45 mins</td>
+          <td>Golf, spa, Ironbridge Gorge</td>
+        </tr>
+        <tr class="table-pick">
+          <td>4</td>
+          <td class="table-name">Holiday Inn Ellesmere Port <span class="tbl-badge tbl-badge-green">Best Value</span></td>
+          <td>Cheshire Oaks</td>
+          <td>Indoor (small, 45-min slots)</td>
+          <td>2 kings OR king + sofa. U18 free</td>
+          <td><strong>&#163;80–120</strong></td>
+          <td>45 mins</td>
+          <td>Canalside, Zoo, Oaks, free parking</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td class="table-name">Village Hotel Wirral</td>
+          <td>Bromborough</td>
+          <td><strong>25m</strong> + jacuzzi, sauna, steam</td>
+          <td>Double + 2 rollaway</td>
+          <td>&#163;93–130</td>
+          <td>55–70 mins</td>
+          <td>Chester Zoo, Port Sunlight</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td class="table-name">Village Hotel Liverpool</td>
+          <td>Prescot/Whiston</td>
+          <td><strong>23m</strong> + whirlpool, steam</td>
+          <td>Double + sofa (kids to 12)</td>
+          <td>&#163;124–150</td>
+          <td>1hr 10</td>
+          <td>Knowsley Safari Park</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td class="table-name">Holiday Inn Bromsgrove</td>
+          <td>Bromsgrove</td>
+          <td><strong>15m</strong> + sauna, spa pool</td>
+          <td>Available. U18 free, U13 eat free</td>
+          <td><strong>&#163;80–110</strong></td>
+          <td>1hr 30</td>
+          <td>Countryside, free parking, south route</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NOTES -->
+  <div style="background:white; border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 32px; margin-bottom:48px;">
+    <h3 style="font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:12px;">&#128221; Booking Notes</h3>
+    <div style="font-size:14px; color:#44403C; line-height:1.7;">
+      <p style="margin-bottom:10px;"><strong>Village Hotels pool surcharge:</strong> All three Village Hotels charge ~&#163;5/room/night extra for pool access. Worth it for the bigger pools and better facilities (jacuzzi, steam, sauna).</p>
+      <p style="margin-bottom:10px;"><strong>Holiday Inn kids perks:</strong> Both Holiday Inns offer kids under 18 staying free and under 13 eating free — makes them significantly cheaper for a family of 4.</p>
+      <p style="margin-bottom:10px;"><strong>Best for a morning activity:</strong> Telford (Ironbridge Gorge), Village Chester (Chester Zoo), Ellesmere Port (Cheshire Oaks shopping).</p>
+      <p><strong>If heading south:</strong> Holiday Inn Bromsgrove is the furthest from Llangollen but puts you furthest along the route home — worth considering if you want to do most of the driving on day 1.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <p>Stopover Hotels — Llangollen Route Home &#183; Summer 2026 &#183; Prices are approximate and based on August 2026 family room rates</p>
+</footer>
+
+</body>
+</html>
