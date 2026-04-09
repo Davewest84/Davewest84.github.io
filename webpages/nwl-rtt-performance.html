@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NW London Trusts — RTT 18-Week Performance</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; background: #fafafa; }
+  h1 { font-size: 1.35rem; color: #222; margin-bottom: 4px; }
+  .subtitle { color: #666; font-size: 0.85rem; margin-bottom: 24px; }
+  .chart-wrap { background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  canvas { max-height: 500px; }
+  .source { font-size: 0.75rem; color: #999; margin-top: 16px; }
+</style>
+</head>
+<body>
+<h1>RTT 18-week performance: North West London acute trusts vs England</h1>
+<p class="subtitle">% of incomplete pathways within 18 weeks &mdash; April 2024 to January 2026</p>
+<div class="chart-wrap">
+  <canvas id="chart"></canvas>
+</div>
+<p class="source">Source: NHS England, Consultant-led Referral to Treatment Waiting Times, published 12 March 2026</p>
+
+<script>
+const ctx = document.getElementById('chart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ["Apr '24","May '24","Jun '24","Jul '24","Aug '24","Sep '24","Oct '24","Nov '24","Dec '24","Jan '25","Feb '25","Mar '25","Apr '25","May '25","Jun '25","Jul '25","Aug '25","Sep '25","Oct '25","Nov '25","Dec '25","Jan '26"],
+    datasets: [
+      {
+        label: 'Imperial College Healthcare',
+        data: [56.7,57.8,57.5,58.5,57.4,57.6,58.6,57.7,58.4,57.6,58.1,60.5,60.2,60.3,61.7,61.5,60.7,62.0,62.1,62.6,64.2,64.4],
+        borderColor: '#1b9e77',
+        backgroundColor: '#1b9e77',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        tension: 0.15,
+        fill: false
+      },
+      {
+        label: 'Chelsea and Westminster',
+        data: [62.1,64.0,64.3,63.5,62.7,63.7,63.7,63.4,63.0,62.0,60.7,60.1,59.0,59.8,60.4,59.0,60.0,61.1,61.3,61.5,61.2,61.8],
+        borderColor: '#d95f02',
+        backgroundColor: '#d95f02',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        tension: 0.15,
+        fill: false
+      },
+      {
+        label: 'Hillingdon Hospitals',
+        data: [52.5,53.8,55.4,56.5,55.4,57.1,55.7,53.2,52.4,50.8,53.2,53.0,53.7,55.7,55.9,52.7,55.0,59.6,59.6,58.8,59.2,60.3],
+        borderColor: '#7570b3',
+        backgroundColor: '#7570b3',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        tension: 0.15,
+        fill: false
+      },
+      {
+        label: 'London North West University Healthcare',
+        data: [48.8,49.0,48.6,46.9,45.5,44.4,46.0,47.8,49.4,50.2,50.7,51.6,52.2,53.6,55.7,58.0,58.2,58.5,58.7,58.8,59.3,60.2],
+        borderColor: '#e7298a',
+        backgroundColor: '#e7298a',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        tension: 0.15,
+        fill: false
+      },
+      {
+        label: 'England average',
+        data: [58.2,59.1,58.9,58.8,58.3,58.5,58.9,59.2,58.9,58.9,59.2,59.8,59.7,60.9,61.5,61.2,61.0,61.7,61.7,61.6,61.5,61.4],
+        borderColor: '#333333',
+        backgroundColor: '#333333',
+        borderWidth: 3,
+        borderDash: [8, 4],
+        pointRadius: 0,
+        tension: 0.15,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 2,
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          usePointStyle: true,
+          padding: 16,
+          font: { size: 12 }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + '%';
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        title: {
+          display: true,
+          text: '% within 18 weeks',
+          font: { size: 13 }
+        },
+        ticks: {
+          callback: v => v + '%'
+        },
+        grid: { color: '#eee' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 11 } }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
