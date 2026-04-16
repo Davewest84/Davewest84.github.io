@@ -12,7 +12,7 @@
     color: #1a1a2e;
     padding: 2rem;
     line-height: 1.5;
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
   }
   h1 {
@@ -46,20 +46,20 @@
     border-collapse: collapse;
     background: #ffffff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
   th {
     background: #003087;
     color: #ffffff;
-    padding: 0.7rem 0.8rem;
+    padding: 0.7rem 0.7rem;
     text-align: left;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     position: sticky;
     top: 0;
   }
   td {
-    padding: 0.7rem 0.8rem;
+    padding: 0.7rem 0.7rem;
     border-bottom: 1px solid #e5e7eb;
     vertical-align: top;
   }
@@ -68,7 +68,17 @@
   .trust-name {
     font-weight: 600;
     color: #003087;
-    white-space: nowrap;
+  }
+  .date {
+    display: block;
+    font-size: 0.78rem;
+    color: #555;
+    margin-top: 0.15rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .unc {
+    color: #b00;
+    font-style: italic;
   }
   a {
     color: #005eb8;
@@ -102,131 +112,131 @@
     margin-left: 0.3rem;
     vertical-align: middle;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1000px) {
     body { padding: 1rem; }
-    table { font-size: 0.8rem; }
-    th, td { padding: 0.5rem; }
+    table { font-size: 0.78rem; }
+    th, td { padding: 0.45rem; }
   }
 </style>
 </head>
 <body>
 
 <h1>The 14 red-rated trusts <span class="red-badge">RED</span></h1>
-<p class="subtitle">NHS England capability ratings, Q3 2025/26 — chair and CEO position during the assessment window (Aug–Dec 2025) and changes since</p>
-<p class="meta">Ratings published by NHSE on 14 April 2026. Table compiled 16 April 2026. Sources: NHSE methodology PDF, trust websites, HSJ search and Content APIs.</p>
+<p class="subtitle">NHS England capability ratings, Q3 2025/26 — chair and CEO in post during the assessment window (Aug–Dec 2025) with start dates, and changes since</p>
+<p class="meta">Ratings published by NHSE on 14 April 2026. Table compiled 16 April 2026. Sources: NHSE methodology PDF; trust websites, annual reports and press releases; HSJ search and Content APIs. Italic red text indicates the start date could not be confirmed from public sources.</p>
 
 <div class="intro">
 <p><strong>What this is.</strong> NHS England's NHS Oversight Framework now combines a capability rating with delivery against national expectations to drive its regulatory approach. The inaugural process assessed all 204 trusts between August and December 2025, moderated by regional and national directors and ratified by the NHSE executive. Four levels: Green, Amber/Green, Amber/Red, Red.</p>
-<p><strong>Red is defined as:</strong> "Significant concerns arising from poor delivery, governance and other issues" — material or long-running concerns management has been unable to grip; trust in breach of licence or likely to be. Fourteen trusts (6.9%) are red-rated. Ten of those 14 have had HSJ-reported leadership turbulence in the assessment window or since.</p>
+<p><strong>Red is defined as:</strong> "Significant concerns arising from poor delivery, governance and other issues" — material or long-running concerns management has been unable to grip; trust in breach of licence or likely to be. Fourteen trusts (6.9%) are red-rated.</p>
 </div>
 
 <table>
 <thead>
 <tr>
-<th style="width:19%">Trust</th>
-<th style="width:18%">Chair Aug–Dec 2025</th>
-<th style="width:18%">CEO Aug–Dec 2025</th>
-<th style="width:45%">Changes since (HSJ-sourced where cited)</th>
+<th style="width:17%">Trust</th>
+<th style="width:21%">Chair (with start date)</th>
+<th style="width:21%">CEO (with start date)</th>
+<th style="width:41%">Changes since</th>
 </tr>
 </thead>
 <tbody>
 
 <tr>
 <td class="trust-name">Blackpool Teaching Hospitals FT</td>
-<td>James Wilkie</td>
-<td>Maggie Oldham</td>
+<td>James Wilkie<span class="date">Chair from 26 Sep 2024</span></td>
+<td>Maggie Oldham<span class="date">Interim Apr 2024; substantive Sep 2024</span></td>
 <td class="no-change">No HSJ-reported leadership change</td>
 </tr>
 
 <tr>
 <td class="trust-name">Countess of Chester Hospital FT</td>
-<td>Neil Large (interim, from Mar 2025)</td>
-<td>Jane Tomkinson OBE</td>
+<td>Neil Large (interim)<span class="date">Interim chair from 1 Mar 2025</span></td>
+<td>Jane Tomkinson OBE<span class="date">Acting Dec 2022; substantive appointment announced Nov 2023</span></td>
 <td>Jan 2026: trust agreed <a href="https://www.hsj.co.uk/countess-of-chester-hospital-nhs-foundation-trust/ceo-forced-out-by-chair-wins-14m-settlement/7040911.article">£1.4m settlement with former CEO Dr Susan Gilby</a>, who was forced out in a coordinated campaign by the former chair and other directors.</td>
 </tr>
 
 <tr>
 <td class="trust-name">County Durham and Darlington FT</td>
-<td>Prof Richard Scothon — <a href="https://www.hsj.co.uk/people-moves/chair-leaves-trust-amid-cancer-probe/7040260.article">left Oct 2025 "amid cancer probe"</a> after less than three years</td>
-<td>Sue Jacques → <a href="https://www.hsj.co.uk/people-moves/trust-hires-ex-national-director-as-ceo/7039887.article">Steve Russell (ex-NHSE national director, from Aug 2025)</a></td>
-<td>Nov 2025: Russell declared <a href="https://www.hsj.co.uk/leadership/trusts-divided-exec-and-fundamental-care-failures-revealed/7040460.article">board and exec team "divided and isolated"</a>, care standards failing, and a "hidden budget gap". Alison Marshall named interim chair.</td>
+<td>Prof Richard Scothon<span class="date">Chair from c. Mar 2023; <a href="https://www.hsj.co.uk/people-moves/chair-leaves-trust-amid-cancer-probe/7040260.article">left Oct 2025</a></span>Alison Marshall (interim)<span class="date">Interim chair from Nov 2025</span></td>
+<td>Sue Jacques<span class="date">CEO 1 Mar 2012 — retired May 2025</span>Steve Russell<span class="date"><a href="https://www.hsj.co.uk/people-moves/trust-hires-ex-national-director-as-ceo/7039887.article">Announced Aug 2025; started Sep 2025</a></span></td>
+<td>Nov 2025: Russell declared <a href="https://www.hsj.co.uk/leadership/trusts-divided-exec-and-fundamental-care-failures-revealed/7040460.article">board and exec team "divided and isolated"</a>, care failing, "hidden budget gap".</td>
 </tr>
 
 <tr>
-<td class="trust-name">East Lancashire Hospitals</td>
-<td>Shazad Sarwar</td>
-<td>Martin Hodgson</td>
-<td class="no-change">No HSJ-reported leadership change</td>
+<td class="trust-name">East Lancashire Hospitals Trust</td>
+<td>Shazad Sarwar<span class="date">Chair from 5 Dec 2022</span></td>
+<td>Martin Hodgson<span class="date">Interim from Jul 2021; <span class="unc">substantive start not confirmed</span></span></td>
+<td>Nov 2025: Prof Mike Thomas (Lancs Teaching chair) also took on ELHT as <em>interim chair</em> from 11 Nov 2025 alongside his LTH role.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Hull University Teaching Hospitals</td>
-<td>Sean Lyons — <a href="https://www.hsj.co.uk/people-moves/hospital-group-loses-chair-while-ceo-is-on-long-term-absence/7040011.article">stood down Sep 2025</a> while CEO absent; Murray Macdonald interim group chair from Oct 2025</td>
-<td>Jonathan Lofthouse suspended Apr 2025; Lyn Simpson acting CEO from Jul 2025</td>
-<td>Oct 2025: <a href="https://www.hsj.co.uk/hull-university-teaching-hospitals-trust/hr-firm-called-in-over-chair-ceo-clash/7040192.article">HR firm investigated chair–CEO breakdown</a>. Jan 2026: <a href="https://www.hsj.co.uk/leadership/ceo-takes-regional-role-after-breakdown-in-relationship/7040686.article">Lofthouse left for NHSE regional role</a> after year-long absence. Mar 2026: interim CEO <a href="https://www.hsj.co.uk/hull-university-teaching-hospitals-trust/ceo-blames-group-model-for-trusts-collapse/7041245.article">publicly blamed the group model for the trusts' "collapse"</a>.</td>
+<td>Sean Lyons<span class="date">Chair from 1 Feb 2022; <a href="https://www.hsj.co.uk/people-moves/hospital-group-loses-chair-while-ceo-is-on-long-term-absence/7040011.article">stood down Sep 2025</a></span>Murray Macdonald (interim)<span class="date">Interim group chair from 13 Oct 2025</span></td>
+<td>Jonathan Lofthouse<span class="date">Joint CEO from Aug 2023; suspended Apr 2025</span>Lyn Simpson (acting)<span class="date">Acting CEO from 28 Jul 2025</span></td>
+<td>Oct 2025: <a href="https://www.hsj.co.uk/hull-university-teaching-hospitals-trust/hr-firm-called-in-over-chair-ceo-clash/7040192.article">HR firm investigated chair–CEO breakdown</a>. Jan 2026: <a href="https://www.hsj.co.uk/leadership/ceo-takes-regional-role-after-breakdown-in-relationship/7040686.article">Lofthouse left for NHSE regional role</a>. Mar 2026: interim CEO <a href="https://www.hsj.co.uk/hull-university-teaching-hospitals-trust/ceo-blames-group-model-for-trusts-collapse/7041245.article">publicly blamed the group model for the trusts' "collapse"</a>.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Lancashire Teaching Hospitals FT</td>
-<td><a href="https://www.hsj.co.uk/workforce/former-commissioning-chief-to-chair-hospitals/7039259.article">Prof Mike Thomas</a> (from May 2025)</td>
-<td>Prof Silas Nicholls (from Jan 2024)</td>
+<td>Prof Mike Thomas<span class="date"><a href="https://www.hsj.co.uk/workforce/former-commissioning-chief-to-chair-hospitals/7039259.article">Chair from Jan 2025 (announced May 2025 in trust collaborative cross-post)</a></span></td>
+<td>Prof Silas Nicholls<span class="date">CEO from Jan 2024</span></td>
 <td>Dec 2025: <strong>NHSE threatened to <a href="https://www.hsj.co.uk/lancashire-teaching-hospitals-nhs-foundation-trust/nhse-threatens-to-remove-trusts-directors-unless-its-performance-improves/7040493.article">remove the trust's directors unless financial performance improves</a></strong>.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Leeds Teaching Hospitals</td>
-<td>Dame Linda Pollard → Antony Kildare (from Aug 2025)</td>
-<td>Prof Phil Wood retirement announced Jul 2025; stood down with immediate effect Sep 2025; Brendan Brown interim from Sep 2025</td>
-<td>Dec 2025: <strong>CEO search <a href="https://www.hsj.co.uk/people-moves/ceo-search-paused-to-enable-stability-at-troubled-2bn-trust/7040502.article">formally paused "to enable a much-needed period of stability"</a></strong> after senior departures and leadership and care-quality failings. Mar 2026: <a href="https://www.hsj.co.uk/patient-safety/ockenden-to-lead-inquiry-into-third-trust/7041239.article">Donna Ockenden appointed to lead independent inquiry into Leeds maternity failures</a>.</td>
+<td>Dame Linda Pollard<span class="date">Chair from Feb 2013 — stepped down summer 2025 after ~12 years</span>Antony Kildare<span class="date">Chair from Aug 2025</span></td>
+<td>Prof Phil Wood<span class="date">CEO from 1 Feb 2023; stood down Sep 2025</span>Brendan Brown (interim)<span class="date">Interim CEO from 15 Sep 2025</span></td>
+<td>Dec 2025: <strong>CEO search <a href="https://www.hsj.co.uk/people-moves/ceo-search-paused-to-enable-stability-at-troubled-2bn-trust/7040502.article">formally paused "to enable a much-needed period of stability"</a></strong>. Mar 2026: <a href="https://www.hsj.co.uk/patient-safety/ockenden-to-lead-inquiry-into-third-trust/7041239.article">Donna Ockenden appointed to lead independent inquiry into Leeds maternity failures</a>.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Liverpool University Hospitals FT</td>
-<td>David Flory CBE (UHL group chair from Nov 2024, term extended to Jun 2026)</td>
-<td>James Sumner (UHL group CEO from Nov 2024)</td>
-<td class="no-change">No HSJ-reported leadership change at the trust itself</td>
+<td>David Flory CBE<span class="date">Joint LUHFT/LWH chair from Mar 2024; UHL group chair from 1 Nov 2024</span></td>
+<td>James Sumner<span class="date">UHL group CEO from 1 Nov 2024</span></td>
+<td class="no-change">No HSJ-reported leadership change at trust level; Flory's group chair term extended to 30 Jun 2026.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Medway FT</td>
-<td>John Goulston</td>
-<td>Jon Wade (joint with Dartford and Gravesham from Apr 2025)</td>
-<td>Nov 2025: <a href="https://www.hsj.co.uk/leadership/struggling-trusts-form-group/7040413.article">Medway and Dartford and Gravesham formed a group</a> with shared chair/CEO. Feb 2026: <a href="https://www.hsj.co.uk/leadership/trusts-pause-shared-ceo-plan/7041062.article">group paused shared-CEO plan</a>. Mar 2026: <a href="https://www.hsj.co.uk/leadership/ceo-steps-down-after-stint-at-second-trust/7041305.article">Wade announced he will step down from both roles</a>.</td>
+<td>John Goulston<span class="date">Chair from 1 Jun 2024</span></td>
+<td>Jon Wade<span class="date">Joint CEO (with Dartford and Gravesham) from 1 Apr 2025</span></td>
+<td>Nov 2025: <a href="https://www.hsj.co.uk/leadership/struggling-trusts-form-group/7040413.article">Medway and Dartford and Gravesham formed a group</a>. Feb 2026: <a href="https://www.hsj.co.uk/leadership/trusts-pause-shared-ceo-plan/7041062.article">group paused shared-CEO plan</a>. 18 Mar 2026: <a href="https://www.hsj.co.uk/leadership/ceo-steps-down-after-stint-at-second-trust/7041305.article">Wade announced he will step down from both roles</a>, leaving Medway end Mar 2026.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Mid and South Essex FT</td>
-<td>Dr Andy Wood OBE (from Jul 2025, <a href="https://www.hsj.co.uk/mid-and-south-essex-nhs-foundation-trust/ex-brewery-boss-to-succeed-long-serving-trust-chair/7039416.article">succeeding Nigel Beverley</a>)</td>
-<td>Dawn Scrafield — <a href="https://www.hsj.co.uk/news/long-serving-hospital-chief-executive-to-retire/7040111.article">retiring Oct 2025</a> after wife's cancer diagnosis</td>
-<td>Dec 2025: NHSE investigation found <a href="https://www.hsj.co.uk/mid-and-south-essex-nhs-foundation-trust/sexual-misconduct-and-blame-culture-found-at-hospital/7040499.article">"sexual misconduct and blame culture"</a> at a hospital department. Mar 2026: <a href="https://www.hsj.co.uk/mid-and-south-essex-nhs-foundation-trust/ex-national-director-to-lead-17bn-acute-trust/7041326.article">Adam Sewell-Jones named new CEO</a>, joining from neighbouring East and North Herts.</td>
+<td>Dr Andy Wood OBE<span class="date">Chair from <a href="https://www.mse.nhs.uk/latest-news/dr-andy-wood-obe-appointed-as-new-chair-of-mid-and-south-essex-nhs-foundation-trust-10321">14 Jul 2025</a>, succeeding Nigel Beverley</span></td>
+<td>Dawn Scrafield<span class="date"><span class="unc">Substantive CEO start not confirmed</span> (step-up from deputy/CFO role, after Matthew Hopkins); <a href="https://www.hsj.co.uk/news/long-serving-hospital-chief-executive-to-retire/7040111.article">retirement announced Oct 2025</a></span>Adam Sewell-Jones<span class="date">Incoming CEO — <a href="https://www.hsj.co.uk/mid-and-south-essex-nhs-foundation-trust/ex-national-director-to-lead-17bn-acute-trust/7041326.article">announced Mar 2026</a>; <span class="unc">start date not yet public</span></span></td>
+<td>Dec 2025: NHSE investigation found <a href="https://www.hsj.co.uk/mid-and-south-essex-nhs-foundation-trust/sexual-misconduct-and-blame-culture-found-at-hospital/7040499.article">"sexual misconduct and blame culture"</a> at a hospital department.</td>
 </tr>
 
 <tr>
 <td class="trust-name">Northern Lincolnshire and Goole FT</td>
-<td>Sean Lyons (joint — left Sep 2025); Murray Macdonald interim group chair from Oct 2025</td>
-<td>Lyn Simpson (interim, joint under Humber Health Partnership)</td>
-<td>Apr 2026: <strong>NLaG governors <a href="https://www.hsj.co.uk/northern-lincolnshire-and-goole-nhs-foundation-trust/governors-block-ceo-appointment-pushed-by-nhse/7041485.article">blocked an NHSE attempt to appoint a new CEO without open recruitment</a></strong>, saying it would "bypass due process".</td>
+<td>Sean Lyons (joint)<span class="date">See Hull entry — stood down Sep 2025</span>Murray Macdonald (interim)<span class="date">Interim group chair from 13 Oct 2025</span></td>
+<td>Jonathan Lofthouse (joint)<span class="date">Joint CEO from Aug 2023; suspended Apr 2025</span>Lyn Simpson (acting)<span class="date">Acting from 28 Jul 2025</span></td>
+<td>14 Apr 2026: <strong>NLaG governors <a href="https://www.hsj.co.uk/northern-lincolnshire-and-goole-nhs-foundation-trust/governors-block-ceo-appointment-pushed-by-nhse/7041485.article">blocked an NHSE attempt to appoint a new CEO without open recruitment</a></strong>, saying it would "bypass due process".</td>
 </tr>
 
 <tr>
 <td class="trust-name">Royal Devon University Healthcare FT</td>
-<td>Dame Shan Morgan</td>
-<td>Sam Higginson (from Jan 2024)</td>
+<td>Dame Shan Morgan<span class="date">Chair from 1 Apr 2022 (from RDE/NDHT merger)</span></td>
+<td>Sam Higginson<span class="date">CEO from 22 Jan 2024</span></td>
 <td class="no-change">No HSJ-reported leadership change; <a href="https://www.hsj.co.uk/ceo-interviews/ceo-interview-sam-higginson-chief-executive-royal-devon-university-healthcare-foundation-trust/7038365.article">Dec 2024 HSJ CEO interview with Higginson</a></td>
 </tr>
 
 <tr>
 <td class="trust-name">Queen Elizabeth Hospital, King's Lynn FT</td>
-<td>Mark Friend (NWUHG interim group chair, Apr–Oct 2025); <a href="https://www.hsj.co.uk/norfolk-and-waveney-with-suffolk-ics/ex-trust-ceo-to-chair-hospital-group/7040204.article">Prof David Roberts (interim group chair, Oct 2025)</a></td>
-<td>Prof Lesley Dwyer (NWUHG group CEO from Apr 2025). Alice Webster stood down as trust CEO ~May 2025</td>
-<td>Mar 2026: group CEO Dwyer conceded leaders have <a href="https://www.hsj.co.uk/norfolk-and-waveney-with-suffolk-ics/ceo-we-have-hurt-and-let-down-our-staff/7041274.article">"hurt and let down" staff</a> in response to poor NHS Staff Survey scores. Michelle Arrowsmith substantive executive managing director at QEH from Jan 2026.</td>
+<td>Mark Friend (interim group chair)<span class="date">NWUHG interim group chair from early Apr 2025 (announced 26 Mar 2025)</span>Prof David Roberts (interim group chair)<span class="date"><a href="https://www.hsj.co.uk/norfolk-and-waveney-with-suffolk-ics/ex-trust-ceo-to-chair-hospital-group/7040204.article">From Oct 2025 (one-year term)</a></span></td>
+<td>Alice Webster<span class="date">Trust CEO from 3 Mar 2023 until May 2025</span>Prof Lesley Dwyer<span class="date">NWUHG group CEO from 5 May 2025</span>Michelle Arrowsmith<span class="date">QEH executive managing director from 19 Jan 2026</span></td>
+<td>Mar 2026: group CEO Dwyer conceded leaders have <a href="https://www.hsj.co.uk/norfolk-and-waveney-with-suffolk-ics/ceo-we-have-hurt-and-let-down-our-staff/7041274.article">"hurt and let down" staff</a> in response to poor NHS Staff Survey scores.</td>
 </tr>
 
 <tr>
 <td class="trust-name">University Hospitals Sussex FT</td>
-<td>Philippa Slinger</td>
-<td>George Findlay resigned Jul 2025; Andy Heeps interim from Jul 2025</td>
-<td>Dec 2025: <a href="https://www.hsj.co.uk/leadership/doctor-named-ceo-of-17bn-hospital-trust/7040596.article">Heeps named substantive CEO</a> of "one of England's largest trusts, grappling with multiple performance and quality problems". Dec 2025: CQC found ED managers <a href="https://www.hsj.co.uk/quality-and-performance/managers-felt-pressured-and-bullied-in-overcrowded-ed/7040605.article">"felt pressured and bullied not to disclose difficulties"</a>. Apr 2026: <a href="https://www.hsj.co.uk/quality-and-performance/ockenden-to-head-fourth-maternity-review/7041511.article">Ockenden to head maternity review</a>.</td>
+<td>Philippa Slinger<span class="date">Chair from 1 Jul 2024</span></td>
+<td>George Findlay<span class="date">CEO from 1 Jun 2022; resigned 9 Jul 2025</span>Andy Heeps<span class="date">Interim Jul 2025; substantive from 15 Dec 2025</span></td>
+<td>Dec 2025: <a href="https://www.hsj.co.uk/leadership/doctor-named-ceo-of-17bn-hospital-trust/7040596.article">Heeps named substantive CEO</a>. Dec 2025: CQC found ED managers <a href="https://www.hsj.co.uk/quality-and-performance/managers-felt-pressured-and-bullied-in-overcrowded-ed/7040605.article">"felt pressured and bullied"</a>. Apr 2026: <a href="https://www.hsj.co.uk/quality-and-performance/ockenden-to-head-fourth-maternity-review/7041511.article">Ockenden to head maternity review</a>.</td>
 </tr>
 
 </tbody>
@@ -234,6 +244,7 @@
 
 <div class="footer">
 <p><strong>Methodology note.</strong> Capability ratings derived from trusts' own self-assessment (Aug–Oct 2025) against the six domains of <em>The Insightful Provider Board</em> — strategy and planning, quality of care, people and culture, access, productivity, finance — reviewed by NHSE regional teams alongside third-party intelligence. Two-stage moderation by regional directors and national/regional directors before executive ratification. Ratings reflect a view relating to Q3 2025/26 and will be refreshed quarterly from Q4 2025/26.</p>
+<p><strong>Date source caveats.</strong> Start dates drawn from trust press releases, board pages and annual reports where available, with HSJ cross-checks. Four items were not cleanly confirmed in public sources and are flagged inline: Martin Hodgson's substantive start at East Lancashire; Dawn Scrafield's substantive start at MSE; Adam Sewell-Jones's MSE start date; the precise substantive start for Jane Tomkinson at Countess of Chester.</p>
 <p><strong>Source files:</strong> <a href="https://digital.nhs.uk/supplementary-information/2026/capability-ratings-by-provider-q3-2026-27">NHSE publication page</a>. HSJ story selections via the HSJ Content API.</p>
 </div>
 
