@@ -1,0 +1,63 @@
+name: Send Morning Briefing
+
+on:
+  push:
+    paths:
+      - 'briefings/**'
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Send briefing email
+        env:
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: |
+          python - <<'EOF'
+          import os, glob, smtplib, datetime
+          from email.mime.multipart import MIMEMultipart
+          from email.mime.text import MIMEText
+
+          files = sorted(glob.glob("briefings/*.txt"))
+          if not files:
+              print("No briefing files found.")
+              raise SystemExit(0)
+
+          latest = files[-1]
+          date_str = os.path.splitext(os.path.basename(latest))[0]
+          with open(latest, encoding="utf-8") as f:
+              briefing = f.read()
+
+          try:
+              display_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").strftime("%A %-d %B %Y")
+          except ValueError:
+              display_date = date_str
+
+          mp3_url = "https://davewest84.github.io/webpages/morning-briefing.mp3"
+          body = (
+              f"\U0001F50A Listen to this briefing: {mp3_url}\n"
+              f"---\n\n{briefing}"
+          )
+
+          msg = MIMEMultipart()
+          msg["From"] = os.environ["SENDER_EMAIL"]
+          msg["To"] = os.environ["RECIPIENT_EMAIL"]
+          msg["Subject"] = f"Morning Briefing \u2014 {display_date}"
+          msg.attach(MIMEText(body, "plain", "utf-8"))
+
+          with smtplib.SMTP("smtp.gmail.com", 587) as s:
+              s.starttls()
+              s.login(os.environ["SENDER_EMAIL"], os.environ["SENDER_PASSWORD"])
+              s.send_message(msg)
+          print(f"Sent briefing for {date_str} to {os.environ['RECIPIENT_EMAIL']}")
+          EOF
