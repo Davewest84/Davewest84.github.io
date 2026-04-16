@@ -130,12 +130,6 @@
         <option value="all">All regions</option>
       </select>
     </div>
-
-    <div class="stats-box">
-      <div class="label">Currently shown</div>
-      <div class="big" id="visibleCount">204</div>
-      <div id="breakdown" style="margin-top:0.35rem;font-size:0.7rem;color:#555;"></div>
-    </div>
   </aside>
   <div id="map"></div>
 </div>
@@ -244,12 +238,6 @@ function render() {
     counts[t.rating]++;
   });
 
-  document.getElementById('visibleCount').textContent = visible;
-  const bd = RATING_ORDER
-    .filter(r => counts[r] > 0)
-    .map(r => '<span style="color:' + RATING_COLORS[r] + ';font-weight:700">&#9679;</span> ' + counts[r] + ' ' + r)
-    .join(' &middot; ');
-  document.getElementById('breakdown').innerHTML = bd;
 }
 
 typeSel.addEventListener('change', render);
