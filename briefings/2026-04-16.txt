@@ -1,0 +1,7 @@
+Good morning Dave, this is a test briefing for 16 April 2026.
+
+This file was committed to the briefings folder to verify that the new GitHub Actions pipeline picks up pushes and sends the email via Gmail SMTP.
+
+If you're reading this as an email, the pipeline works. You can now move on to setting up the Claude remote trigger that will generate real briefings each morning.
+
+That's your test. Have a good day.
