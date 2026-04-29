@@ -14,6 +14,16 @@ h2.section { text-align:center; padding:30px 20px 10px; font-size:1.2em; color:#
 .dot { width:14px; height:14px; border-radius:50%; flex:none; display:inline-block; }
 .dot.fail { background:#fbbf24; border:3px solid #c53030; }
 .dot.pass { background:#86efac; border:1px solid #555; }
+.league { background:white; max-width:880px; margin:18px auto; padding:16px 20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); font-size:0.84em; }
+.league h2 { font-size:1em; margin-bottom:10px; color:#2d3748; }
+.league table { width:100%; border-collapse:collapse; }
+.league th, .league td { padding:6px 10px; text-align:right; border-bottom:1px solid #eee; }
+.league th { background:#f4f4f4; font-weight:600; text-align:right; }
+.league th:first-child, .league td:first-child { text-align:left; }
+.league tr.focus { background:#fef3c7; }
+.league tr.focus td { font-weight:600; }
+.league tr.ellipsis td { color:#999; text-align:center; padding:6px 10px; border-bottom:1px solid #eee; }
+.league tr.total td { font-weight:700; border-top:2px solid #2d3748; border-bottom:none; }
 .row { padding:0 20px 30px; max-width:1500px; margin:0 auto; }
 .card { background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.12); overflow:hidden; }
 .card-header { padding:14px 18px; background:#2d3748; color:white; }
@@ -31,6 +41,28 @@ h2.section { text-align:center; padding:30px 20px 10px; font-size:1.2em; color:#
 <p class="subtitle">Two of England&rsquo;s most fragmented ICBs for primary care network geography, shown side by side.
 For each ICB, the same set of practices is mapped three times, with members of PCNs that <b>fail</b> each test ringed in red.
 The progression is from the loosest to the strictest definition of incoherence.</p>
+
+<div class="league">
+<h2>ICB league table &mdash; top 4 worst and bottom 5</h2>
+<table>
+<thead><tr>
+<th>ICB</th><th>Multi-PCNs</th><th>Delaunay non-contig</th><th>MSOA-disconnected</th><th>Intermingled</th>
+</tr></thead>
+<tbody>
+<tr><td>Birmingham and Solihull</td><td>32</td><td>75.0%</td><td>46.9%</td><td>43.8%</td></tr>
+<tr><td>Black Country</td><td>27</td><td>66.7%</td><td>55.6%</td><td>44.4%</td></tr>
+<tr class="focus"><td>West and North London</td><td>80</td><td>60.0%</td><td>32.5%</td><td>32.5%</td></tr>
+<tr class="focus"><td>South East London</td><td>34</td><td>50.0%</td><td>35.3%</td><td>20.6%</td></tr>
+<tr class="ellipsis"><td colspan="5">&hellip; (32 ICBs in between)</td></tr>
+<tr><td>Devon</td><td>28</td><td>10.7%</td><td>10.7%</td><td>10.7%</td></tr>
+<tr><td>Somerset</td><td>12</td><td>8.3%</td><td>8.3%</td><td>0.0%</td></tr>
+<tr><td>Cornwall and the Isles of Scilly</td><td>14</td><td>7.1%</td><td>7.1%</td><td>0.0%</td></tr>
+<tr><td>Herefordshire and Worcestershire</td><td>14</td><td>7.1%</td><td>7.1%</td><td>7.1%</td></tr>
+<tr><td>Dorset</td><td>15</td><td>6.7%</td><td>6.7%</td><td>6.7%</td></tr>
+<tr class="total"><td>England total</td><td>1,210</td><td>32.4%</td><td>21.3%</td><td>13.7%</td></tr>
+</tbody>
+</table>
+</div>
 
 <div class="legend">
 <div class="legend-row"><span class="dot fail"></span>
