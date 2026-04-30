@@ -39,7 +39,7 @@ jobs:
               briefing = f.read()
 
           try:
-              display_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").strftime("%A %-d %B %Y")
+              display_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").strftime("%a %-d %B")
           except ValueError:
               display_date = date_str
 
@@ -52,7 +52,7 @@ jobs:
           msg = MIMEMultipart()
           msg["From"] = os.environ["SENDER_EMAIL"]
           msg["To"] = os.environ["RECIPIENT_EMAIL"]
-          msg["Subject"] = f"Morning Briefing \u2014 {display_date}"
+          msg["Subject"] = f"Morning Briefing remote - {display_date}"
           msg.attach(MIMEText(body, "plain", "utf-8"))
 
           with smtplib.SMTP("smtp.gmail.com", 587) as s:
