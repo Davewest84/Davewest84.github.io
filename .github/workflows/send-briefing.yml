@@ -9,13 +9,114 @@ on:
 jobs:
   send:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Install Python deps
+        run: pip install --quiet openai
+
+      - name: Generate MP3 from latest briefing text
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python - <<'EOF'
+          import glob, os, subprocess, tempfile
+          from openai import OpenAI
+
+          files = sorted(glob.glob("briefings/*.txt"))
+          if not files:
+              print("No briefing files found.")
+              raise SystemExit(0)
+
+          latest = files[-1]
+          with open(latest, encoding="utf-8") as f:
+              text = f.read()
+          print(f"Generating MP3 from {latest} ({len(text)} chars)")
+
+          client = OpenAI()
+          MAX_CHARS = 4000  # OpenAI TTS hard limit is 4096; leave margin
+
+          def split_text(t, limit):
+              paras = t.split("\n\n")
+              chunks, cur = [], ""
+              for p in paras:
+                  if cur and len(cur) + len(p) + 2 > limit:
+                      chunks.append(cur.strip())
+                      cur = p
+                  else:
+                      cur = (cur + "\n\n" + p) if cur else p
+              if cur.strip():
+                  chunks.append(cur.strip())
+              return chunks
+
+          os.makedirs("webpages", exist_ok=True)
+          target = "webpages/morning-briefing.mp3"
+
+          if len(text) <= MAX_CHARS:
+              resp = client.audio.speech.create(
+                  model="tts-1", voice="fable", input=text,
+                  response_format="mp3",
+              )
+              resp.write_to_file(target)
+          else:
+              chunks = split_text(text, MAX_CHARS)
+              tmp_files = []
+              try:
+                  for i, chunk in enumerate(chunks):
+                      tmp = tempfile.mktemp(suffix=f"_chunk{i}.mp3")
+                      tmp_files.append(tmp)
+                      r = client.audio.speech.create(
+                          model="tts-1", voice="fable", input=chunk,
+                          response_format="mp3",
+                      )
+                      r.stream_to_file(tmp)
+                  concat_list = tempfile.mktemp(suffix=".txt")
+                  with open(concat_list, "w") as f:
+                      for fp in tmp_files:
+                          f.write(f"file '{fp}'\n")
+                  subprocess.run([
+                      "ffmpeg", "-y", "-f", "concat", "-safe", "0",
+                      "-i", concat_list, "-c", "copy", target,
+                  ], check=True, capture_output=True)
+                  os.remove(concat_list)
+              finally:
+                  for fp in tmp_files:
+                      if os.path.isfile(fp):
+                          os.remove(fp)
+
+          sped = tempfile.mktemp(suffix=".mp3")
+          subprocess.run([
+              "ffmpeg", "-y", "-i", target, "-filter:a", "atempo=1.15", sped,
+          ], check=True, capture_output=True)
+          os.replace(sped, target)
+
+          size = os.path.getsize(target)
+          print(f"MP3 generated: {target} ({size:,} bytes)")
+          EOF
+
+      - name: Commit & push MP3
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add webpages/morning-briefing.mp3
+          if git diff --cached --quiet; then
+            echo "No MP3 changes to commit"
+          else
+            DATE=$(date -I)
+            git commit -m "Morning briefing MP3 (remote) — ${DATE}"
+            git push
+          fi
 
       - name: Send briefing email
         env:
