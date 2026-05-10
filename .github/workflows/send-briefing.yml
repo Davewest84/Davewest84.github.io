@@ -24,6 +24,9 @@ jobs:
       - name: Install Python deps
         run: pip install --quiet openai
 
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Generate MP3 from latest briefing text
         continue-on-error: true
         env:
