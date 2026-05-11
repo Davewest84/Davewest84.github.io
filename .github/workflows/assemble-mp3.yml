@@ -1,7 +1,11 @@
 name: Assemble MP3 from chunks
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/assemble-mp3.yml'
+      - 'webpages/.mp3-chunks/**'
 
 permissions:
   contents: write
@@ -12,17 +16,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Assemble MP3 from base64 chunks
+      - name: Check if chunks exist
+        id: check
         run: |
-          # Concatenate and decode base64 chunks
+          if ls webpages/.mp3-chunks/morning-briefing-*.b64 1>/dev/null 2>&1; then
+            echo "chunks_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "chunks_exist=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Assemble MP3 from base64 chunks
+        if: steps.check.outputs.chunks_exist == 'true'
+        run: |
+          # Concatenate and decode base64 chunks  
           cat webpages/.mp3-chunks/morning-briefing-*.b64 | base64 -d > webpages/morning-briefing.mp3
-          echo "Assembled MP3 file size: $(wc -c < webpages/morning-briefing.mp3) bytes"
+          FILE_SIZE=$(wc -c < webpages/morning-briefing.mp3)
+          echo "Assembled MP3 file size: $FILE_SIZE bytes"
           
-      - name: Commit assembled MP3
+          # Verify it's a valid MP3
+          file webpages/morning-briefing.mp3
+          
+      - name: Commit assembled MP3 and clean up
+        if: steps.check.outputs.chunks_exist == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add webpages/morning-briefing.mp3
           git rm -r webpages/.mp3-chunks/
-          git commit -m "Morning briefing MP3 — 2026-05-11"
+          git rm .github/workflows/assemble-mp3.yml
+          git commit -m "Morning briefing MP3 \u2014 2026-05-11"
           git push
