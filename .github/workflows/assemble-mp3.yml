@@ -1,0 +1,28 @@
+name: Assemble MP3 from chunks
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Assemble MP3 from base64 chunks
+        run: |
+          # Concatenate and decode base64 chunks
+          cat webpages/.mp3-chunks/morning-briefing-*.b64 | base64 -d > webpages/morning-briefing.mp3
+          echo "Assembled MP3 file size: $(wc -c < webpages/morning-briefing.mp3) bytes"
+          
+      - name: Commit assembled MP3
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add webpages/morning-briefing.mp3
+          git rm -r webpages/.mp3-chunks/
+          git commit -m "Morning briefing MP3 — 2026-05-11"
+          git push
