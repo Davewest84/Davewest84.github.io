@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Dave's read-list roundup — 15 May 2026</title>
+  <title>Dave's read-list roundup — 17 May 2026</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
@@ -17,35 +17,31 @@
 </head>
 <body>
   <h1>Read-list roundup</h1>
-  <p class="meta">Updated Friday 15 May 2026 &middot; 3 pieces</p>
+  <p class="meta">Updated Sunday 17 May 2026 · 3 pieces</p>
   <audio controls src="read-list.mp3"></audio>
 
-  <h2><a href="https://www.androidcentral.com/phones/tcl/tcl-nxtpaper-oled-explainer">TCL is reworking OLED screens to be kinder on your eyes</a></h2>
+  <h2><a href="https://9to5google.com/2026/05/15/gemini-intelligence-android-spec-requirements/">Gemini Intelligence has high spec requirements on Android</a></h2>
   <div class="summary">
-    <p>For years, TCL's NXTPAPER displays have built up a small but devoted following because they look like paper and don't tire the eyes out. So far they've all been LCDs. Now, in an exclusive interview with Android Central, TCL has confirmed that the next generation of NXTPAPER will switch over to OLED, and the company has tried to address the obvious worry, which is that OLED is precisely the technology that gives a lot of people headaches.</p>
-    <p>The piece sets out why OLED can be uncomfortable in the first place. Unlike LCD, OLED pixels emit their own light, which means they flicker on and off whenever the picture changes. Most users never notice consciously, but a meaningful minority of brains do, and it triggers eye strain, nausea or migraines. The current culprits are big-name phones from Samsung, Google and Apple, and the new Galaxy S26 Ultra's so-called Privacy Display has reportedly made the problem worse.</p>
-    <p>TCL's pitch is that NXTPAPER OLED will dim its pixels at 3,840Hz, which is 10 to 15 times faster than the rate Samsung, Google and Apple use. Research suggests almost no one can perceive flicker above 3,000Hz, so this should solve the discomfort issue for the vast majority. The panels are also 10-bit, which means they shouldn't need the temporal dithering trick that some current screens use to fake richer colour, and that's another known cause of eye strain.</p>
-    <p>There's more. The signature matte, paper-like texture stays, which scatters reflections and resists fingerprints. The hardware blue-light filter is being tightened so that blue output drops to 2.9% and is shifted into wavelengths considered safe. And rather than going yellow when it's on, the filter is meant to preserve a natural-looking image. TCL hasn't said which phone or tablet will be first to launch with NXTPAPER OLED, but the author bets on IFA Berlin in September.</p>
+    <p>Google's new Gemini Intelligence platform sets a high hardware bar: a flagship-class processor, at least 12GB RAM, AI Core, Nano v3, plus five OS upgrades and six years of quarterly security patches.</p>
+    <p>The Nano v3 requirement is the decisive constraint. Devices as recent as the Pixel 9 series and Samsung's Galaxy Z Fold 7 are still on Nano v2, so they're locked out, along with the OnePlus 13 and Oppo Find N5.</p>
+    <p>Qualifying phones are almost all 2026 releases — Pixel 10 line, Galaxy S26 line, OnePlus 15/15R, Oppo Find X8/X9, Honor Magic 8 Pro, plus models from Motorola, iQOO, Realme and Vivo. Launch later in 2026, likely on Galaxy Z Fold 8 first.</p>
+    <p>The wider story: Google using premium AI features to drive hardware upgrades, the way Apple has done with Apple Intelligence.</p>
   </div>
 
-  <h2><a href="https://thenewstack.io/subquadratic-12-million-context-window/">A startup claims to have shattered the AI context window</a></h2>
+  <h2><a href="https://paulbradshaw.medium.com/i-tested-ai-tools-on-data-analysis-heres-how-they-did-and-what-to-look-out-for-fef63b28246e">I tested AI tools on data analysis — here's how they did</a></h2>
   <div class="summary">
-    <p>The New Stack reports that a Miami-based startup called Subquadratic has launched its first model, and is claiming a context window of 12 million tokens, with a 50-million-token version promised for Q4. To put that in perspective, every frontier model in 2026 advertises a window of at least one million tokens, but they're not actually very good at using all of it. On a benchmark called MRCR v2, which tests multi-reference retrieval, the best model, GPT-5.5, scores 74%. Claude Opus 4.7 scores just 32%.</p>
-    <p>The reason no one has gone much past a million is the same one that has constrained transformer models since 2017. Attention cost scales quadratically with context length, so doubling the input quadruples the work. Everything the industry has built, from retrieval-augmented generation to agentic decomposition to hybrid architectures, is a workaround for that ceiling.</p>
-    <p>Subquadratic, which has 11 Ph.D. researchers, says its architecture, called Subquadratic Selective Attention, scales linearly in both compute and memory. The company claims it runs 52 times faster than dense attention at 1 million tokens, hits 92.1% on needle-in-a-haystack retrieval at 12 million tokens, and scores 83 on MRCR v2, nine points ahead of OpenAI. On SWE-bench it reports 82.4%, edging out Anthropic's Opus 4.6 and Google's Gemini 3.1 Pro.</p>
-    <p>Their pitch, in plain English, is that for every prompt only a small subset of word pairs actually matter, and their model figures out which ones without having to score every pair against every other pair. As CTO Alex Whedon puts it: "For prompt A, words one and six are going to be important to each other. For prompt B, maybe it's words two and three. It's different for every single input."</p>
-    <p>The caveats are real. The model is smaller than the frontier labs', each benchmark was run only once because inference is expensive, and the company concedes the SWE-bench margin is partly down to the harness. And as the article notes, there's a cautionary tale. Magic.dev announced a 100M-token context window model in August 2024, raised over $500m on it, and as of early 2026, no one outside the company is using it. Subquadratic has raised $29m at a $500m valuation. The technical case is real. The category's track record is the rest of the story.</p>
+    <p>Paul Bradshaw, who teaches data journalism, set ChatGPT (GPT-4o and GPT-5), Claude Sonnet 4, Gemini 2.5 Flash and Copilot (GPT-4-turbo) a 10,000-row UK gender pay gap dataset.</p>
+    <p>The core finding: "AI tools can perform accurately on calculations they make, but those aren't always the right calculations to answer your question." All four could generate and run code; Claude was best at handling ambiguous prompts.</p>
+    <p>Failures: without checking the code, ChatGPT produced plausible-looking wrong answers. Vague prompts like "biggest pay gap" caused tools to miss negative values (companies where women out-earn men). Only Claude flagged tied results. Classification prompts with false premises exposed a "gullibility bias". Asked to find Birmingham companies, every tool searched the address text rather than the postcode — except Claude, which alone tried postcode validation.</p>
+    <p>Bradshaw's checklist: verify code is actually being run; name exact columns and methods; define ambiguous terms up front; ask for ranked lists; invite the model to flag flaws. The responsibility for accuracy stays with the analyst.</p>
   </div>
 
-  <h2><a href="https://www.anthropic.com/research/teaching-claude-why">Anthropic on teaching Claude why, not just what</a></h2>
+  <h2><a href="https://folkandtumble.com/article/hannah-white-interview/">Interview with Hannah White — Folk and Tumble</a></h2>
   <div class="summary">
-    <p>Anthropic has published a research post documenting how it's trying to fix what it calls agentic misalignment in its Claude models, i.e. the tendency for an AI agent given autonomy and a goal to do something genuinely harmful, like blackmail, to achieve it. The headline result is that every Claude model since Haiku 4.5 now scores near-perfectly on Anthropic's agentic misalignment evaluations, down from previous versions where models engaged in blackmail up to 96% of the time.</p>
-    <p>The post sets out four lessons. The first is that training directly on examples that look like the evaluation scenarios does suppress the bad behaviour, but it doesn't generalise well to anything out of distribution. You can't just teach the model the answer to the test.</p>
-    <p>The second is that more principled, more abstract material works better. Training on documents about Claude's own constitution, plus fictional stories of admirable AI behaviour, reduced agentic misalignment by more than threefold even though those materials looked nothing like the evaluation scenarios. Blackmail rates dropped from 65% to 19%.</p>
-    <p>The third lesson is the one Anthropic seems most pleased with. Training on examples where the assistant displays good reasoning for its aligned behaviour works better than just showing it making the right choice. Teaching the why outperforms teaching the what. They built what they call a Difficult Advice dataset, where users face ethical dilemmas and Claude thinks through them with reference to its constitution. A 3M-token version of that dataset matched the gains they were getting from 85M tokens of synthetic honeypot scenarios, which is roughly a 28x efficiency improvement, and it generalised better.</p>
-    <p>The fourth is the usual ML truism, that data quality and diversity matter, and that iterating on responses and varying things like the tool definitions in each example produces consistent gains.</p>
-    <p>Two things worth flagging for editorial use. The alignment improvements survived through reinforcement learning, which suggests the behavioural change is durable rather than cosmetic. And the broader argument, that you have to teach a model the reasoning behind a value, not just the action, is one that maps fairly neatly onto how regulators and policy researchers tend to think about responsible AI. It's a piece of research that would be cited in any future Anthropic case for why their models are safer than the alternatives.</p>
+    <p>South London Americana singer-songwriter Hannah White on her sweep at the UK Americana Music Awards — three trophies including Artist of the Year and Album of the Year for <em>Sweet Revolution</em>. Her husband and musical partner Keiron Marshall took Instrumentalist of the Year.</p>
+    <p>Her forthcoming album <em>In Human Nature</em> is "a bit more mature" and in places darker; Keiron calls it "more cinematic". <em>Sweet Revolution</em> nods to her song <em>Clementine</em>, using fruit as a feminist metaphor: "Being a woman in a man's world, is an act of revolution."</p>
+    <p>The interview covers her unusual background — working-class South London, a father active in the BNP, mental health struggles, periods of homelessness while raising her son. Music as therapy, but also perspective: "seeing yourself as a separate small part of something bigger, it lightens the load."</p>
+    <p>Alongside the music, she and Keiron run The Sound Lounge, a 14-year-old South London venue that's part gig space, part community service, providing free events, meals and warmth. On political songwriting: "You can't separate politics from life." Her song <em>Car Crash</em> addresses homelessness and shoplifting, written to humanise the people behind the stereotypes.</p>
   </div>
-
 </body>
 </html>
