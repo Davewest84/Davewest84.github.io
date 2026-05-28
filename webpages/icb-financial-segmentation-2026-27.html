@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ICB/System Financial Position</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
+  h1 { font-size: 18px; color: #333; margin-bottom: 6px; text-align: center; }
+  p.sub { font-size: 12px; color: #666; margin-bottom: 20px; text-align: center; }
+  #chart-wrap { background: white; padding: 50px 120px 20px 120px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+  .footnote { font-size: 11px; color: #555; margin-top: 10px; padding: 0 0 16px 0; text-align: left; }
+  canvas { display: block; }
+  #tooltip {
+    position: fixed;
+    background: rgba(20,20,20,0.92);
+    color: #fff;
+    padding: 9px 13px;
+    border-radius: 6px;
+    font-size: 13px;
+    pointer-events: none;
+    display: none;
+    z-index: 999;
+    max-width: 320px;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<h1 style="display:none">How big a financial challenge do systems face from 2026-27?</h1>
+<p class="sub" style="display:none">Hover over a dot to see ICB details</p>
+<div id="chart-wrap">
+  <canvas id="canvas" width="1000" height="860"></canvas>
+  <p class="footnote">The Y axis crossover represents £0 impact (i.e. no loss of deficit support or reduced allocation growth). The X axis crossover represents 0% distance from plan.</p>
+</div>
+<div id="tooltip"></div>
+
+<script>
+const data = [{"name":"West and North London","loss_of_income":36.38056748573043,"off_plan":-0.005},{"name":"Thames Valley","loss_of_income":-52.32867136222591,"off_plan":0.0},{"name":"North East London","loss_of_income":-72.7431006354176,"off_plan":-0.009},{"name":"Nottingham and Nottinghamshire","loss_of_income":-55.51627847673116,"off_plan":-0.025},{"name":"Humber and North Yorkshire","loss_of_income":-141.44603167312607,"off_plan":-0.008},{"name":"West Yorkshire","loss_of_income":-61.204034062765196,"off_plan":-0.006},{"name":"Norfolk and Suffolk","loss_of_income":-39.58069692306041,"off_plan":-0.003},{"name":"Bristol, North Somerset and South Gloucestershire","loss_of_income":10.36892082335819,"off_plan":0.0},{"name":"Black Country","loss_of_income":-85.11555387675617,"off_plan":-0.001},{"name":"Hampshire and Isle of Wight","loss_of_income":-52.9593745859545,"off_plan":-0.01},{"name":"Kent and Medway","loss_of_income":-109.53780701930964,"off_plan":-0.019},{"name":"Coventry and Warwickshire","loss_of_income":-5.127271100474594,"off_plan":-0.001},{"name":"Leicester, Leicestershire and Rutland","loss_of_income":-72.682993199039,"off_plan":-0.011},{"name":"Northamptonshire","loss_of_income":-56.86385373583398,"off_plan":-0.01},{"name":"Derby and Derbyshire","loss_of_income":-40.12662619123312,"off_plan":-0.008},{"name":"Gloucestershire","loss_of_income":3.9776371670207737,"off_plan":0.001},{"name":"Bath and North East Somerset, Swindon and Wiltshire","loss_of_income":-19.629657371593737,"off_plan":-0.007},{"name":"South Yorkshire","loss_of_income":-107.40683417830037,"off_plan":-0.005},{"name":"Greater Manchester","loss_of_income":-199.0040252211374,"off_plan":-0.001},{"name":"Cornwall and The Isles Of Scilly","loss_of_income":0.809612360753876,"off_plan":0.0},{"name":"North East and North Cumbria","loss_of_income":-33.710944926840924,"off_plan":0.0},{"name":"Shropshire, Telford and Wrekin","loss_of_income":-84.24778815754816,"off_plan":-0.002},{"name":"Somerset","loss_of_income":-1.8414544679635318,"off_plan":0.0},{"name":"Staffordshire and Stoke-on-Trent","loss_of_income":-96.93956985741778,"off_plan":0.0},{"name":"Central East","loss_of_income":-9.893492918869516,"off_plan":-0.004},{"name":"Herefordshire and Worcestershire","loss_of_income":-76.28101596047209,"off_plan":-0.002},{"name":"Dorset","loss_of_income":-18.120909503392006,"off_plan":0.001},{"name":"Lincolnshire","loss_of_income":-4.895307902191607,"off_plan":-0.004},{"name":"Essex","loss_of_income":-118.06080194760791,"off_plan":-0.017},{"name":"Lancashire and South Cumbria","loss_of_income":-187.60179628801913,"off_plan":-0.011},{"name":"Devon","loss_of_income":-115.27429150891427,"off_plan":-0.015},{"name":"South West London","loss_of_income":-126.34210899477848,"off_plan":0.0},{"name":"Cheshire and Merseyside","loss_of_income":-216.94865818126092,"off_plan":-0.011},{"name":"South East London","loss_of_income":-133.74725769271953,"off_plan":0.0},{"name":"Surrey and Sussex","loss_of_income":-169.56730479965884,"off_plan":0.0}];
+
+const AVG_LOI = 0;
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const PAD = { top: 120, right: 50, bottom: 70, left: 120 };
+const plotW = W - PAD.left - PAD.right;
+const plotH = H - PAD.top - PAD.bottom;
+
+// X axis: left = on plan (positive), right = off plan (negative)
+// off_plan range: -0.7 to 0.1 — but most cluster near 0, with outliers at -0.3, -0.5, -0.7
+// Cap display at -0.08 to show clustering, outliers still plotted at edge
+const xLeft = 0.015;   // on plan side
+const xRight = -0.03;  // off plan side
+
+// Y axis: bottom = least loss of income (most positive / no loss), top = most loss (most negative)
+// loss_of_income: positive = gain, negative = loss
+// Invert so higher loss = higher on chart
+// Range: ~+46 to -217
+const yBottom = 50;    // no loss / gain → bottom of chart
+const yTop = -225;     // greatest loss → top of chart
+
+function toCanvasX(v) {
+  return PAD.left + ((xLeft - v) / (xLeft - xRight)) * plotW;
+}
+function toCanvasY(v) {
+  // yTop (-225, greatest loss) → canvas top (PAD.top)
+  // yBottom (+50, gain) → canvas bottom (PAD.top + plotH)
+  return PAD.top + ((yTop - v) / (yTop - yBottom)) * plotH;
+}
+
+const axisX = toCanvasX(0);
+const axisY = toCanvasY(AVG_LOI);
+
+// Draw title and subtitle in white space above chart
+ctx.fillStyle = '#111'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
+ctx.fillText('How big a financial challenge do systems face from 2026-27?', W/2, 32);
+ctx.font = '12px Arial'; ctx.fillStyle = '#666';
+ctx.fillText('Hover over a dot to see details', W/2, 52);
+
+// Quadrants
+ctx.fillStyle = '#A0B4E8'; // top-left: blue — slight gradual challenge
+ctx.fillRect(PAD.left, PAD.top, axisX - PAD.left, axisY - PAD.top);
+ctx.fillStyle = '#E8A0A0'; // top-right: red — ongoing significant challenge
+ctx.fillRect(axisX, PAD.top, PAD.left + plotW - axisX, axisY - PAD.top);
+ctx.fillStyle = '#A8D4A8'; // bottom-left: green — best position
+ctx.fillRect(PAD.left, axisY, axisX - PAD.left, PAD.top + plotH - axisY);
+ctx.fillStyle = '#C4A8D4'; // bottom-right: purple — immediate challenge
+ctx.fillRect(axisX, axisY, PAD.left + plotW - axisX, PAD.top + plotH - axisY);
+
+// Quadrant labels
+ctx.textAlign = 'center';
+ctx.font = 'italic 600 14px Arial';
+[
+  { text: 'Gradual challenge', x: PAD.left + (axisX - PAD.left)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#1A2A6A' },
+  { text: 'Ongoing significant challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#7A2020' },
+  { text: 'Best position', x: PAD.left + (axisX - PAD.left)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#1A4A1A' },
+  { text: 'Immediate challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#3A1A5A' },
+].forEach(q => { ctx.fillStyle = q.color; ctx.fillText(q.text, q.x, q.y); });
+
+// Axis lines
+ctx.strokeStyle = '#111'; ctx.lineWidth = 2.5;
+ctx.beginPath(); ctx.moveTo(PAD.left, axisY); ctx.lineTo(PAD.left + plotW, axisY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(axisX, PAD.top); ctx.lineTo(axisX, PAD.top + plotH); ctx.stroke();
+
+function arrow(x1, y1, x2, y2, color) {
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  const a = Math.atan2(y2-y1, x2-x1);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2-18*Math.cos(a-0.4), y2-18*Math.sin(a-0.4));
+  ctx.lineTo(x2-18*Math.cos(a+0.4), y2-18*Math.sin(a+0.4));
+  ctx.closePath(); ctx.fill();
+}
+
+arrow(axisX-50, axisY, PAD.left+5, axisY, '#E05050');
+arrow(axisX+50, axisY, PAD.left+plotW-5, axisY, '#E05050');
+arrow(axisX, axisY-50, axisX, PAD.top+5, '#5050D0');
+arrow(axisX, axisY+50, axisX, PAD.top+plotH-5, '#5050D0');
+
+// Labels drawn after dots — see below
+const xLabelText1 = 'Short term challenge';
+const xLabelText2 = '(Distance from plan Q3 2025-26)';
+const yLabelText1 = 'Long term pressures';
+const yLabelText2 = '(Loss of deficit support and reduced allocation growth, £m)';
+
+// Crossover noted in footnote below chart
+
+// Fixed dot radius — all ICBs same size (no turnover data)
+const DOT_R = 9;
+
+const dots = data.map(d => ({
+  ...d,
+  cx: toCanvasX(d.off_plan),
+  cy: toCanvasY(d.loss_of_income),
+  r: DOT_R
+}));
+
+// Draw dots FIRST so all labels render on top
+dots.forEach(d => {
+  ctx.beginPath();
+  ctx.arc(d.cx, d.cy, d.r, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(30,60,120,0.6)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(10,30,80,0.85)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+});
+
+// Now redraw all text labels on top of dots
+ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#333';
+ctx.fillText('Ahead of plan', PAD.left + (axisX - PAD.left)/2, axisY - 9);
+ctx.fillText('Off plan', axisX + (PAD.left+plotW-axisX)/2, axisY - 9);
+ctx.textAlign = 'left';
+ctx.fillText('Low', axisX+12, PAD.top+plotH-22);
+
+// Y axis label — rotated parallel to Y axis, further left for legibility
+ctx.save();
+ctx.translate(axisX - 30, PAD.top + plotH / 2);
+ctx.rotate(-Math.PI / 2);
+ctx.fillStyle = 'rgba(20,30,140,0.95)'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'center';
+ctx.fillText(yLabelText1, 0, 0);
+ctx.font = '11px Arial'; ctx.fillStyle = 'rgba(20,30,140,0.8)';
+ctx.fillText(yLabelText2, 0, 14);
+ctx.restore();
+
+// High — top of Y axis
+ctx.fillStyle = '#333'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left';
+ctx.fillText('High', axisX+12, PAD.top+18);
+
+// X axis label — bold dark red, right-aligned
+ctx.fillStyle = 'rgba(120,20,10,1)'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'right';
+ctx.fillText(xLabelText1, PAD.left+plotW-8, axisY-16);
+ctx.font = '11px Arial'; ctx.fillStyle = 'rgba(120,20,10,0.85)';
+ctx.fillText(xLabelText2, PAD.left+plotW-8, axisY-4);
+
+// Quadrant labels
+ctx.textAlign = 'center'; ctx.font = 'italic 600 14px Arial';
+[
+  { text: 'Gradual challenge', x: PAD.left + (axisX - PAD.left)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#1A2A6A' },
+  { text: 'Ongoing significant challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#7A2020' },
+  { text: 'Best position', x: PAD.left + (axisX - PAD.left)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#1A4A1A' },
+  { text: 'Immediate challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#3A1A5A' },
+].forEach(q => { ctx.fillStyle = q.color; ctx.fillText(q.text, q.x, q.y); });
+
+// Tooltip
+const tooltip = document.getElementById('tooltip');
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+  let found = null;
+  for (const d of dots) {
+    if (Math.sqrt((mx-d.cx)**2 + (my-d.cy)**2) <= d.r+3) { found = d; break; }
+  }
+  if (found) {
+    const loi = found.loss_of_income >= 0
+      ? `+£${found.loss_of_income.toFixed(1)}m`
+      : `−£${Math.abs(found.loss_of_income).toFixed(1)}m`;
+    const offPct = (Math.abs(found.off_plan) * 100).toFixed(1);
+    const planStatus = found.off_plan >= 0 ? `Ahead of plan by ${offPct}%` : `Off plan by ${offPct}%`;
+    tooltip.innerHTML = `<strong>${found.name}</strong><br>Impact of loss of deficit support and reduced allocation growth: ${loi}<br>${planStatus}`;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX+14)+'px';
+    tooltip.style.top = (e.clientY-10)+'px';
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.display = 'none';
+    canvas.style.cursor = 'default';
+  }
+});
+canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+</script>
+</body>
+</html>

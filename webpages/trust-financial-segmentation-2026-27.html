@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NHS Trust Financial Position</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
+  h1 { font-size: 18px; color: #333; margin-bottom: 6px; text-align: center; }
+  p.sub { font-size: 12px; color: #666; margin-bottom: 20px; text-align: center; }
+  #chart-wrap { background: white; padding: 50px 120px 20px 120px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+  .footnote { font-size: 11px; color: #555; margin-top: 10px; padding: 0 0 16px 0; text-align: left; }
+  canvas { display: block; }
+  #tooltip {
+    position: fixed;
+    background: rgba(20,20,20,0.92);
+    color: #fff;
+    padding: 9px 13px;
+    border-radius: 6px;
+    font-size: 13px;
+    pointer-events: none;
+    display: none;
+    z-index: 999;
+    max-width: 310px;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<h1 style="display:none">How big a financial challenge do acute trusts face from 2026-27?</h1>
+<p class="sub" style="display:none">Bubble size = turnover &nbsp;|&nbsp; Hover over a dot to see trust details</p>
+<div id="chart-wrap">
+  <canvas id="canvas" width="1000" height="860"></canvas>
+  <p class="footnote">†Y axis crossover = sector average deficit (2.90% of turnover). X axis crossover = 0% distance from plan.</p>
+</div>
+<div id="tooltip"></div>
+
+<script>
+const data = [{"name":"Mid and South Essex NHS Foundation Trust","turnover":1702.6,"deficit_abs":0.06754375660754142,"off_plan":-0.012},{"name":"King's College Hospital NHS Foundation Trust","turnover":1936.4,"deficit_abs":0.03873166701094815,"off_plan":0.002},{"name":"University Hospitals of Leicester NHS Trust","turnover":1785.8,"deficit_abs":0.036286258259603535,"off_plan":-0.018},{"name":"East Kent Hospitals University NHS Foundation Trust","turnover":1104.3,"deficit_abs":0.07425518427963416,"off_plan":-0.026},{"name":"Northern Care Alliance NHS Foundation Trust","turnover":2013.226,"deficit_abs":0.028759811367427203,"off_plan":0.001},{"name":"Liverpool University Hospitals NHS Foundation Trust","turnover":1377.1,"deficit_abs":0.04110086413477598,"off_plan":-0.022},{"name":"Worcestershire Acute Hospitals NHS Trust","turnover":807.3,"deficit_abs":0.058590362938189026,"off_plan":-0.016},{"name":"Epsom and St Helier University Hospitals NHS Trust","turnover":761.4,"deficit_abs":0.0621224060940373,"off_plan":0.0},{"name":"Medway NHS Foundation Trust","turnover":519.2,"deficit_abs":0.15331278890600922,"off_plan":-0.088},{"name":"The Shrewsbury and Telford Hospital NHS Trust","turnover":724.1,"deficit_abs":0.06228421488744649,"off_plan":-0.011},{"name":"East Lancashire Hospitals NHS Trust","turnover":829.4,"deficit_abs":0.05220641427537979,"off_plan":-0.034},{"name":"Stockport NHS Foundation Trust","turnover":515.0,"deficit_abs":0.08388349514563108,"off_plan":0.0},{"name":"Royal Free London NHS Foundation Trust","turnover":1877.6,"deficit_abs":0.022741798040051133,"off_plan":-0.002},{"name":"Mersey and West Lancashire Teaching Hospitals NHS Trust","turnover":1004.8,"deficit_abs":0.04080414012738854,"off_plan":-0.01},{"name":"St George's University Hospitals NHS Foundation Trust","turnover":1328.2,"deficit_abs":0.030266526125583497,"off_plan":0.0},{"name":"Calderdale and Huddersfield NHS Foundation Trust","turnover":635.5,"deficit_abs":0.05963808025177026,"off_plan":0.001},{"name":"Mid Cheshire Hospitals NHS Foundation Trust","turnover":447.8,"deficit_abs":0.08798570790531486,"off_plan":-0.037},{"name":"Kettering General Hospital NHS Foundation Trust","turnover":461.5,"deficit_abs":0.08407367280606716,"off_plan":-0.025},{"name":"Torbay and South Devon NHS Foundation Trust","turnover":729.3,"deficit_abs":0.05183052241875771,"off_plan":-0.011},{"name":"Nottingham University Hospitals NHS Trust","turnover":1884.7,"deficit_abs":0.019207300896694434,"off_plan":-0.029},{"name":"Blackpool Teaching Hospitals NHS Foundation Trust","turnover":729.8,"deficit_abs":0.04905453548917511,"off_plan":-0.016},{"name":"Northampton General Hospital NHS Trust","turnover":574.6,"deficit_abs":0.06126000696136443,"off_plan":-0.031},{"name":"Countess of Chester Hospital NHS Foundation Trust","turnover":410.0,"deficit_abs":0.08292682926829269,"off_plan":-0.034},{"name":"Tameside and Glossop Integrated Care NHS Foundation Trust","turnover":377.5,"deficit_abs":0.08423841059602649,"off_plan":0.0},{"name":"The Royal Wolverhampton NHS Trust","turnover":1041.4,"deficit_abs":0.03015171884002304,"off_plan":-0.006},{"name":"North Cumbria Integrated Care NHS Foundation Trust","turnover":619.783,"deficit_abs":0.04921077215735185,"off_plan":0.0},{"name":"University Hospitals of Derby and Burton NHS Foundation Trust","turnover":1351.9,"deficit_abs":0.02256084029883867,"off_plan":-0.015},{"name":"Lancashire Teaching Hospitals NHS Foundation Trust","turnover":866.5,"deficit_abs":0.03462204270051933,"off_plan":-0.037},{"name":"Warrington and Halton Teaching Hospitals NHS Foundation Trust","turnover":392.0,"deficit_abs":0.07321428571428572,"off_plan":-0.034},{"name":"Walsall Healthcare NHS Trust","turnover":482.2,"deficit_abs":0.05848195769390294,"off_plan":0.011},{"name":"University Hospitals Sussex NHS Foundation Trust","turnover":1698.4,"deficit_abs":0.015426283560998585,"off_plan":-0.001},{"name":"Wye Valley NHS Trust","turnover":393.523,"deficit_abs":0.06581572106331776,"off_plan":0.006},{"name":"Portsmouth Hospitals University NHS Trust","turnover":959.0,"deficit_abs":0.026485922836287798,"off_plan":-0.021},{"name":"University Hospitals Plymouth NHS Trust","turnover":1092.2,"deficit_abs":0.018403222852957334,"off_plan":-0.0073},{"name":"Barking, Havering and Redbridge University Hospitals NHS Trust","turnover":1006.9,"deficit_abs":0.07031482768894627,"off_plan":-0.049},{"name":"Surrey and Sussex Healthcare NHS Trust","turnover":522.0,"deficit_abs":0.05862068965517242,"off_plan":-0.026},{"name":"Dartford and Gravesham NHS Trust","turnover":488.5,"deficit_abs":0.0593654042988741,"off_plan":-0.026},{"name":"Queen Elizabeth Hospital King's Lynn NHS Foundation Trust","turnover":325.4,"deficit_abs":0.06914566687154272,"off_plan":-0.002},{"name":"Wirral University Teaching Hospital NHS Foundation Trust","turnover":539.5,"deficit_abs":0.04096385542168675,"off_plan":-0.036},{"name":"Homerton Healthcare NHS Foundation Trust","turnover":506.5,"deficit_abs":0.043040473840078974,"off_plan":-0.026},{"name":"The Dudley Group NHS Foundation Trust","turnover":622.5,"deficit_abs":0.03405622489959839,"off_plan":-0.008},{"name":"Royal Berkshire NHS Foundation Trust","turnover":673.9,"deficit_abs":0.031310283424840483,"off_plan":0.0},{"name":"South Tees Hospitals NHS Foundation Trust","turnover":1041.9,"deficit_abs":0.020059506670505805,"off_plan":0.0},{"name":"West Suffolk NHS Foundation Trust","turnover":428.0,"deficit_abs":0.04836448598130841,"off_plan":0.009},{"name":"Frimley Health NHS Foundation Trust","turnover":1121.3,"deficit_abs":0.018460715241237848,"off_plan":0.0},{"name":"James Paget University Hospitals NHS Foundation Trust","turnover":363.0,"deficit_abs":0.05234159779614325,"off_plan":0.002},{"name":"East Cheshire NHS Trust","turnover":235.9,"deficit_abs":0.07587961000423908,"off_plan":-0.031},{"name":"Oxford University Hospitals NHS Foundation Trust","turnover":1752.5,"deficit_abs":0.009871611982881598,"off_plan":0.0},{"name":"Doncaster and Bassetlaw Teaching Hospitals NHS Foundation Trust","turnover":632.1,"deficit_abs":0.026894478721721245,"off_plan":0.0},{"name":"University Hospitals Coventry And Warwickshire NHS Trust","turnover":1125.5,"deficit_abs":0.015104398045313194,"off_plan":0.0},{"name":"York and Scarborough Teaching Hospitals NHS Foundation Trust","turnover":894.6,"deficit_abs":0.05354348312094791,"off_plan":-0.013},{"name":"Airedale NHS Foundation Trust","turnover":310.8,"deficit_abs":0.08268983268983268,"off_plan":-0.033},{"name":"Hampshire Hospitals NHS Foundation Trust","turnover":702.7,"deficit_abs":0.021915468905649636,"off_plan":-0.006},{"name":"Northern Lincolnshire and Goole Hospitals NHS Foundation Trust","turnover":614.6,"deficit_abs":0.041815815164334524,"off_plan":-0.01},{"name":"Chesterfield Royal Hospital NHS Foundation Trust","turnover":428.1,"deficit_abs":0.03387059098341509,"off_plan":-0.031},{"name":"Sandwell and West Birmingham Hospitals NHS Trust","turnover":817.8,"deficit_abs":0.0173636585962338,"off_plan":-0.019},{"name":"Hull University Teaching Hospitals NHS Trust","turnover":992.6,"deficit_abs":0.03294378400161193,"off_plan":-0.019},{"name":"University Hospital Southampton NHS Foundation Trust","turnover":1454.0,"deficit_abs":0.009559834938101789,"off_plan":-0.028},{"name":"Salisbury NHS Foundation Trust","turnover":416.9,"deficit_abs":0.03310146318061886,"off_plan":-0.019},{"name":"Buckinghamshire Healthcare NHS Trust","turnover":709.9,"deficit_abs":0.01718551908719538,"off_plan":0.0},{"name":"Gateshead Health NHS Foundation Trust","turnover":443.8,"deficit_abs":0.027039206849932402,"off_plan":0.0},{"name":"Kingston and Richmond NHS Foundation Trust","turnover":506.5,"deficit_abs":0.021915103652517275,"off_plan":0.0},{"name":"George Eliot Hospital NHS Trust","turnover":255.437,"deficit_abs":0.04345494192305734,"off_plan":0.0},{"name":"Croydon Health Services NHS Trust","turnover":498.9,"deficit_abs":0.021848065744638205,"off_plan":0.0},{"name":"East Sussex Healthcare NHS Trust","turnover":720.9,"deficit_abs":0.014842557913718963,"off_plan":0.0},{"name":"Sherwood Forest Hospitals NHS Foundation Trust","turnover":582.1,"deficit_abs":0.01683559525854664,"off_plan":-0.026},{"name":"Dorset County Hospital NHS Foundation Trust","turnover":353.3,"deficit_abs":0.027738465893008775,"off_plan":0.038},{"name":"Great Western Hospitals NHS Foundation Trust","turnover":565.0,"deficit_abs":0.016991150442477874,"off_plan":-0.014},{"name":"Wrightington, Wigan and Leigh Teaching Hospitals NHS Foundation Trust","turnover":581.2,"deficit_abs":0.015313145216792843,"off_plan":-0.005},{"name":"Mid Yorkshire Teaching NHS Trust","turnover":860.0,"deficit_abs":0.024534883720930233,"off_plan":-0.036},{"name":"Ashford and St Peter's Hospitals NHS Foundation Trust","turnover":491.912,"deficit_abs":0.013620322334076014,"off_plan":0.0},{"name":"Bolton NHS Foundation Trust","turnover":530.7,"deficit_abs":0.012247974373469002,"off_plan":-0.026},{"name":"Isle of Wight NHS Trust","turnover":282.7,"deficit_abs":0.020516448532012736,"off_plan":-0.006},{"name":"Royal Surrey County Hospital NHS Foundation Trust","turnover":624.6,"deficit_abs":0.008965738072366313,"off_plan":0.0},{"name":"Harrogate and District NHS Foundation Trust","turnover":401.9,"deficit_abs":0.05971634735008709,"off_plan":-0.051},{"name":"The Princess Alexandra Hospital NHS Trust","turnover":430.0,"deficit_abs":0.012325581395348837,"off_plan":0.0},{"name":"University Hospitals Birmingham NHS Foundation Trust","turnover":2285.4,"deficit_abs":0.0018377526909950119,"off_plan":-0.011},{"name":"The Rotherham NHS Foundation Trust","turnover":408.0,"deficit_abs":0.010049019607843136,"off_plan":-0.012},{"name":"Sheffield Children's NHS Foundation Trust","turnover":344.4,"deficit_abs":0.010743321718931477,"off_plan":0.0},{"name":"Barnsley Hospital NHS Foundation Trust","turnover":359.6,"deficit_abs":0.010011123470522803,"off_plan":0.0},{"name":"West Hertfordshire Teaching Hospitals NHS Trust","turnover":598.085,"deficit_abs":0.005517610373107501,"off_plan":0.0},{"name":"Norfolk and Norwich University Hospitals NHS Foundation Trust","turnover":1083.2,"deficit_abs":0.0025849335302806494,"off_plan":-0.011},{"name":"Bradford Teaching Hospitals NHS Foundation Trust","turnover":656.9,"deficit_abs":0.0270969706195768,"off_plan":-0.033},{"name":"Queen Victoria Hospital NHS Foundation Trust","turnover":117.5,"deficit_abs":0.01276595744680851,"off_plan":0.001},{"name":"Bridgewater Community Healthcare NHS Foundation Trust","turnover":107.6,"deficit_abs":0.013940520446096656,"off_plan":0.0},{"name":"Whittington Health NHS Trust","turnover":500.4,"deficit_abs":0.002797761790567546,"off_plan":-0.015},{"name":"Cambridge University Hospitals NHS Foundation Trust","turnover":1627.2,"deficit_abs":0.0,"off_plan":0.004},{"name":"Royal Devon University Healthcare NHS Foundation Trust","turnover":1215.3,"deficit_abs":0.03620505225047314,"off_plan":-0.0615},{"name":"Maidstone and Tunbridge Wells NHS Trust","turnover":831.0,"deficit_abs":0.019975932611311673,"off_plan":-0.017},{"name":"Royal United Hospitals Bath NHS Foundation Trust","turnover":618.9,"deficit_abs":0.0,"off_plan":-0.037},{"name":"Leeds Teaching Hospitals NHS Trust","turnover":2124.7,"deficit_abs":0.0,"off_plan":-0.009},{"name":"Barts Health NHS Trust","turnover":2652.1,"deficit_abs":0.0,"off_plan":-0.006},{"name":"Bedfordshire Hospitals NHS Foundation Trust","turnover":911.2,"deficit_abs":0.0,"off_plan":-0.014},{"name":"East Suffolk and North Essex NHS Foundation Trust","turnover":1219.7,"deficit_abs":0.0,"off_plan":-0.009},{"name":"University Hospitals of Morecambe Bay NHS Foundation Trust","turnover":602.5,"deficit_abs":0.0,"off_plan":-0.018},{"name":"United Lincolnshire Teaching Hospitals NHS Trust","turnover":899.6,"deficit_abs":0.0,"off_plan":-0.002},{"name":"North West Anglia NHS Foundation Trust","turnover":780.9,"deficit_abs":0.0,"off_plan":-0.002},{"name":"Gloucestershire Hospitals NHS Foundation Trust","turnover":331.5,"deficit_abs":0.0,"off_plan":-0.0018},{"name":"The Hillingdon Hospitals NHS Foundation Trust","turnover":432.4,"deficit_abs":0.0,"off_plan":0.0},{"name":"North Bristol NHS Trust","turnover":1051.0,"deficit_abs":0.0,"off_plan":0.0},{"name":"Royal Cornwall Hospitals NHS Trust","turnover":733.5,"deficit_abs":0.0,"off_plan":0.0},{"name":"Somerset NHS Foundation Trust","turnover":1163.5,"deficit_abs":0.0,"off_plan":0.0},{"name":"University Hospitals Dorset NHS Foundation Trust","turnover":912.2,"deficit_abs":0.0,"off_plan":0.0},{"name":"Imperial College Healthcare NHS Trust","turnover":1875.5,"deficit_abs":0.0,"off_plan":0.0},{"name":"London North West University Healthcare NHS Trust","turnover":1114.4,"deficit_abs":0.0,"off_plan":0.0},{"name":"Manchester University NHS Foundation Trust","turnover":3099.2,"deficit_abs":0.0,"off_plan":0.0},{"name":"North Tees and Hartlepool NHS Foundation Trust","turnover":486.7,"deficit_abs":0.0,"off_plan":0.0},{"name":"Sheffield Teaching Hospitals NHS Foundation Trust","turnover":1765.0,"deficit_abs":0.0,"off_plan":0.0},{"name":"The Newcastle Upon Tyne Hospitals NHS Foundation Trust","turnover":1766.7,"deficit_abs":0.0,"off_plan":0.0},{"name":"University Hospitals of North Midlands NHS Trust","turnover":1292.9,"deficit_abs":0.0,"off_plan":0.0},{"name":"University Hospitals Bristol and Weston NHS Foundation Trust","turnover":1346.8,"deficit_abs":0.0,"off_plan":7e-05},{"name":"East and North Hertfordshire Teaching NHS Trust","turnover":717.3,"deficit_abs":0.0,"off_plan":0.0},{"name":"East Midlands Ambulance Service NHS Trust","turnover":331.6,"deficit_abs":0.0,"off_plan":0.0},{"name":"Guy's and St Thomas' NHS Foundation Trust","turnover":3170.6,"deficit_abs":0.0,"off_plan":0.0},{"name":"Lewisham and Greenwich NHS Trust","turnover":908.1,"deficit_abs":0.0,"off_plan":0.0},{"name":"Milton Keynes University Hospital NHS Foundation Trust","turnover":444.5,"deficit_abs":0.0,"off_plan":0.0},{"name":"Chelsea and Westminster Hospital NHS Foundation Trust","turnover":1036.3,"deficit_abs":0.0,"off_plan":0.0},{"name":"South Tyneside and Sunderland NHS Foundation Trust","turnover":818.9,"deficit_abs":0.0,"off_plan":0.001},{"name":"Moorfields Eye Hospital NHS Foundation Trust","turnover":365.7,"deficit_abs":0.0,"off_plan":0.021},{"name":"The Clatterbridge Cancer Centre NHS Foundation Trust","turnover":321.3,"deficit_abs":0.0,"off_plan":0.0},{"name":"County Durham and Darlington NHS Foundation Trust","turnover":764.9,"deficit_abs":0.0,"off_plan":-0.016},{"name":"Shropshire Community Health NHS Trust","turnover":132.8,"deficit_abs":0.0,"off_plan":0.003},{"name":"Kent and Medway NHS and Social Care Partnership Trust","turnover":300.5,"deficit_abs":0.0,"off_plan":0.0},{"name":"South Warwickshire University NHS Foundation Trust","turnover":513.2,"deficit_abs":0.0,"off_plan":-0.006},{"name":"Cheshire and Wirral Partnership NHS Foundation Trust","turnover":296.6,"deficit_abs":0.0,"off_plan":0.01},{"name":"Birmingham and Solihull Mental Health NHS Foundation Trust","turnover":732.4,"deficit_abs":0.0,"off_plan":-0.005},{"name":"Oxford Health NHS Foundation Trust","turnover":693.2,"deficit_abs":0.0,"off_plan":0.0},{"name":"The Royal Marsden NHS Foundation Trust","turnover":694.3,"deficit_abs":0.0,"off_plan":0.003},{"name":"The Walton Centre NHS Foundation Trust","turnover":212.6,"deficit_abs":0.0,"off_plan":0.001},{"name":"Alder Hey Children's NHS Foundation Trust","turnover":454.5,"deficit_abs":0.0,"off_plan":0.001},{"name":"The Christie NHS Foundation Trust","turnover":543.2,"deficit_abs":0.0,"off_plan":0.0},{"name":"University College London Hospitals NHS Foundation Trust","turnover":1779.9,"deficit_abs":0.0,"off_plan":0.001},{"name":"Northumbria Healthcare NHS Foundation Trust","turnover":882.0,"deficit_abs":0.0,"off_plan":0.0}];
+
+const AVG_DEFICIT = 0.0290;
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const PAD = { top: 110, right: 50, bottom: 70, left: 120 };
+const plotW = W - PAD.left - PAD.right;
+const plotH = H - PAD.top - PAD.bottom;
+
+const xLeft = 0.045;
+const xRight = -0.095;
+const yBottom = 0;
+const yTop = 0.16;
+
+function toCanvasX(v) {
+  return PAD.left + ((xLeft - v) / (xLeft - xRight)) * plotW;
+}
+function toCanvasY(v) {
+  return PAD.top + ((yTop - v) / (yTop - yBottom)) * plotH;
+}
+
+const axisX = toCanvasX(0);
+const axisY = toCanvasY(AVG_DEFICIT);
+
+// Draw title and subtitle in white space above chart
+ctx.fillStyle = '#111'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
+ctx.fillText('How big a financial challenge do acute trusts face from 2026-27?', W/2, 32);
+ctx.font = '12px Arial'; ctx.fillStyle = '#666';
+ctx.fillText('Bubble size = turnover  |  Hover over a dot to see trust details', W/2, 52);
+
+// Quadrants
+ctx.fillStyle = '#A0B4E8';
+ctx.fillRect(PAD.left, PAD.top, axisX - PAD.left, axisY - PAD.top);
+ctx.fillStyle = '#E8A0A0';
+ctx.fillRect(axisX, PAD.top, PAD.left + plotW - axisX, axisY - PAD.top);
+ctx.fillStyle = '#A8D4A8';
+ctx.fillRect(PAD.left, axisY, axisX - PAD.left, PAD.top + plotH - axisY);
+ctx.fillStyle = '#C4A8D4';
+ctx.fillRect(axisX, axisY, PAD.left + plotW - axisX, PAD.top + plotH - axisY);
+
+// Quadrant labels
+ctx.textAlign = 'center';
+ctx.font = 'italic 600 14px Arial';
+[
+  { text: 'Gradual challenge', x: PAD.left + (axisX - PAD.left)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#1A2A6A' },
+  { text: 'Ongoing significant challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#7A2020' },
+  { text: 'Best position', x: PAD.left + (axisX - PAD.left)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#1A4A1A' },
+  { text: 'Immediate challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#3A1A5A' },
+].forEach(q => { ctx.fillStyle = q.color; ctx.fillText(q.text, q.x, q.y); });
+
+// Axis lines
+ctx.strokeStyle = '#111'; ctx.lineWidth = 2.5;
+ctx.beginPath(); ctx.moveTo(PAD.left, axisY); ctx.lineTo(PAD.left + plotW, axisY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(axisX, PAD.top); ctx.lineTo(axisX, PAD.top + plotH); ctx.stroke();
+
+function arrow(x1, y1, x2, y2, color) {
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  const a = Math.atan2(y2-y1, x2-x1);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2-18*Math.cos(a-0.4), y2-18*Math.sin(a-0.4));
+  ctx.lineTo(x2-18*Math.cos(a+0.4), y2-18*Math.sin(a+0.4));
+  ctx.closePath(); ctx.fill();
+}
+
+arrow(axisX-50, axisY, PAD.left+5, axisY, '#E05050');
+arrow(axisX+50, axisY, PAD.left+plotW-5, axisY, '#E05050');
+arrow(axisX, axisY-50, axisX, PAD.top+5, '#5050D0');
+arrow(axisX, axisY+50, axisX, PAD.top+plotH-5, '#5050D0');
+
+ctx.fillStyle = '#333'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
+
+// Store label values before drawing dots
+const xLabelText1 = 'Short term challenge';
+const xLabelText2 = '(Distance from plan Q3 2025-26)';
+const yLabelText1 = 'Deficit challenge*';
+
+// Draw dots FIRST
+const turnovers = data.filter(d => d.turnover > 0 && d.turnover < 5000).map(d => d.turnover);
+const minT = Math.min(...turnovers), maxT = Math.max(...turnovers);
+function bubbleR(t) {
+  if (t <= 0) return 2;
+  const capped = Math.min(t, 3500);
+  return 3 + ((capped - minT) / (maxT - minT)) * 16;
+}
+
+const dots = data.map(d => ({ ...d, cx: toCanvasX(d.off_plan), cy: toCanvasY(d.deficit_abs), r: bubbleR(d.turnover) }));
+
+dots.forEach(d => {
+  ctx.beginPath();
+  ctx.arc(d.cx, d.cy, d.r, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(30,60,120,0.55)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(10,30,80,0.8)';
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+});
+
+// Now redraw all labels on top of dots
+ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#333';
+ctx.fillText('Ahead of plan', PAD.left + (axisX - PAD.left)/2, axisY - 9);
+ctx.fillText('Off plan', axisX + (PAD.left+plotW-axisX)/2, axisY - 9);
+ctx.textAlign = 'left';
+ctx.fillText('Low', axisX+12, PAD.top+plotH-22);
+
+// Y axis label — rotated parallel to Y axis, further left for legibility
+ctx.save();
+ctx.translate(axisX - 30, PAD.top + plotH / 2);
+ctx.rotate(-Math.PI / 2);
+ctx.fillStyle = 'rgba(20,30,140,0.95)'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'center';
+ctx.fillText('Deficit challenge', 0, 0);
+ctx.font = '11px Arial'; ctx.fillStyle = 'rgba(20,30,140,0.8)';
+ctx.fillText('(Forecast 2025-26 deficit at Q3)', 0, 14);
+ctx.restore();
+
+// High — top of Y axis
+ctx.fillStyle = '#333'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left';
+ctx.fillText('High', axisX+12, PAD.top+18);
+
+// X axis label — bold dark red, right-aligned, just above axis line
+ctx.fillStyle = 'rgba(120,20,10,1)'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'right';
+ctx.fillText(xLabelText1, PAD.left+plotW-8, axisY-16);
+ctx.font = '11px Arial'; ctx.fillStyle = 'rgba(120,20,10,0.85)';
+ctx.fillText(xLabelText2, PAD.left+plotW-8, axisY-4);
+
+// Quadrant labels
+ctx.textAlign = 'center'; ctx.font = 'italic 600 14px Arial';
+[
+  { text: 'Gradual challenge', x: PAD.left + (axisX - PAD.left)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#1A2A6A' },
+  { text: 'Ongoing significant challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: PAD.top + (axisY - PAD.top)/2, color: '#7A2020' },
+  { text: 'Best position', x: PAD.left + (axisX - PAD.left)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#1A4A1A' },
+  { text: 'Immediate challenge', x: axisX + (PAD.left + plotW - axisX)/2, y: axisY + (PAD.top + plotH - axisY)/2, color: '#3A1A5A' },
+].forEach(q => { ctx.fillStyle = q.color; ctx.fillText(q.text, q.x, q.y); });
+
+const tooltip = document.getElementById('tooltip');
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+  let found = null;
+  for (const d of dots) {
+    if (Math.sqrt((mx-d.cx)**2 + (my-d.cy)**2) <= d.r+3) { found = d; break; }
+  }
+  if (found) {
+    const defPct = (found.deficit_abs * 100).toFixed(2);
+    const offPct = (Math.abs(found.off_plan) * 100).toFixed(2);
+    const planStatus = found.off_plan >= 0 ? `Ahead of plan by ${offPct}%` : `Off plan by ${offPct}%`;
+    const defLabel = found.deficit_abs === 0 ? 'No forecast deficit' : `${defPct}% of turnover`;
+    const t = found.turnover > 0 ? `£${found.turnover.toLocaleString('en-GB', {maximumFractionDigits:0})}m` : 'N/A';
+    tooltip.innerHTML = `<strong>${found.name}</strong><br>Turnover: ${t}<br>Deficit: ${defLabel}<br>${planStatus}`;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX+14)+'px';
+    tooltip.style.top = (e.clientY-10)+'px';
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.display = 'none';
+    canvas.style.cursor = 'default';
+  }
+});
+canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+</script>
+</body>
+</html>
