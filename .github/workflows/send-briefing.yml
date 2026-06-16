@@ -106,8 +106,11 @@ jobs:
           with wave.open(wav_path, "wb") as wf:
               wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(24000)
               wf.writeframes(bytes(all_pcm))
+          # atempo=0.95 slows Gemini's native pace ~5% — it tends to read a touch
+          # fast and the speed drifts between chunks. Keeps it steadier/calmer.
           subprocess.run(
-              ["ffmpeg", "-y", "-i", wav_path, "-codec:a", "libmp3lame", "-q:a", "4", target],
+              ["ffmpeg", "-y", "-i", wav_path, "-filter:a", "atempo=0.95",
+               "-codec:a", "libmp3lame", "-q:a", "4", target],
               check=True, capture_output=True,
           )
           os.remove(wav_path)
