@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Ivydale Quest</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', system-ui, sans-serif;
+    background: #f5f1e8;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    overflow: hidden;
+  }
+  h1 {
+    color: #2e5d2e;
+    font-size: clamp(1.3rem, 2.6vw, 2rem);
+    text-shadow: 2px 2px 0 #c8e6a8;
+    margin-bottom: 2px;
+  }
+  .hint { color: #555; font-size: 0.9rem; margin-bottom: 8px; }
+  #map-container {
+    width: min(98vw, 1400px);
+    flex: 1;
+    max-height: 82vh;
+    background: #c8e6a8;
+    border: 4px solid #4a3c28;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  }
+  #map { width: 100%; height: 100%; display: block; }
+  .status-bar {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .status-pill {
+    background: #fff;
+    border: 3px solid #4a3c28;
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .status-pill span { color: #2e5d2e; }
+
+  /* D-pad overlay for touch / mouse */
+  #dpad {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 150px;
+    height: 150px;
+    z-index: 10;
+    opacity: 0.85;
+  }
+  #dpad button {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 3px solid #4a3c28;
+    background: #d2691e;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 3px 0 #8b4513;
+    touch-action: manipulation;
+  }
+  #dpad button:active { transform: translateY(2px); box-shadow: 0 1px 0 #8b4513; }
+  #dpad #up        { top: 0;    left: 50px; }
+  #dpad #down      { bottom: 0; left: 50px; }
+  #dpad #left      { top: 50px; left: 0; }
+  #dpad #right     { top: 50px; right: 0; }
+  #dpad #upleft    { top: 0;    left: 0;     width: 44px; height: 44px; font-size: 1.1rem; }
+  #dpad #upright   { top: 0;    right: 0;    width: 44px; height: 44px; font-size: 1.1rem; }
+  #dpad #downleft  { bottom: 0; left: 0;     width: 44px; height: 44px; font-size: 1.1rem; }
+  #dpad #downright { bottom: 0; right: 0;    width: 44px; height: 44px; font-size: 1.1rem; }
+
+  /* SVG styles */
+  .road-outline { fill: none; stroke: #6e6358; stroke-linecap: round; stroke-linejoin: round; }
+  .road-fill    { fill: none; stroke: #d4c8a8; stroke-linecap: round; stroke-linejoin: round; }
+  .road-name {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 16px;
+    fill: #4a3c28;
+    paint-order: stroke;
+    stroke: #f0e8d0;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+  .park-fill { fill: #7cb342; stroke: #558b2f; stroke-width: 4; }
+  .park-name {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 38px;
+    font-weight: bold;
+    fill: #1b5e20;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 6;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .cemetery-fill {
+    fill: #94b478;
+    stroke: #5e7b48;
+    stroke-width: 4;
+    stroke-dasharray: 12 6;
+  }
+  .cemetery-name {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    fill: #2e4d2e;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 5;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .school-fill { fill: #fde7a0; stroke: #b58a1a; stroke-width: 4; stroke-dasharray: 10 6; }
+  .school-name {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    fill: #6d4c00;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 4;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .landmark-marker { stroke: white; stroke-width: 4; }
+  .landmark-number {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .landmark-name {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    fill: #1a1a1a;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 4;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  /* Minimap (drawn over the world, fixed position in viewport) */
+  .mini-bg { fill: #c8e6a8; stroke: #4a3c28; stroke-width: 2; }
+  .mini-park { fill: #7cb342; opacity: 0.7; }
+  .mini-roads { fill: none; stroke: #999; stroke-width: 0.5; }
+  .mini-view { fill: none; stroke: #d32f2f; stroke-width: 1.5; }
+  .mini-char { fill: #d32f2f; }
+  .mini-landmark { fill: #1565c0; }
+  .compass {
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    fill: #4a3c28;
+    text-anchor: middle;
+  }
+
+  /* Witness dialog */
+  #witness-dialog {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    width: min(92%, 700px);
+    z-index: 50;
+    pointer-events: auto;
+  }
+  #witness-dialog.hidden { display: none; }
+  .dialog-card {
+    background: #fff;
+    border: 4px solid #4a3c28;
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+  }
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4a3c28;
+  }
+  #witness-avatar { font-size: 1.8rem; }
+  #witness-line {
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  #witness-question {
+    font-weight: bold;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+  }
+  #witness-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .option-btn {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border: 3px solid #4a3c28;
+    background: #fff8ee;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.05s, background 0.15s;
+  }
+  .option-btn:hover { background: #ffe0b2; }
+  .option-btn:active { transform: translateY(1px); }
+  .option-btn.correct { background: #a5d6a7 !important; border-color: #2e7d32; }
+  .option-btn.wrong { background: #ef9a9a !important; border-color: #b71c1c; }
+  #witness-hint {
+    background: #fff9c4;
+    border: 2px solid #f9a825;
+    padding: 9px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  #witness-clue {
+    background: #c8e6c9;
+    border: 2px solid #2e7d32;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #1b5e20;
+  }
+  #witness-close, #play-another {
+    background: #d2691e;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    font-family: inherit;
+    box-shadow: 0 3px 0 #8b4513;
+  }
+  #witness-close:active, #play-another:active { transform: translateY(2px); box-shadow: 0 1px 0 #8b4513; }
+  #play-another { background: #4caf50; box-shadow: 0 3px 0 #2e7031; margin-left: 8px; }
+  #play-another:active { box-shadow: 0 1px 0 #2e7031; }
+  .hidden { display: none !important; }
+
+  /* Character selection */
+  #character-select {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+  }
+  #character-select.hidden { display: none !important; }
+  .select-card {
+    background: #fff;
+    padding: 28px 32px;
+    border-radius: 18px;
+    border: 5px solid #4a3c28;
+    max-width: 96vw;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+  .select-card h2 {
+    text-align: center;
+    color: #2e5d2e;
+    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+    margin-bottom: 6px;
+    text-shadow: 2px 2px 0 #c8e6a8;
+  }
+  .select-card .select-sub {
+    text-align: center;
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+  .character-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .character-pick {
+    background: #fff8ee;
+    border: 4px solid #4a3c28;
+    border-radius: 14px;
+    padding: 14px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #4a3c28;
+    transition: transform 0.1s, background 0.2s;
+  }
+  .character-pick:hover {
+    background: #ffe0b2;
+    transform: scale(1.04);
+  }
+  .character-pick:active { transform: scale(0.98); }
+  .character-pick img {
+    width: 110px;
+    height: 170px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    mix-blend-mode: multiply;
+  }
+  @media (max-width: 640px) {
+    .character-grid { grid-template-columns: 1fr 1fr; }
+    .character-pick img { width: 90px; height: 130px; }
+  }
+
+  /* Quest selection */
+  #quest-select {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+  }
+  #quest-select.hidden { display: none !important; }
+  .quest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .quest-pick {
+    background: #fff8ee;
+    border: 4px solid #4a3c28;
+    border-radius: 14px;
+    padding: 18px 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: inherit;
+    color: #4a3c28;
+    transition: transform 0.1s, background 0.2s;
+    min-width: 140px;
+  }
+  .quest-pick:hover { background: #ffe0b2; transform: scale(1.04); }
+  .quest-pick:active { transform: scale(0.98); }
+  .quest-icon { font-size: 3rem; margin-bottom: 8px; }
+  .quest-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
+  .quest-desc { font-size: 0.85rem; color: #555; text-align: center; }
+  @media (max-width: 640px) {
+    .quest-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🗺️ The Ivydale Quest</h1>
+<div class="hint">⬆ ⬇ ⬅ ➡ Arrow keys (or use the buttons) to walk around</div>
+
+<div id="map-container">
+  <svg id="map" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="removeWhite">
+        <feColorMatrix type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          -3 -3 -3 0 7"/>
+      </filter>
+
+      <!-- ====== Stylised cartoon characters (feet at y=0, head ~y=-100) ====== -->
+      <g id="char-beastburger">
+        <ellipse cx="0" cy="-2" rx="16" ry="3.5" fill="#000" opacity="0.3"/>
+        <rect x="-9" y="-22" width="6" height="22" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="3"/>
+        <rect x="3" y="-22" width="6" height="22" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="3"/>
+        <ellipse cx="-21" cy="-45" rx="4" ry="18" fill="#fff5d7" stroke="#3d2817" stroke-width="2" transform="rotate(-12 -21 -45)"/>
+        <ellipse cx="21" cy="-45" rx="4" ry="18" fill="#fff5d7" stroke="#3d2817" stroke-width="2" transform="rotate(12 21 -45)"/>
+        <ellipse cx="0" cy="-40" rx="18" ry="20" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <polygon points="-12,-52 -3,-56 -3,-48 -12,-44" fill="#c62828" stroke="#3d2817" stroke-width="1.5"/>
+        <polygon points="12,-52 3,-56 3,-48 12,-44" fill="#c62828" stroke="#3d2817" stroke-width="1.5"/>
+        <rect x="-3" y="-54" width="6" height="8" fill="#c62828" stroke="#3d2817" stroke-width="1.5"/>
+        <ellipse cx="0" cy="-72" rx="15" ry="18" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <g fill="#3d2817">
+          <circle cx="-12" cy="-82" r="5"/>
+          <circle cx="-5" cy="-86" r="6.5"/>
+          <circle cx="3" cy="-87" r="6.5"/>
+          <circle cx="10" cy="-83" r="5.5"/>
+          <circle cx="-13" cy="-76" r="4.5"/>
+          <circle cx="13" cy="-78" r="5"/>
+          <circle cx="0" cy="-89" r="5"/>
+        </g>
+        <path d="M -2,-92 C -3,-97 0,-100 1,-97 C 4,-100 5,-96 2,-92" fill="#3d2817"/>
+        <circle cx="-5" cy="-72" r="1.8" fill="#000"/>
+        <circle cx="5" cy="-72" r="1.8" fill="#000"/>
+        <path d="M 0,-64 C -2,-65 -5,-65 -7,-64 C -11,-63 -13,-62 -12,-60 C -10,-58 -7,-60 -4,-62 C -2,-64 -1,-64 0,-64 C 1,-64 2,-64 4,-62 C 7,-60 10,-58 12,-60 C 13,-62 11,-63 7,-64 C 5,-65 2,-65 0,-64 Z" fill="#3d2817"/>
+        <path d="M -2,-57 Q 0,-55 2,-57" stroke="#3d2817" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <g id="char-weebily">
+        <ellipse cx="0" cy="-2" rx="16" ry="3.5" fill="#000" opacity="0.3"/>
+        <!-- Red balloon up-left -->
+        <ellipse cx="-38" cy="-115" rx="11" ry="14" fill="#e57373" stroke="#3d2817" stroke-width="1.5"/>
+        <polygon points="-40,-100 -36,-100 -38,-97" fill="#e57373" stroke="#3d2817" stroke-width="1"/>
+        <line x1="-38" y1="-97" x2="-22" y2="-57" stroke="#3d2817" stroke-width="1.5" fill="none"/>
+        <!-- Fish in right hand -->
+        <g transform="translate(28 -42) rotate(15)">
+          <ellipse cx="0" cy="0" rx="13" ry="6" fill="#90caf9" stroke="#3d2817" stroke-width="1.5"/>
+          <polygon points="13,0 21,-5 21,5" fill="#90caf9" stroke="#3d2817" stroke-width="1.5"/>
+          <circle cx="-7" cy="-1" r="1.5" fill="#3d2817"/>
+          <line x1="-3" y1="0" x2="6" y2="0" stroke="#3d2817" stroke-width="0.8"/>
+        </g>
+        <!-- Legs -->
+        <rect x="-9" y="-22" width="6" height="22" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="3"/>
+        <rect x="3" y="-22" width="6" height="22" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="3"/>
+        <!-- Body -->
+        <ellipse cx="0" cy="-40" rx="16" ry="20" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Arms (lines toward balloon string and fish) -->
+        <line x1="-13" y1="-50" x2="-22" y2="-57" stroke="#fff5d7" stroke-width="6" stroke-linecap="round"/>
+        <line x1="-13" y1="-50" x2="-22" y2="-57" stroke="#3d2817" stroke-width="2" stroke-linecap="round"/>
+        <line x1="13" y1="-50" x2="22" y2="-42" stroke="#fff5d7" stroke-width="6" stroke-linecap="round"/>
+        <line x1="13" y1="-50" x2="22" y2="-42" stroke="#3d2817" stroke-width="2" stroke-linecap="round"/>
+        <!-- Tie -->
+        <polygon points="-3,-58 3,-58 4,-45 0,-32 -4,-45" fill="#3d2817"/>
+        <!-- Head -->
+        <ellipse cx="0" cy="-72" rx="13" ry="16" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Spiky black hair -->
+        <g fill="#1a1a1a">
+          <polygon points="-12,-78 -14,-92 -8,-82"/>
+          <polygon points="-6,-82 -4,-95 -1,-82"/>
+          <polygon points="-1,-83 2,-97 5,-82"/>
+          <polygon points="5,-82 8,-94 11,-80"/>
+          <polygon points="10,-80 13,-87 11,-76"/>
+          <polygon points="-14,-78 -13,-87 -10,-79"/>
+        </g>
+        <!-- Big round eyes -->
+        <circle cx="-4.5" cy="-72" r="3.5" fill="white" stroke="#3d2817" stroke-width="1"/>
+        <circle cx="4.5" cy="-72" r="3.5" fill="white" stroke="#3d2817" stroke-width="1"/>
+        <circle cx="-4.5" cy="-72" r="1.5" fill="#1a1a1a"/>
+        <circle cx="4.5" cy="-72" r="1.5" fill="#1a1a1a"/>
+        <!-- Small mouth -->
+        <ellipse cx="0" cy="-62" rx="1.5" ry="2" fill="#c62828"/>
+      </g>
+
+      <g id="char-barry">
+        <!-- Rocket flame & exhaust trail below feet -->
+        <g fill="#ff6b35">
+          <polygon points="-4,2 4,2 6,14 -6,14"/>
+          <polygon points="-5,14 5,14 7,26 -7,26"/>
+          <circle cx="0" cy="32" r="2.5"/>
+          <circle cx="-1" cy="38" r="2"/>
+          <circle cx="1" cy="43" r="1.5"/>
+          <circle cx="0" cy="48" r="1.5"/>
+          <circle cx="0" cy="53" r="1"/>
+        </g>
+        <g fill="#ffd54f">
+          <polygon points="-3,2 3,2 4,10 -4,10"/>
+          <polygon points="-3,14 3,14 4,22 -4,22"/>
+        </g>
+        <!-- Legs -->
+        <rect x="-7" y="-15" width="5" height="17" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="2.5"/>
+        <rect x="2" y="-15" width="5" height="17" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="2.5"/>
+        <!-- Body -->
+        <ellipse cx="0" cy="-35" rx="16" ry="20" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Arms -->
+        <ellipse cx="-19" cy="-40" rx="4" ry="16" fill="#fff5d7" stroke="#3d2817" stroke-width="2" transform="rotate(-20 -19 -40)"/>
+        <ellipse cx="19" cy="-40" rx="4" ry="16" fill="#fff5d7" stroke="#3d2817" stroke-width="2" transform="rotate(20 19 -40)"/>
+        <!-- Black bow tie -->
+        <polygon points="-12,-52 -3,-56 -3,-48 -12,-44" fill="#1a1a1a" stroke="#3d2817" stroke-width="1.5"/>
+        <polygon points="12,-52 3,-56 3,-48 12,-44" fill="#1a1a1a" stroke="#3d2817" stroke-width="1.5"/>
+        <polygon points="-3,-56 3,-56 4,-44 0,-32 -4,-44" fill="#1a1a1a"/>
+        <!-- Head -->
+        <ellipse cx="0" cy="-68" rx="14" ry="17" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Curly hair -->
+        <g fill="#3d2817">
+          <circle cx="-10" cy="-78" r="5"/>
+          <circle cx="-3" cy="-82" r="6"/>
+          <circle cx="4" cy="-83" r="6"/>
+          <circle cx="11" cy="-80" r="5"/>
+          <circle cx="-12" cy="-72" r="4"/>
+          <circle cx="12" cy="-73" r="4"/>
+          <circle cx="0" cy="-85" r="5"/>
+        </g>
+        <!-- Wild tuft on top -->
+        <path d="M -2,-88 C -5,-98 0,-106 2,-98 C 5,-100 4,-92 0,-88" fill="#3d2817"/>
+        <circle cx="1" cy="-103" r="2.5" fill="#3d2817"/>
+        <!-- Eye patch (over left eye) -->
+        <ellipse cx="-5" cy="-68" rx="4.5" ry="3.5" fill="#1a1a1a"/>
+        <line x1="-9" y1="-70" x2="-13" y2="-72" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="-2" y1="-67" x2="2" y2="-65" stroke="#1a1a1a" stroke-width="1.5"/>
+        <!-- Right eye -->
+        <circle cx="5" cy="-68" r="2" fill="#1a1a1a"/>
+        <!-- Small smile -->
+        <path d="M -2,-58 Q 0,-56 2,-58" stroke="#3d2817" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <g id="char-carcar">
+        <!-- Marshmallow body with flame hair holding a steaming mug -->
+        <ellipse cx="0" cy="-2" rx="15" ry="3" fill="#000" opacity="0.3"/>
+        <!-- Feet -->
+        <ellipse cx="-6" cy="-3" rx="5" ry="3" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <ellipse cx="6" cy="-3" rx="5" ry="3" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Body -->
+        <rect x="-16" y="-72" width="32" height="65" rx="10" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Right arm pointing out -->
+        <line x1="16" y1="-50" x2="28" y2="-45" stroke="#fff5d7" stroke-width="6" stroke-linecap="round"/>
+        <line x1="16" y1="-50" x2="28" y2="-45" stroke="#3d2817" stroke-width="2" stroke-linecap="round"/>
+        <!-- Right armband -->
+        <ellipse cx="22" cy="-47.5" rx="5" ry="4" fill="#ff9800" stroke="#3d2817" stroke-width="1.5" transform="rotate(22 22 -47.5)"/>
+        <line x1="18" y1="-50" x2="18" y2="-45" stroke="#fff" stroke-width="1.2"/>
+        <line x1="26" y1="-46" x2="26" y2="-41" stroke="#fff" stroke-width="1.2"/>
+        <circle cx="30" cy="-44" r="3" fill="#fff5d7" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Left arm holding mug -->
+        <line x1="-16" y1="-50" x2="-22" y2="-48" stroke="#fff5d7" stroke-width="6" stroke-linecap="round"/>
+        <line x1="-16" y1="-50" x2="-22" y2="-48" stroke="#3d2817" stroke-width="2" stroke-linecap="round"/>
+        <!-- Left armband -->
+        <ellipse cx="-19" cy="-49" rx="5" ry="4" fill="#ff9800" stroke="#3d2817" stroke-width="1.5" transform="rotate(-10 -19 -49)"/>
+        <line x1="-22" y1="-51" x2="-22" y2="-46" stroke="#fff" stroke-width="1.2"/>
+        <line x1="-15" y1="-50" x2="-15" y2="-45" stroke="#fff" stroke-width="1.2"/>
+        <!-- Coffee mug -->
+        <path d="M -33,-50 L -33,-37 Q -33,-35 -31,-35 L -22,-35 Q -20,-35 -20,-37 L -20,-50 Z"
+              fill="#fff" stroke="#3d2817" stroke-width="1.5"/>
+        <ellipse cx="-26.5" cy="-50" rx="6.5" ry="1.5" fill="#5d4037" stroke="#3d2817" stroke-width="1.5"/>
+        <path d="M -20,-48 Q -15,-48 -15,-43 Q -15,-39 -20,-39" fill="none" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Steam swirls -->
+        <path d="M -30,-54 C -32,-58 -28,-62 -30,-66 C -32,-70 -28,-74 -30,-78" fill="none" stroke="#3d2817" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M -26,-54 C -28,-58 -24,-62 -26,-66 C -28,-70 -24,-74 -26,-78" fill="none" stroke="#3d2817" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M -22,-54 C -24,-58 -20,-62 -22,-66 C -24,-70 -20,-74 -22,-78" fill="none" stroke="#3d2817" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Flame-like hair -->
+        <path d="M -14,-72 L -11,-86 L -7,-74 L -3,-92 L 1,-78 L 5,-94 L 9,-78 L 13,-86 L 14,-72 Z"
+              fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1" stroke-linejoin="round"/>
+        <!-- Eyes -->
+        <circle cx="-5" cy="-55" r="3" fill="#1a1a1a"/>
+        <circle cx="5" cy="-55" r="3" fill="#1a1a1a"/>
+        <!-- Mouth + tongue -->
+        <ellipse cx="0" cy="-43" rx="3" ry="2.5" fill="#c62828"/>
+        <ellipse cx="0" cy="-40" rx="1.5" ry="2.5" fill="#ef5350"/>
+      </g>
+
+      <g id="char-stevedave">
+        <!-- Square body, round glasses, on a skateboard -->
+        <ellipse cx="0" cy="-1" rx="22" ry="3" fill="#000" opacity="0.3"/>
+        <!-- Skateboard wheels -->
+        <circle cx="-18" cy="-3" r="3" fill="#1a1a1a" stroke="#3d2817" stroke-width="1.5"/>
+        <circle cx="-9"  cy="-3" r="3" fill="#1a1a1a" stroke="#3d2817" stroke-width="1.5"/>
+        <circle cx="9"   cy="-3" r="3" fill="#1a1a1a" stroke="#3d2817" stroke-width="1.5"/>
+        <circle cx="18"  cy="-3" r="3" fill="#1a1a1a" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Skateboard deck -->
+        <rect x="-24" y="-9" width="48" height="3" rx="1.5" fill="#5d4037" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Feet -->
+        <ellipse cx="-10" cy="-12" rx="5" ry="3" fill="#3d2817"/>
+        <ellipse cx="10"  cy="-12" rx="5" ry="3" fill="#3d2817"/>
+        <!-- Square body -->
+        <rect x="-20" y="-72" width="40" height="60" rx="5" fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Small arms -->
+        <ellipse cx="-23" cy="-42" rx="4" ry="7" fill="#fff5d7" stroke="#3d2817" stroke-width="1.5"/>
+        <ellipse cx="23"  cy="-42" rx="4" ry="7" fill="#fff5d7" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Glasses -->
+        <line x1="-5" y1="-58" x2="5" y2="-58" stroke="#3d2817" stroke-width="2"/>
+        <circle cx="-10" cy="-58" r="8" fill="#fff" stroke="#3d2817" stroke-width="2"/>
+        <circle cx="10"  cy="-58" r="8" fill="#fff" stroke="#3d2817" stroke-width="2"/>
+        <!-- Eyebrows -->
+        <path d="M -16,-67 Q -10,-71 -4,-67" fill="none" stroke="#3d2817" stroke-width="1.5"/>
+        <path d="M 4,-67 Q 10,-71 16,-67" fill="none" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Pupils -->
+        <circle cx="-10" cy="-58" r="2" fill="#1a1a1a"/>
+        <circle cx="10"  cy="-58" r="2" fill="#1a1a1a"/>
+        <!-- Mouth + tongue -->
+        <ellipse cx="0" cy="-42" rx="3" ry="2.5" fill="#c62828"/>
+        <ellipse cx="0" cy="-39" rx="1.5" ry="2.5" fill="#ef5350"/>
+      </g>
+
+      <g id="char-peacock">
+        <!-- Tall pillar body, zigzag crown, long eyes, big mouth, peacock fan on the side -->
+        <ellipse cx="0" cy="-2" rx="14" ry="3" fill="#000" opacity="0.3"/>
+        <!-- Peacock tail feathers - colourful fan on the right -->
+        <g transform="translate(12 -50)">
+          <g stroke="#00695c" stroke-width="1.5" stroke-linejoin="round">
+            <ellipse cx="14" cy="20"  rx="5" ry="14" fill="#26c6da" transform="rotate(50 14 20)"/>
+            <ellipse cx="18" cy="10"  rx="5" ry="14" fill="#00bcd4" transform="rotate(70 18 10)"/>
+            <ellipse cx="20" cy="0"   rx="5" ry="14" fill="#00acc1" transform="rotate(90 20 0)"/>
+            <ellipse cx="18" cy="-10" rx="5" ry="14" fill="#00bcd4" transform="rotate(110 18 -10)"/>
+            <ellipse cx="14" cy="-20" rx="5" ry="14" fill="#26c6da" transform="rotate(130 14 -20)"/>
+          </g>
+          <g fill="#004d40">
+            <circle cx="20" cy="26" r="2.5"/>
+            <circle cx="27" cy="14" r="2.5"/>
+            <circle cx="30" cy="0"  r="2.5"/>
+            <circle cx="27" cy="-14" r="2.5"/>
+            <circle cx="20" cy="-26" r="2.5"/>
+          </g>
+        </g>
+        <!-- Feet -->
+        <ellipse cx="-6" cy="-3" rx="4" ry="2.5" fill="#3d2817"/>
+        <ellipse cx="6"  cy="-3" rx="4" ry="2.5" fill="#3d2817"/>
+        <!-- Tall pillar body -->
+        <path d="M -12,-6 L -12,-82 Q -12,-90 0,-90 Q 12,-90 12,-82 L 12,-6 Q 12,-3 8,-3 L -8,-3 Q -12,-3 -12,-6 Z"
+              fill="#fff5d7" stroke="#3d2817" stroke-width="2"/>
+        <!-- Small ear/nub on the left -->
+        <ellipse cx="-15" cy="-60" rx="3" ry="4" fill="#fff5d7" stroke="#3d2817" stroke-width="1.5"/>
+        <!-- Right arm sticking out -->
+        <line x1="12" y1="-55" x2="20" y2="-52" stroke="#fff5d7" stroke-width="4" stroke-linecap="round"/>
+        <line x1="12" y1="-55" x2="20" y2="-52" stroke="#3d2817" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Zigzag crown at the top -->
+        <path d="M -11,-80 L -8,-88 L -5,-80 L -1,-88 L 3,-80 L 6,-88 L 10,-80"
+              fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="miter"/>
+        <!-- Long oval eyes -->
+        <ellipse cx="-4" cy="-68" rx="1.5" ry="5" fill="#1a1a1a"/>
+        <ellipse cx="4"  cy="-68" rx="1.5" ry="5" fill="#1a1a1a"/>
+        <!-- Big open mouth -->
+        <ellipse cx="0" cy="-40" rx="3.5" ry="8" fill="#1a1a1a"/>
+      </g>
+    </defs>
+
+    <!-- World group: contains the map content, translates to follow the character -->
+    <g id="world">
+      <!-- world background -->
+      <rect id="world-bg" x="0" y="0" fill="#c8e6a8"/>
+      <!-- park, schools, roads, landmarks, character get appended here by JS -->
+      <g id="parks-layer"></g>
+      <g id="road-outlines"></g>
+      <g id="road-fills"></g>
+      <g id="schools-layer"></g>
+      <g id="road-labels"></g>
+      <g id="landmarks-layer"></g>
+      <g id="completed-markers"></g>
+      <g id="character-group"><!-- populated by setPlayerCharacter() once a character is picked --></g>
+    </g>
+
+    <!-- Minimap (top-right, viewport-fixed) -->
+    <g id="minimap" transform="translate(810 16)">
+      <rect class="mini-bg" x="0" y="0" width="174" height="120" rx="6"/>
+      <g id="mini-content"></g>
+      <text x="87" y="135" font-family="Comic Sans MS" font-size="11" font-weight="bold" fill="#4a3c28" text-anchor="middle">map</text>
+    </g>
+
+    <!-- Compass (top-left, viewport-fixed) -->
+    <g transform="translate(40 50)">
+      <circle r="28" fill="white" stroke="#4a3c28" stroke-width="2.5" opacity="0.92"/>
+      <polygon points="0,-22 5,0 0,22 -5,0" fill="#c62828" stroke="#4a3c28" stroke-width="1"/>
+      <text class="compass" y="-28">N</text>
+      <text class="compass" y="40">S</text>
+      <text class="compass" x="-36" y="5">W</text>
+      <text class="compass" x="36" y="5">E</text>
+    </g>
+  </svg>
+
+  <!-- D-pad overlay -->
+  <div id="dpad">
+    <button id="up" aria-label="Up">▲</button>
+    <button id="left" aria-label="Left">◀</button>
+    <button id="right" aria-label="Right">▶</button>
+    <button id="down" aria-label="Down">▼</button>
+    <button id="upleft" aria-label="Up-Left">◤</button>
+    <button id="upright" aria-label="Up-Right">◥</button>
+    <button id="downleft" aria-label="Down-Left">◣</button>
+    <button id="downright" aria-label="Down-Right">◢</button>
+  </div>
+
+  <!-- Witness dialog -->
+  <div id="witness-dialog" class="hidden">
+    <div class="dialog-card">
+      <div class="dialog-header">
+        <span id="witness-avatar"></span>
+        <span id="witness-name"></span>
+      </div>
+      <p id="witness-line"></p>
+      <p id="witness-question"></p>
+      <div id="witness-options"></div>
+      <p id="witness-hint" class="hidden"></p>
+      <p id="witness-clue" class="hidden"></p>
+      <button id="witness-close" class="hidden">OK, let's go!</button>
+      <button id="play-another" class="hidden">🎮 Play another mission!</button>
+    </div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-pill">📍 <span id="status-text">Walking around the neighbourhood…</span></div>
+</div>
+
+<!-- Quest selection overlay (shown after character is picked) -->
+<div id="quest-select" class="hidden">
+  <div class="select-card">
+    <h2>Pick a mission</h2>
+    <div class="select-sub">Each one sends you round Nunhead on a different adventure.</div>
+    <div class="quest-grid" id="quest-grid"></div>
+  </div>
+</div>
+
+<!-- Character selection overlay -->
+<div id="character-select">
+  <div class="select-card">
+    <h2>Who are you playing as?</h2>
+    <div class="select-sub">Pick one of the gang to start the Mochi rescue.</div>
+    <div class="character-grid">
+      <button class="character-pick" data-character="beastburger">
+        <img src="character.jpg" alt="little TIIIIIIIIIIIIIIIIIIIIIM">
+        <span>little TIIIIIIIIIIIIIIIIIIIIIM</span>
+      </button>
+      <button class="character-pick" data-character="weebily">
+        <img src="Weebily.jpg" alt="big john">
+        <span>big john</span>
+      </button>
+      <button class="character-pick" data-character="barry">
+        <img src="Barry.jpg" alt="emny pluffins Ggg">
+        <span>emny pluffins Ggg</span>
+      </button>
+      <button class="character-pick" data-character="carcar">
+        <img src="PXL_20260627_124809935.jpg" alt="Car-car">
+        <span>Car-car</span>
+      </button>
+      <button class="character-pick" data-character="stevedave">
+        <img src="PXL_20260627_124805605.jpg" alt="skateing fray">
+        <span>skateing fray</span>
+      </button>
+      <button class="character-pick" data-character="peacock">
+        <img src="PXL_20260710_073526209.jpg" alt="Peacock Man">
+        <span>Peacock Man</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Auto-generated by process_osm.py
+const WORLD_W = 5533;
+const WORLD_H = 3774;
+const PX_PER_M = 4;
+
+const ROADS = [
+  {n:"Forest Hill Road",k:"secondary",p:[[-114.9,3789.4],[-133.8,3764.1],[-145.8,3748.0],[-157.2,3732.3],[-174.7,3708.4],[-229.5,3622.6],[-258.8,3564.3]]},
+  {n:"Strakers Road",k:"service",p:[[272.7,843.0],[265.2,856.7],[263.3,863.3],[263.9,871.1],[274.2,960.6]]},
+  {n:"Forest Hill Road",k:"secondary",p:[[-114.9,3789.4],[-86.5,3821.7],[-75.7,3834.0],[-63.7,3849.1],[-34.4,3884.8],[235.9,4204.9],[605.8,4658.8],[681.1,4751.2]]},
+  {n:"St Aidan's Road",k:"residential",p:[[-258.8,3564.3],[-273.1,3574.8],[-361.2,3639.6],[-395.7,3662.2],[-436.0,3711.6],[-570.3,3912.5],[-598.6,3960.7],[-725.6,4201.5],[-851.9,4440.9],[-880.2,4465.9],[-986.9,4546.4]]},
+  {n:"Ryedale",k:"residential",p:[[235.9,4204.9],[96.3,4323.5],[36.3,4388.1],[-11.5,4459.3],[-134.0,4638.7],[-239.2,4773.4],[-343.0,4841.6],[-446.1,4909.3],[-552.5,4970.9],[-659.6,5031.5]]},
+  {n:"Dunstan's Grove",k:"residential",p:[[-355.1,4115.5],[-272.4,4180.9],[-201.5,4241.8],[-76.8,4384.2]]},
+  {n:"Dovedale Road",k:"residential",p:[[798.6,4500.5],[264.3,3859.8],[147.7,3705.0]]},
+  {n:"Shelbury Road",k:"residential",p:[[1080.8,4250.3],[595.4,3699.6],[502.8,3548.8]]},
+  {n:"Mundania Road",k:"residential",p:[[1973.6,3568.8],[1774.2,3666.2],[1356.3,4039.0],[1080.8,4250.3],[798.6,4500.5],[605.8,4658.8]]},
+  {n:"Therapia Road",k:"residential",p:[[2137.9,3888.8],[1980.8,3970.1],[1541.5,4371.4],[1197.2,4677.8],[1174.0,4697.7],[858.6,4968.9]]},
+  {n:"Homestall Road",k:"residential",p:[[1631.4,2758.9],[1683.1,2850.7],[1729.4,2992.3],[1778.9,3139.0]]},
+  {n:"Cheltenham Road",k:"tertiary",p:[[3241.4,2783.9],[3229.8,2780.5],[3218.7,2775.7],[3196.0,2757.9],[3160.3,2723.2],[3123.0,2693.3],[3030.5,2623.4],[2805.7,2467.4],[2423.6,2120.3],[2214.1,1917.6],[2186.2,1890.6]]},
+  {n:"Surrey Road",k:"residential",p:[[3884.2,1904.9],[3874.1,1912.2],[3856.9,1924.6],[3777.7,1984.5],[3614.5,2099.2],[3455.6,2234.0]]},
+  {n:"Rye Road",k:"residential",p:[[3085.2,1779.0],[3096.2,1792.5],[3300.8,2046.1],[3444.0,2220.3],[3455.6,2234.0]]},
+  {n:"Borland Road",k:"residential",p:[[3058.9,2246.2],[3050.0,2236.1],[2940.9,2112.5],[2917.5,2067.8],[2900.7,1846.8],[2900.3,1839.7],[2899.3,1823.1],[2897.7,1800.4],[2897.3,1793.9],[2888.1,1663.2],[2914.8,1643.5],[3112.8,1413.0],[3195.2,1330.4],[3258.6,1347.0],[3288.8,1334.7]]},
+  {n:"Stuart Road",k:"footway",p:[[3451.8,1480.9],[3431.8,1498.0],[3320.2,1583.0],[3298.1,1598.4]]},
+  {n:"Limesford Road",k:"residential",p:[[4155.5,451.8],[4013.6,593.8],[3770.1,837.1],[3638.4,968.8]]},
+  {n:"Harlescott Road",k:"residential",p:[[3495.5,1522.8],[4288.5,736.5]]},
+  {n:"Lanbury Road",k:"residential",p:[[4433.6,1030.4],[3687.4,1710.8]]},
+  {n:"Bellwood Road",k:"residential",p:[[4487.5,1378.4],[3900.8,1892.0],[3897.1,1894.8],[3884.2,1904.9]]},
+  {n:"Athenlay Road",k:"residential",p:[[3333.1,3637.6],[3485.3,3547.7],[3631.9,3445.0],[3681.6,3405.0],[3860.1,3175.7],[4018.1,2953.8],[4155.2,2673.6],[4267.9,2372.7],[4270.1,2366.7],[4276.6,2350.8]]},
+  {n:"Barforth Road",k:"residential",p:[[629.7,-60.1],[156.4,-691.5],[141.1,-704.0]]},
+  {n:"Carden Road",k:"residential",p:[[439.7,145.1],[426.0,138.4],[414.5,125.5],[-76.4,-483.4]]},
+  {n:"Limes Walk",k:"service",p:[[974.4,556.4],[1152.3,319.1],[1159.1,293.7],[1164.3,274.1],[1161.5,225.2],[1156.6,212.6],[1131.1,148.3],[1121.6,86.6],[1131.1,20.1],[1164.3,-46.4]]},
+  {n:"Brenchley Gardens",k:"tertiary",p:[[4612.9,2557.0],[4607.4,2574.0],[4605.3,2580.5],[4533.6,2795.2],[4484.0,2907.6],[4431.5,3013.1],[4374.6,3113.9],[4333.1,3182.3],[4289.0,3248.9],[4245.1,3311.6],[4169.7,3408.0],[4115.4,3472.9],[4050.6,3545.2],[4009.9,3586.0],[3941.3,3653.2]]},
+  {n:"Hawkslade Road",k:"residential",p:[[3681.6,3405.0],[3512.2,3187.7],[3324.1,2956.6],[3275.6,2895.2],[3251.9,2876.1],[3231.9,2865.2],[3195.7,2848.7]]},
+  {n:"Rosenthorpe Road",k:"residential",p:[[3434.0,2641.0],[3860.1,3175.7]]},
+  {n:"Fernholme Road",k:"residential",p:[[3648.8,2463.5],[4018.1,2953.8]]},
+  {n:"Homeleigh Road",k:"residential",p:[[3853.7,2289.3],[4155.2,2673.6]]},
+  {n:"Ivydale Road",k:"tertiary",p:[[3241.4,2783.9],[3251.1,2782.7],[3271.7,2770.4],[3350.9,2708.3],[3369.3,2693.4],[3434.0,2641.0],[3648.8,2463.5],[3715.0,2407.3],[3853.7,2289.3],[4088.9,2117.1]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[-507.0,179.2],[-484.6,200.1],[-439.2,239.4],[-400.9,272.5],[-396.5,276.3],[-222.1,435.3],[-171.4,481.5],[-125.2,523.6],[-113.5,534.4],[3.6,634.6]]},
+  {n:"Homestall Road",k:"tertiary",p:[[1926.3,1765.1],[1921.3,1779.0],[1916.2,1789.7],[1836.4,1885.7],[1756.1,1963.0],[1748.8,1970.0],[1684.5,2123.7],[1674.3,2230.9],[1653.3,2452.3],[1649.1,2511.4],[1650.5,2660.8],[1631.4,2758.9]]},
+  {n:"Colyton Road",k:"tertiary",p:[[1631.4,2758.9],[1556.2,2871.2],[1422.9,3014.4],[1226.8,3129.7],[1132.2,3185.3],[976.6,3277.8],[930.2,3305.4],[872.9,3338.0],[719.7,3425.2],[549.2,3522.3],[502.8,3548.8],[381.9,3601.9],[203.3,3680.5],[147.7,3705.0],[73.9,3728.1],[-45.4,3762.4],[-64.2,3767.8],[-83.2,3775.9],[-114.9,3789.4]]},
+  {n:"Inverton Road",k:"residential",p:[[3495.5,1522.8],[3687.4,1710.8],[3755.2,1777.6],[3884.2,1904.9]]},
+  {n:"Aspinal Road",k:"residential",p:[[5029.5,-45.9],[5063.7,-48.3]]},
+  {n:"Arica Road",k:"residential",p:[[5358.2,559.4],[5418.5,500.7],[5657.1,270.0],[5765.6,165.4],[5891.7,43.9],[5977.9,-39.5],[6128.1,-184.7],[6318.1,-368.4],[6381.4,-428.0],[6396.7,-435.6],[6410.4,-435.8],[6429.4,-434.6]]},
+  {n:"Revelon Road",k:"residential",p:[[5093.6,451.7],[5118.2,446.6],[5142.2,424.3],[5185.1,382.4],[5228.1,340.0],[5433.0,143.4],[5486.2,90.8],[5748.4,-162.4],[5940.5,-349.1],[6169.1,-569.7],[6244.5,-643.0],[6246.5,-659.3]]},
+  {n:"Dundalk Road",k:"residential",p:[[5053.5,-211.8],[5098.0,-248.1],[5124.1,-271.4],[5345.2,-484.4],[5489.2,-624.6],[5523.5,-656.1],[5599.2,-729.7],[5607.2,-744.9]]},
+  {n:"Finland Road",k:"residential",p:[[5076.7,100.4],[5113.0,93.3],[5183.2,28.4],[5400.9,-179.1],[5637.7,-407.0],[5844.4,-608.8],[5890.8,-658.9],[5903.9,-680.8],[5908.8,-696.7]]},
+  {n:"Avignon Road",k:"tertiary",p:[[4995.6,-971.2],[4997.2,-952.0],[5007.6,-819.7],[5011.9,-764.2],[5026.8,-524.1],[5053.5,-211.8],[5054.6,-191.8],[5063.7,-48.3],[5076.7,100.4],[5088.1,310.8]]},
+  {n:"Frendsbury Road",k:"tertiary",p:[[5088.1,310.8],[5092.3,418.9],[5093.6,451.7]]},
+  {n:"Turnham Road",k:"residential",p:[[5120.9,1224.3],[5137.3,1229.7],[5292.8,1280.9],[5311.0,1286.8],[5323.5,1297.4],[5416.5,1376.1],[5434.7,1391.5],[5675.1,1594.8],[5702.1,1643.7],[5710.7,1693.9],[5665.5,1824.2]]},
+  {n:"Pincott Place",k:"residential",p:[[4231.2,-1030.7],[4254.6,-1025.3],[4259.2,-1021.6],[4330.5,-948.0],[4387.4,-874.4],[4414.4,-834.0],[4439.4,-796.4],[4463.4,-760.4],[4517.1,-667.3],[4534.7,-637.0],[4586.9,-537.2],[4607.2,-490.0],[4643.9,-404.3],[4690.8,-271.7],[4704.4,-218.0],[4713.2,-183.1],[4737.3,-102.3],[4752.4,-51.7],[4758.0,-33.2],[4777.5,64.1],[4784.1,96.5],[4788.2,124.0],[4792.6,152.9],[4796.3,185.1],[4802.4,238.6],[4809.9,305.2],[4813.9,356.2],[4817.6,402.9],[4818.0,409.5],[4819.5,457.1]]},
+  {n:"Hainford Close",k:"residential",p:[[4873.2,590.6],[4847.7,619.7],[4821.5,633.9],[4790.7,636.3],[4733.7,643.4],[4714.7,648.2],[4700.4,671.9],[4702.8,757.4],[4690.9,942.6],[4690.9,994.9],[4690.9,1049.5],[4686.2,1130.2]]},
+  {n:"Coston Walk",k:"footway",p:[[4912.6,611.6],[4888.3,622.1],[4852.4,641.1],[4851.8,658.2],[4846.1,833.0],[4838.1,1075.6],[4838.1,1158.7],[4835.8,1218.1],[4844.1,1274.9],[4847.7,1298.8],[4847.7,1336.8],[4840.5,1408.0],[4807.9,1486.2]]},
+  {n:"Chelwood Walk",k:"footway",p:[[5629.5,1927.4],[5341.9,1833.0],[5056.6,1739.9]]},
+  {n:"Kelvington Road",k:"residential",p:[[3435.2,4040.0],[3424.9,4025.2],[3417.3,4014.3],[3389.2,3976.8],[3349.3,3911.7],[3329.3,3862.8],[3319.9,3837.8],[3314.8,3813.8],[3322.5,3731.6],[3333.1,3637.6],[3325.2,3609.4],[3311.8,3584.5],[3282.8,3538.1],[3246.7,3471.5],[3214.0,3399.4],[3192.2,3341.8],[3174.9,3280.9],[3160.3,3212.5],[3151.1,3110.0],[3165.0,2973.5],[3178.1,2906.6],[3195.7,2848.7],[3212.8,2794.4],[3218.7,2775.7]]},
+  {n:"Aldersford Close",k:"residential",p:[[4924.0,2151.1],[4757.9,2093.7],[4680.2,2309.7],[4664.2,2314.5],[4590.6,2291.6],[4521.7,2268.6],[4467.2,2249.7],[4544.5,1990.1],[4600.6,1751.5]]},
+  {n:"Elland Road",k:"residential",p:[[2212.6,1526.6],[2158.9,1627.4],[2087.2,1787.3],[2082.6,1797.4],[2081.7,1799.3],[2074.3,1814.1]]},
+  {n:"Vermeer Gardens",k:"residential",p:[[2158.9,1627.4],[1997.3,1559.9]]},
+  {n:"Rye Hill Park",k:"residential",p:[[1684.3,924.4],[2001.9,1159.9],[2008.4,1165.9],[2011.4,1171.6],[2012.0,1181.2],[2009.3,1192.0],[1992.4,1220.9],[1949.9,1296.1],[1938.4,1309.6],[1925.1,1321.0],[1912.6,1328.1],[1887.6,1340.0],[1856.4,1357.4],[1838.6,1369.7],[1832.6,1375.2],[1825.1,1382.1],[1811.3,1394.9],[1786.4,1424.5],[1764.7,1457.6],[1732.5,1517.5],[1667.8,1645.0],[1660.4,1657.7]]},
+  {n:"Torridge Gardens",k:"residential",p:[[1413.2,1182.7],[1346.5,947.7],[1502.3,864.5],[1541.2,828.9],[1551.4,814.1],[1558.8,794.9],[1554.3,763.7],[1506.9,609.8],[1499.3,594.4],[1491.2,583.3],[1478.8,573.6],[1465.1,567.0],[1452.9,564.3],[1442.2,563.5],[1431.0,565.5],[1420.4,569.6],[1408.1,577.8],[1395.5,590.7],[1385.5,602.4],[1378.6,610.6],[1310.6,691.4],[1255.2,769.2],[1230.9,803.3],[1223.2,829.3],[1235.2,885.3],[1257.4,922.3],[1279.5,943.3],[1319.8,950.9],[1346.5,947.7]]},
+  {n:"Rye Hill Park",k:"residential",p:[[1814.9,729.9],[1684.3,924.4],[1593.4,1057.0],[1580.7,1070.6],[1524.7,1123.1],[1496.7,1144.1],[1468.9,1159.3],[1413.2,1182.7],[1395.9,1191.1],[1382.3,1202.7],[1371.6,1216.0],[1359.2,1237.6],[1318.9,1316.2],[1259.9,1431.2],[1253.0,1445.4]]},
+  {n:"Somerton Road",k:"residential",p:[[331.2,886.0],[342.6,872.8],[667.8,494.4],[675.1,486.0]]},
+  {n:"Forester Road",k:"residential",p:[[629.7,-60.1],[812.6,-275.0]]},
+  {n:"Tresco Road",k:"residential",p:[[560.5,46.9],[565.4,56.4]]},
+  {n:"Linden Grove",k:"tertiary",p:[[2583.2,-990.2],[2442.7,-853.5],[2417.0,-829.2],[2381.2,-788.5],[1974.1,-366.9],[1727.6,-111.7],[1665.4,-70.1],[1638.8,-52.3],[1515.0,-9.1],[1474.5,0.2],[1447.1,4.3],[1341.9,-0.2],[1272.6,-16.7],[1229.7,-30.7],[1164.3,-46.4],[1111.6,-68.8],[1048.8,-95.6],[940.5,-174.1],[826.8,-290.6]]},
+  {n:"Water Mews",k:"residential",p:[[1515.0,-9.1],[1519.4,9.0],[1521.6,24.8],[1521.6,41.8],[1512.6,111.1],[1508.8,173.2],[1507.5,199.1],[1508.2,217.8],[1511.2,246.1],[1515.4,269.6],[1532.8,351.0],[1540.9,384.9],[1550.2,414.1],[1556.0,426.4],[1563.6,436.6],[1654.4,514.4],[1699.4,553.0]]},
+  {n:"Nunhead Grove",k:"residential",p:[[1727.6,-111.7],[1712.9,-132.2],[1626.5,-254.3],[1585.6,-311.7],[1562.4,-343.2],[1453.6,-479.5],[1415.3,-524.6],[1393.6,-550.7],[1335.8,-620.2],[1304.3,-648.9],[1288.8,-661.8],[1265.8,-680.8],[1199.8,-733.2],[1170.0,-756.8],[1070.2,-836.0],[1015.7,-876.0],[986.4,-896.5],[971.2,-907.0],[857.8,-978.7],[820.7,-997.4]]},
+  {n:"Belvedere Mews",k:"residential",p:[[1415.3,-524.6],[1300.6,-424.4]]},
+  {n:"Daniels Road",k:"residential",p:[[2381.2,-788.5],[2297.3,-872.4],[2258.3,-910.1],[2251.0,-912.7],[2243.9,-913.0],[2237.1,-909.6],[1831.3,-494.6],[1812.8,-477.3],[1818.0,-464.2],[1819.3,-451.1],[1817.3,-440.4],[1810.3,-428.7],[1760.5,-374.1],[1704.9,-319.5],[1646.8,-268.8],[1626.5,-254.3]]},
+  {n:"Old James Street",k:"residential",p:[[-327.4,-1035.9],[-303.0,-1006.4],[-96.7,-728.7],[13.6,-581.8],[27.7,-566.6]]},
+  {n:"Dunstan's Road",k:"residential",p:[[-1369.6,5451.3],[-1327.9,5403.5],[-1232.2,5312.3],[-1102.9,5192.9],[-1079.7,5168.5],[-1066.0,5157.0],[-972.3,5063.4],[-916.4,4979.4],[-775.8,4843.8],[-691.5,4697.7],[-671.7,4663.2],[-609.9,4556.7],[-563.5,4476.8],[-547.2,4448.8],[-509.2,4386.1],[-463.7,4301.8],[-385.9,4168.2],[-355.1,4115.5],[-325.0,4063.5],[-236.3,3922.9],[-192.9,3859.1],[-163.3,3826.7],[-149.3,3811.3],[-136.1,3802.9],[-114.9,3789.4]]},
+  {n:"Hichisson Road",k:"residential",p:[[2805.7,2467.4],[3058.9,2246.2],[3289.8,2054.8],[3300.8,2046.1]]},
+  {n:"Reynolds Road",k:"residential",p:[[2917.5,2067.8],[2902.6,2069.1],[2467.5,2107.0],[2423.6,2120.3]]},
+  {n:"Piermont Green",k:"residential",p:[[-537.3,3310.6],[-462.3,3181.6],[-459.0,3156.5],[-453.2,3137.2],[-444.2,3127.6],[-429.3,3117.7]]},
+  {n:"Forest Hill Road",k:"unclassified",p:[[-174.7,3708.4],[-209.1,3713.4],[-242.4,3708.6],[-361.2,3639.6]]},
+  {n:"Surrey Road",k:"residential",p:[[3455.6,2234.0],[3030.5,2623.4]]},
+  {n:"Brockley Footpath",k:"footway",p:[[1727.6,-111.7],[2096.4,260.4],[2324.4,478.8],[2358.0,508.8],[2439.7,617.4],[2618.7,760.5],[2773.6,855.1],[2844.9,920.0],[3288.8,1334.7]]},
+  {n:"Linden Grove",k:"tertiary",p:[[826.8,-290.6],[793.5,-331.3],[736.9,-400.8],[703.2,-444.8],[639.4,-527.9],[637.5,-530.8],[608.4,-571.7],[496.2,-712.9],[475.6,-740.7]]},
+  {n:"Waveney Avenue",k:"residential",p:[[593.4,1067.4],[605.3,1051.7],[884.2,684.6],[675.1,486.0]]},
+  {n:"Cheltenham Road",k:"tertiary",p:[[2186.2,1890.6],[2147.6,1857.7],[2132.4,1845.7],[2106.2,1830.1]]},
+  {n:"Stuart Road",k:"residential",p:[[3085.2,1779.0],[3008.5,1801.0],[2899.3,1823.1],[2682.6,1830.7],[2367.5,1841.9],[2340.4,1844.7]]},
+  {n:"Inverton Road",k:"residential",p:[[3884.2,1904.9],[4023.6,2042.2],[4066.1,2091.0],[4071.3,2096.9],[4088.9,2117.1]]},
+  {n:"Avignon Road",k:"residential",p:[[5088.1,310.8],[5114.3,315.4],[5171.4,373.3],[5185.1,382.4]]},
+  {n:"St Norbert Road",k:"tertiary",p:[[5142.5,1470.7],[5118.4,1524.3],[5095.2,1609.0],[5065.4,1712.8],[5056.6,1739.9],[5049.1,1763.4],[4999.3,1917.8],[4924.0,2151.1],[4847.2,2389.1],[4792.7,2540.9]]},
+  {n:"Solomon's Passage",k:"residential",p:[[316.6,311.6],[289.8,343.6],[133.9,529.8],[45.3,640.5],[31.8,657.4]]},
+  {n:"Abbotsbury Mews",k:"residential",p:[[1562.4,-343.2],[1529.2,-318.8],[1454.2,-266.5]]},
+  {n:"Abbotsbury Mews",k:"residential",p:[[1483.3,-236.1],[1454.2,-266.5],[1427.1,-294.9]]},
+  {n:"Banfield Road",k:"residential",p:[[-357.4,-307.6],[-341.3,-278.2],[-271.1,-174.8],[-248.0,-139.0],[-223.7,-116.5],[-156.6,-55.0],[-69.6,36.9],[74.9,189.3],[101.0,210.0]]},
+  {n:"Banfield Road",k:"residential",p:[[-156.6,-55.0],[-113.6,-94.1],[-61.1,-142.0],[-65.5,-163.7]]},
+  {n:"Banfield Road",k:"residential",p:[[-61.1,-142.0],[-6.8,-126.2]]},
+  {n:"Tappesfield Road",k:"residential",p:[[1232.1,-1293.8],[1262.9,-1263.0],[1298.2,-1222.4],[1369.0,-1150.5],[1441.0,-1077.5],[1510.6,-1006.9],[1515.5,-1002.1],[1636.2,-884.3],[1737.0,-785.9],[1800.0,-724.4],[1805.1,-716.6],[1807.5,-710.1],[1808.1,-703.1],[1804.5,-695.0],[1715.2,-610.1],[1710.2,-603.6],[1708.0,-600.7],[1706.5,-593.9],[1707.3,-586.7],[1711.2,-578.0],[1812.8,-477.3]]},
+  {n:"Nunhead Crescent",k:"residential",p:[[-866.2,-412.0],[-839.1,-416.5],[-768.8,-423.5],[-727.9,-428.2],[-715.8,-428.6],[-653.3,-430.2],[-571.0,-423.5],[-535.5,-420.4],[-511.4,-418.2],[-473.7,-427.5],[-457.9,-434.9],[-437.2,-463.3],[-456.1,-528.3],[-491.7,-611.1]]},
+  {n:"Banfield Road",k:"residential",p:[[74.9,189.3],[105.7,160.8]]},
+  {n:"Homestall Road",k:"footway",p:[[1778.9,3139.0],[1782.8,3150.6],[1782.6,3179.5],[1807.4,3195.4],[1900.2,3378.0],[1917.4,3454.2]]},
+  {n:"Homestall Road",k:"service",p:[[1917.4,3454.2],[1973.6,3568.8],[2063.8,3725.3],[2137.9,3888.8],[2309.8,4228.7]]},
+  {n:"Merttins Road",k:"tertiary",p:[[4088.9,2117.1],[4097.1,2127.3],[4104.9,2137.1]]},
+  {n:"Brockley Way",k:"residential",p:[[4768.5,2613.0],[4822.2,2636.5],[4837.9,2648.0]]},
+  {n:"Ivydale Road",k:"residential",p:[[4390.8,1854.9],[4487.5,1378.4],[4491.2,1355.4],[4514.3,1210.8]]},
+  {n:"Stuart Road",k:"residential",p:[[3298.1,1598.4],[3289.7,1605.6],[3287.2,1607.7],[3172.5,1716.3],[3085.2,1779.0]]},
+  {n:"Sartor Road",k:"residential",p:[[3298.1,1598.4],[3112.8,1413.0]]},
+  {n:"Brackley Avenue",k:"residential",p:[[1142.1,-308.1],[1104.1,-270.1]]},
+  {n:"Chabot Drive",k:"residential",p:[[793.5,-331.3],[804.9,-339.5],[816.6,-348.2],[874.5,-393.9],[957.0,-480.0],[1019.1,-543.9]]},
+  {n:"Chabot Drive",k:"residential",p:[[1061.5,-503.5],[1019.1,-543.9]]},
+  {n:"Chabot Drive",k:"residential",p:[[994.6,-441.6],[957.0,-480.0]]},
+  {n:"Candle Grove",k:"residential",p:[[608.4,-571.7],[617.6,-578.0],[625.1,-583.5],[688.5,-633.1],[739.9,-659.8],[753.5,-662.5],[765.2,-659.9],[775.4,-652.9],[832.2,-597.1]]},
+  {n:"Brackley Avenue",k:"residential",p:[[1229.7,-30.7],[1237.5,-53.3],[1241.5,-77.7],[1243.0,-110.9],[1242.5,-139.2],[1238.4,-164.7],[1230.2,-191.0],[1219.3,-213.3],[1206.0,-234.3],[1191.5,-253.0],[1142.1,-308.1],[1106.4,-349.7]]},
+  {n:"Forester Road",k:"residential",p:[[439.7,145.1],[445.2,143.2],[455.8,137.1],[500.9,97.9]]},
+  {n:"Brockley Mews",k:"residential",p:[[5595.4,3335.8],[5399.8,3766.2]]},
+  {n:"Brockley Way",k:"tertiary",p:[[4270.3,2343.4],[4276.6,2350.8],[4303.8,2378.7],[4327.5,2401.3],[4370.2,2442.4],[4383.4,2452.4],[4436.2,2483.7],[4496.3,2511.9],[4612.9,2557.0]]},
+  {n:"Brenchley Gardens",k:"tertiary",p:[[3941.3,3653.2],[3817.5,3766.5],[3688.1,3872.3],[3605.8,3933.2],[3435.2,4040.0],[3217.0,4157.2],[3174.2,4180.5]]},
+  {n:"Ivydale Road",k:"residential",p:[[4088.9,2117.1],[4390.8,1854.9]]},
+  {n:"Brockley Way",k:"tertiary",p:[[4612.9,2557.0],[4687.5,2585.7]]},
+  {n:"Waveney Avenue",k:"residential",p:[[675.1,486.0],[558.9,383.0],[453.3,185.5]]},
+  {n:"Aspinall Road",k:"residential",p:[[5054.6,-191.8],[4984.6,-179.3]]},
+  {n:"Belvedere Mews",k:"residential",p:[[1267.3,-460.4],[1300.6,-424.4],[1319.8,-403.6],[1326.6,-396.3]]},
+  {n:"Brockley Way",k:"residential",p:[[5451.8,3209.1],[5584.8,3309.1],[5591.3,3322.4],[5595.4,3335.8]]},
+  {n:"Brenchley Gardens",k:"tertiary",p:[[3174.2,4180.5],[2966.5,4285.4],[2767.2,4392.5],[2544.6,4518.8],[2432.3,4596.3],[2303.9,4699.9],[2225.1,4765.1],[2115.8,4888.6],[1994.3,5029.3],[1963.9,5064.4],[1844.6,5206.1],[1768.8,5305.3],[1688.6,5409.5],[1645.0,5473.4],[1568.2,5595.3]]},
+  {n:"Limesford Road",k:"residential",p:[[3638.4,968.8],[3549.4,1061.9],[3336.7,1284.4],[3288.8,1334.7]]},
+  {n:"Rocastle Road",k:"residential",p:[[5198.7,2288.7],[5471.2,2375.1],[5486.8,2377.2]]},
+  {n:"Nash Road",k:"residential",p:[[5422.2,2603.8],[5389.1,2594.1],[5125.1,2516.4],[5116.2,2505.8],[5198.7,2288.7],[5215.1,2230.1],[4924.0,2151.1]]},
+  {n:"Billingford Close",k:"residential",p:[[4959.9,1155.4],[4948.6,1016.8],[4943.6,893.3],[4938.7,773.1],[4943.3,753.8],[4950.7,728.9],[4972.5,710.6],[5015.0,694.6]]},
+  {n:"Billingford Close",k:"residential",p:[[4930.8,1546.7],[4935.2,1482.1],[4944.1,1359.0],[4991.8,1285.4],[4997.7,1274.1],[4997.1,1236.6],[4996.7,1213.2],[4992.1,1188.7],[4984.0,1168.2],[4959.9,1155.4]]},
+  {n:"Peckham Rye",k:"secondary",p:[[-258.8,3564.3],[-276.5,3517.9],[-429.3,3117.7],[-487.5,2959.8],[-529.5,2832.6],[-642.4,2552.7],[-670.7,2486.6]]},
+  {n:"Natasha Mews",k:"residential",p:[[1957.0,1634.0],[2003.6,1649.3],[1964.6,1757.9],[1958.3,1774.5]]},
+  {n:"Scutari Road",k:"residential",p:[[1541.5,4371.4],[1457.4,4220.5],[1437.0,4183.9],[1356.3,4039.0],[1227.2,3819.2],[1152.4,3691.9],[1063.6,3540.7],[1021.4,3469.1],[930.2,3305.4]]},
+  {n:"Stuart Road",k:"residential",p:[[2238.6,1855.3],[2217.4,1864.5],[2208.0,1871.6],[2200.1,1879.0]]},
+  {n:"Joseph Mews",k:"service",p:[[3772.5,2147.0],[3851.5,2083.1],[3785.8,1995.5],[3777.7,1984.5]]},
+  {n:"Barville Close",k:"service",p:[[4999.3,1917.8],[5089.5,1951.1],[5122.9,1874.1],[5194.1,1897.1],[5136.2,2091.6],[5056.1,2067.0],[5089.5,1951.1]]},
+  {n:"Forester Road",k:"residential",p:[[629.7,-60.1],[615.7,-28.6],[565.5,35.7],[560.5,46.9]]},
+  {n:"St Norbert Road",k:"tertiary",p:[[5434.6,1146.1],[5426.2,1155.7],[5357.7,1233.7],[5311.0,1286.8],[5276.9,1327.7],[5205.9,1401.7],[5142.5,1470.7]]},
+  {n:"Brockill Crescent",k:"residential",p:[[5662.3,880.1],[5634.6,850.4],[5530.5,738.6],[5358.2,559.4],[5297.2,494.3],[5198.9,391.5],[5185.1,382.4]]},
+  {n:"St Norbert Road",k:"tertiary",p:[[5662.3,880.1],[5623.7,920.7],[5559.9,991.3],[5434.6,1146.1]]},
+  {n:"Frendsbury Road",k:"tertiary",p:[[5106.9,702.1],[5107.3,820.8],[5107.6,887.5],[5108.1,1027.0],[5120.9,1224.3]]},
+  {n:"Frendsbury Road",k:"tertiary",p:[[5093.6,451.7],[5106.9,702.1]]},
+  {n:"Billingford Close",k:"residential",p:[[5095.2,1609.0],[4962.8,1568.1],[4957.5,1566.5],[4930.8,1546.7]]},
+  {n:"Forester Road",k:"cycleway",p:[[565.4,56.4],[535.2,76.4],[526.0,76.2]]},
+  {n:"Brockley Way",k:"tertiary",p:[[4687.5,2585.7],[4768.5,2613.0]]},
+  {n:"Brockley Way",k:"residential",p:[[4837.9,2648.0],[5087.6,2878.1],[5247.8,3025.8]]},
+  {n:"Ivydale Road",k:"residential",p:[[4514.3,1210.8],[4488.2,1152.4],[4462.2,1094.4],[4433.6,1030.4],[4387.6,937.2],[4337.6,836.0],[4288.5,736.5],[4155.5,451.8],[4110.0,346.7],[4010.9,118.2],[3904.1,-128.3],[3739.9,-488.0],[3690.2,-596.8],[3630.7,-733.1],[3474.5,-1080.8],[3367.4,-1339.5],[3297.3,-1508.7],[3291.2,-1522.9],[3285.4,-1564.5]]},
+  {n:"Turnham Road",k:"residential",p:[[5656.3,1850.7],[5629.5,1927.4],[5592.9,2041.0],[5568.3,2117.5],[5508.6,2302.6],[5500.4,2332.2],[5486.8,2377.2],[5422.2,2603.8],[5398.8,2670.4],[5374.6,2736.3],[5304.8,2932.8],[5295.1,2960.2],[5272.4,2996.5],[5264.9,3006.0],[5247.8,3025.8]]},
+  {n:"Frendsbury Road",k:"tertiary",p:[[5120.9,1224.3],[5120.8,1233.9],[5118.4,1422.2],[5142.5,1470.7]]},
+  {n:"Tresco Road",k:"residential",p:[[565.4,56.4],[821.5,309.3],[896.1,375.9],[991.0,10.3],[1045.5,-89.6],[1048.8,-95.6]]},
+  {n:"Forester Road",k:"residential",p:[[526.0,76.2],[530.1,66.8],[543.2,56.1],[560.5,46.9]]},
+  {n:"Aspinall Road",k:"residential",p:[[4984.6,-179.3],[5029.5,-45.9]]},
+  {n:"Aspinall Road",k:"residential",p:[[4984.6,-179.3],[4932.6,-304.1],[4839.5,-516.7],[4763.6,-672.6],[4689.4,-809.9],[4571.7,-995.3],[4486.0,-1111.3],[4480.0,-1127.4]]},
+  {n:"Claxton Path",k:"footway",p:[[4851.8,658.2],[4788.8,669.2],[4782.3,828.3],[4846.1,833.0]]},
+  {n:"Athenlay Road",k:"residential",p:[[4270.3,2343.4],[4277.2,2321.2],[4280.5,2308.9],[4325.6,2153.1],[4364.9,1973.4],[4390.8,1854.9]]},
+  {n:"Merttins Road",k:"tertiary",p:[[4104.9,2137.1],[4270.3,2343.4]]},
+  {n:"Cheltenham Road",k:"tertiary",p:[[2097.4,1824.9],[2074.3,1814.1],[2008.4,1791.1]]},
+  {n:"Cheltenham Road",k:"footway",p:[[2101.7,1792.9],[2104.6,1794.0],[2103.1,1800.5],[2149.0,1811.0]]},
+  {n:"Cheltenham Road",k:"footway",p:[[2015.1,1775.6],[2016.1,1772.8],[2063.5,1787.5],[2067.6,1779.6],[2072.0,1781.4]]},
+  {n:"Cheltenham Road",k:"footway",p:[[2175.6,1918.1],[2120.0,1869.3],[2086.8,1845.1],[2066.2,1835.5],[2001.3,1807.7],[2003.3,1803.0]]},
+  {n:"Cheltenham Road",k:"footway",p:[[2164.6,1827.0],[2196.5,1859.7]]},
+  {n:"Stuart Road",k:"residential",p:[[2200.1,1879.0],[2186.2,1890.6]]},
+  {n:"Stuart Road",k:"residential",p:[[2260.7,1853.2],[2238.6,1855.3]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[31.8,657.4],[46.4,669.4],[225.0,808.3],[272.7,843.0],[310.0,870.5],[331.2,886.0],[359.0,906.3]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[917.7,1263.0],[1029.0,1326.8],[1101.3,1366.9],[1225.5,1431.2]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1280.9,1460.1],[1311.4,1476.2]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1311.4,1476.2],[1469.9,1559.9]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1734.6,1692.0],[1816.3,1728.6],[1855.1,1742.0],[1899.3,1756.5]]},
+  {n:"Strakers Road",k:"service",p:[[274.2,960.6],[304.6,1148.3],[345.2,1313.7],[350.0,1333.5],[358.0,1365.6],[356.4,1501.3],[354.9,1514.3],[348.0,1570.7],[314.4,1629.6],[295.0,1664.2],[191.6,1698.6],[156.6,1711.4],[31.7,1757.0],[4.8,1755.8],[-48.6,1752.8],[-61.4,1752.6],[-118.2,1749.9],[-268.9,1742.8],[-564.5,1733.6],[-1054.0,1628.4],[-1080.5,1639.5]]},
+  {n:"Billingford Close",k:"residential",p:[[5015.0,694.6],[5059.1,700.4],[5106.9,702.1]]},
+  {n:"Bessingham Walk",k:"footway",p:[[4731.1,1781.1],[4726.1,1797.8],[4670.4,2021.5],[4601.8,2253.9],[4590.6,2291.6]]},
+  {n:"Bessingham Walk",k:"footway",p:[[4807.9,1486.2],[4800.1,1523.6],[4753.9,1692.1],[4731.1,1781.1]]},
+  {n:"Bircham Path",k:"footway",p:[[4601.8,2253.9],[4546.1,2235.3],[4607.2,2006.0],[4662.0,1766.1]]},
+  {n:"Pincott Place",k:"residential",p:[[4820.1,492.5],[4820.8,509.3],[4822.5,535.2],[4827.9,551.0],[4835.4,564.2],[4858.7,582.1],[4873.2,590.6],[4912.6,611.6],[4954.9,632.2],[4984.8,654.8],[4997.5,673.8],[5015.0,694.6]]},
+  {n:"Nunhead Lane",k:"primary",p:[[-684.4,-148.7],[-524.7,-222.8],[-357.4,-307.6],[-278.1,-354.0],[-204.5,-398.0],[-141.3,-438.1],[-76.4,-483.4],[-20.2,-524.9],[4.0,-544.3],[27.7,-566.6],[72.1,-616.4],[141.1,-704.0],[161.6,-725.5],[179.5,-739.8],[206.8,-753.5],[242.7,-768.6],[271.3,-778.1],[294.3,-784.7]]},
+  {n:"Forester Road",k:"residential",p:[[500.9,97.9],[526.0,76.2]]},
+  {n:"Stuart Road",k:"residential",p:[[2340.4,1844.7],[2260.7,1853.2]]},
+  {n:"Cheltenham Road",k:"tertiary",p:[[2106.2,1830.1],[2097.4,1824.9]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1899.3,1756.5],[1926.3,1765.1]]},
+  {n:"Pincott Place",k:"residential",p:[[4819.5,457.1],[4820.1,492.5]]},
+  {n:"Cheltenham Road",k:"tertiary",p:[[2008.4,1791.1],[1958.3,1774.5],[1926.3,1765.1]]},
+  {n:"Forester Road",k:"residential",p:[[812.6,-275.0],[826.8,-290.6]]},
+  {n:"Brockley Way",k:"residential",p:[[5247.8,3025.8],[5347.3,3120.8],[5451.8,3209.1]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[-571.0,117.1],[-547.0,141.5],[-507.0,179.2]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[3.6,634.6],[17.2,645.6],[31.8,657.4]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[359.0,906.3],[399.8,936.2]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[399.8,936.2],[564.4,1047.8]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[564.4,1047.8],[593.4,1067.4],[620.9,1084.9]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[620.9,1084.9],[647.5,1101.8],[727.5,1152.8]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[727.5,1152.8],[746.5,1164.8]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[746.5,1164.8],[917.7,1263.0]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1225.5,1431.2],[1253.0,1445.4]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1253.0,1445.4],[1280.9,1460.1]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1469.9,1559.9],[1511.4,1581.8],[1635.7,1645.8]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1635.7,1645.8],[1660.4,1657.7],[1685.4,1669.8]]},
+  {n:"Peckham Rye",k:"tertiary",p:[[1685.4,1669.8],[1734.6,1692.0]]},
+  {n:"Candle Grove",k:"residential",p:[[789.6,-552.8],[832.2,-597.1],[862.4,-628.5]]},
+  {n:"Inverton Road",k:"residential",p:[[3288.8,1334.7],[3415.7,1448.5],[3451.8,1480.9],[3495.5,1522.8]]},
+  {n:"St Norbert Road",k:"tertiary",p:[[4792.7,2540.9],[4776.1,2590.6],[4768.5,2613.0]]},
+];
+
+const PARKS = [
+];
+
+const SCHOOLS = [
+  {n:"Ivydale Primary School",p:[[4452.8,1369.1],[4452.8,1370.1],[4301.3,1502.8],[4137.0,1329.2],[4413.8,1071.9],[4477.9,1207.2],[4461.8,1311.4],[4452.8,1369.1]]},
+];
+</script>
+<script>
+  // ============================================================
+  // Geometry helpers
+  // ============================================================
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const VIEW_W = 1000, VIEW_H = 700;
+
+  function el(tag, attrs = {}) {
+    const e = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    return e;
+  }
+
+  function pathLen(pts) {
+    let L = 0;
+    for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]);
+    return L;
+  }
+
+  // Returns [x, y, tangent] at fraction t (0..1) along polyline.
+  function pointAlong(pts, t) {
+    const segLens = [];
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const L = Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]);
+      segLens.push(L);
+      total += L;
+    }
+    const target = total * t;
+    let cum = 0;
+    for (let i = 0; i < segLens.length; i++) {
+      if (cum + segLens[i] >= target) {
+        const f = segLens[i] === 0 ? 0 : (target - cum) / segLens[i];
+        const x = pts[i][0] + (pts[i+1][0]-pts[i][0]) * f;
+        const y = pts[i][1] + (pts[i+1][1]-pts[i][1]) * f;
+        const tx = pts[i+1][0]-pts[i][0], ty = pts[i+1][1]-pts[i][1];
+        const tl = Math.hypot(tx, ty) || 1;
+        return { x, y, tx: tx/tl, ty: ty/tl };
+      }
+      cum += segLens[i];
+    }
+    const i = pts.length - 1;
+    return { x: pts[i][0], y: pts[i][1], tx: 0, ty: 0 };
+  }
+
+  function perpLeft(tx, ty) { return [-ty, tx]; }   // 90° CCW
+  function perpRight(tx, ty) { return [ty, -tx]; }  // 90° CW
+
+  function findRoad(name) {
+    return ROADS.find(r => r.n === name);
+  }
+
+  // ============================================================
+  // Bake the world
+  // ============================================================
+  document.getElementById('world-bg').setAttribute('width', WORLD_W);
+  document.getElementById('world-bg').setAttribute('height', WORLD_H);
+
+  // ---- Park ----
+  // North + east edges follow the real OSM geometry of Peckham Rye road and Homestall Road.
+  // The NE corner (1926, 1765) is the Homestall/Peckham Rye junction — the Adventure Playground sits just inside.
+  // West + south edges are hand-drawn approximations (no good OSM polygon was available).
+  const parkPolygon = [
+    // NE corner (Homestall / Peckham Rye junction)
+    [1926, 1765],
+    // Along Peckham Rye road heading NW (north boundary of the park):
+    [1899, 1757], [1734, 1692], [1685, 1670], [1635, 1646],
+    [1469, 1560], [1311, 1476], [1225, 1431], [1101, 1367],
+    [917, 1263], [746, 1165], [620, 1085], [400, 950], [200, 800],
+    // West boundary (off-map / hand-drawn):
+    [0, 700], [0, 1800], [0, 2800], [0, 3774],
+    // South boundary:
+    [400, 3774], [800, 3774], [1200, 3700], [1500, 3550],
+    // East boundary, back up along Homestall Road:
+    [1917, 3454], [1778, 3139],
+    [1631, 2759], [1650, 2661], [1649, 2511], [1653, 2452],
+    [1674, 2231], [1684, 2124],
+    [1749, 1970], [1756, 1963], [1836, 1886], [1916, 1790], [1921, 1779]
+  ];
+  const parksLayer = document.getElementById('parks-layer');
+  const parkPath = el('polygon', {
+    class: 'park-fill',
+    points: parkPolygon.map(p => p.join(',')).join(' '),
+  });
+  parksLayer.appendChild(parkPath);
+  const parkLabel = el('text', { class: 'park-name', x: 700, y: 2500 });
+  parkLabel.textContent = 'Peckham Rye Park';
+  parksLayer.appendChild(parkLabel);
+
+  // Nunhead Cemetery — fills the full block between Spooky Path (W), Ivydale Road (E)
+  // and Limesford Road (S). Polygon edges hug each of those three roads.
+  const cemeteryPolygon = [
+    // NW corner — top of map, just east of Spooky Path
+    [1830, -50],
+    // North edge — straight across to just west of Ivydale Road
+    [3870, -100],
+    // East edge — follow Ivydale Road south down to Limesford
+    [3892, 0], [3969, 200], [4046, 400], [4081, 488],
+    // South edge — follow Limesford Road SW to its end
+    [3653, 977],
+    // Drop down to the SE end of Spooky Path to fill the corner south of Limesford
+    [3292, 1332],
+    // Back up to where Spooky Path crosses the y=Limesford-end line
+    [2910, 977],
+    // West edge — follow Spooky Path back north
+    [2720, 800], [2504, 600], [2289, 400], [2074, 200], [1859, 0],
+    [1830, -50],
+  ];
+  const cemeteryPath = el('polygon', {
+    class: 'cemetery-fill',
+    points: cemeteryPolygon.map(p => p.join(',')).join(' '),
+  });
+  parksLayer.appendChild(cemeteryPath);
+  const cemeteryLabel = el('text', { class: 'cemetery-name', x: 3050, y: 450 });
+  cemeteryLabel.textContent = 'Nunhead Cemetery 🪦';
+  parksLayer.appendChild(cemeteryLabel);
+
+  // Rename the unnamed path running through the area to "Spooky Path 👻"
+  ROADS.forEach(r => { if (r.n === 'Brockley Footpath') r.n = 'Spooky Path 👻'; });
+
+  // ---- Roads ----
+  // Two passes: dark outlines first, then lighter fills on top. Gives a kerb feel.
+  const widthByKind = {
+    primary:        { o: 36, f: 30 },
+    secondary:      { o: 32, f: 26 },
+    tertiary:       { o: 28, f: 22 },
+    unclassified:   { o: 26, f: 20 },
+    residential:    { o: 24, f: 18 },
+    living_street:  { o: 22, f: 16 },
+    service:        { o: 14, f: 10 },
+    pedestrian:     { o: 18, f: 14 },
+    footway:        { o: 8,  f: 5 },
+    cycleway:       { o: 8,  f: 5 },
+    path:           { o: 6,  f: 4 },
+    track:          { o: 10, f: 6 },
+    steps:          { o: 10, f: 6 },
+  };
+  const roadOutlines = document.getElementById('road-outlines');
+  const roadFills = document.getElementById('road-fills');
+  const roadLabels = document.getElementById('road-labels');
+
+  // Group road segments by name so we draw one label per road.
+  const roadsByName = {};
+
+  for (const r of ROADS) {
+    const w = widthByKind[r.k] || widthByKind.residential;
+    const ptsAttr = r.p.map(p => p.join(',')).join(' ');
+    roadOutlines.appendChild(el('polyline', { class: 'road-outline', points: ptsAttr, 'stroke-width': w.o }));
+    roadFills.appendChild(el('polyline', { class: 'road-fill', points: ptsAttr, 'stroke-width': w.f }));
+    if (!roadsByName[r.n]) roadsByName[r.n] = [];
+    roadsByName[r.n].push(r);
+  }
+
+  // Road name labels: place at the midpoint of the longest segment of each road.
+  for (const [name, segments] of Object.entries(roadsByName)) {
+    let best = segments[0], bestLen = pathLen(best.p);
+    for (const s of segments.slice(1)) {
+      const L = pathLen(s.p);
+      if (L > bestLen) { best = s; bestLen = L; }
+    }
+    if (bestLen < 50) continue;  // skip very short roads
+    const p = pointAlong(best.p, 0.5);
+    // Rotate label to follow the road
+    const angle = Math.atan2(p.ty, p.tx) * 180 / Math.PI;
+    // Keep text upright (no upside-down)
+    const adjusted = angle > 90 ? angle - 180 : angle < -90 ? angle + 180 : angle;
+    const lbl = el('text', {
+      class: 'road-name', x: p.x, y: p.y,
+      transform: `rotate(${adjusted.toFixed(1)} ${p.x} ${p.y})`,
+    });
+    lbl.textContent = name;
+    roadLabels.appendChild(lbl);
+  }
+
+  // ---- Schools + hand-drawn extra buildings (Upper site + The Ivy House) ----
+  const schoolsLayer = document.getElementById('schools-layer');
+  // The OSM-tagged school polygon. Renamed to "(Lower)" per Dave's labelling.
+  for (const s of SCHOOLS) {
+    const ptsAttr = s.p.map(p => p.join(',')).join(' ');
+    schoolsLayer.appendChild(el('polygon', { class: 'school-fill', points: ptsAttr }));
+    const cx = s.p.reduce((a, p) => a + p[0], 0) / s.p.length;
+    const cy = s.p.reduce((a, p) => a + p[1], 0) / s.p.length;
+    const lbl = el('text', { class: 'school-name', x: cx, y: cy });
+    lbl.textContent = (s.n === 'Ivydale Primary School') ? 'Ivydale School (Bellwood)' : s.n;
+    schoolsLayer.appendChild(lbl);
+  }
+  // Hand-drawn polygons for buildings OSM doesn't tag this way:
+  //   - Ivydale Primary (Upper) at the SW end of Lanbury Road
+  //   - The Ivy House pub at 40 Stuart Road
+  const EXTRA_BUILDINGS = [
+    {
+      name: 'Ivydale School (Inverton)',
+      // Tilted rectangle aligned with Inverton Road. East edge runs along Inverton Road
+      // from its NW end down to its junction with Lanbury Road. West edge is offset
+      // perpendicular toward Rye Road by ~half the distance between them.
+      points: [[3486,1510],[3684,1714],[3518,1875],[3320,1671]],
+    },
+    {
+      name: 'The Ivy House 🍺',
+      points: [[2680,1885],[2790,1880],[2800,1910],[2790,1945],[2770,1965],[2690,1965],[2670,1940],[2670,1905]],
+    },
+  ];
+  for (const b of EXTRA_BUILDINGS) {
+    const ptsAttr = b.points.map(p => p.join(',')).join(' ');
+    schoolsLayer.appendChild(el('polygon', { class: 'school-fill', points: ptsAttr }));
+    const cx = b.points.reduce((a, p) => a + p[0], 0) / b.points.length;
+    const cy = b.points.reduce((a, p) => a + p[1], 0) / b.points.length;
+    const lbl = el('text', { class: 'school-name', x: cx, y: cy });
+    lbl.textContent = b.name;
+    schoolsLayer.appendChild(lbl);
+  }
+
+  // ---- Landmarks ----
+  // Each landmark is positioned at a fraction (t) along a road, offset perpendicular.
+  function findLongestRoad(name) {
+    const segments = ROADS.filter(r => r.n === name);
+    if (segments.length === 0) return null;
+    let best = segments[0], bestLen = pathLen(best.p);
+    for (const s of segments.slice(1)) {
+      const L = pathLen(s.p);
+      if (L > bestLen) { best = s; bestLen = L; }
+    }
+    return best;
+  }
+
+  const lanbury = findLongestRoad('Lanbury Road');
+  if (!lanbury) console.error('Lanbury Road not found in ROADS data');
+
+  const LM_COLORS = { home:'#c62828', weebily:'#2e7d32', barry:'#1565c0', carcar:'#fb8c00', stevedave:'#7b1fa2', peacock:'#00695c', 'school-upper':'#6d4c00', 'school-lower':'#6d4c00' };
+
+  // Position along any road, on west or east side
+  function alongRoad(road, t, side='west', dist=40) {
+    const p = pointAlong(road.p, t);
+    const left = perpLeft(p.tx, p.ty);
+    const right = perpRight(p.tx, p.ty);
+    const offset = (side === 'west')
+      ? (left[0] < right[0] ? left : right)
+      : (left[0] > right[0] ? left : right);
+    return { x: p.x + offset[0]*dist, y: p.y + offset[1]*dist };
+  }
+
+  // For roads split across multiple OSM segments (e.g. Ivydale Road), find the point at a target Y
+  // by searching across ALL segments with that name. Returns {x, y, tx, ty} or null.
+  function pointAtY(roadName, targetY) {
+    const segs = ROADS.filter(r => r.n === roadName);
+    for (const seg of segs) {
+      for (let i = 1; i < seg.p.length; i++) {
+        const y1 = seg.p[i-1][1], y2 = seg.p[i][1];
+        if ((y1 <= targetY && y2 >= targetY) || (y1 >= targetY && y2 <= targetY)) {
+          const f = (y2 === y1) ? 0 : (targetY - y1) / (y2 - y1);
+          const x = seg.p[i-1][0] + (seg.p[i][0] - seg.p[i-1][0]) * f;
+          const tx = seg.p[i][0] - seg.p[i-1][0];
+          const ty = seg.p[i][1] - seg.p[i-1][1];
+          const tl = Math.hypot(tx, ty) || 1;
+          return { x, y: targetY, tx: tx/tl, ty: ty/tl };
+        }
+      }
+    }
+    return null;
+  }
+
+  function alongRoadAtY(roadName, targetY, side, dist=50) {
+    const p = pointAtY(roadName, targetY);
+    if (!p) return null;
+    const left = perpLeft(p.tx, p.ty);
+    const right = perpRight(p.tx, p.ty);
+    const offset = (side === 'west')
+      ? (left[0] < right[0] ? left : right)
+      : (left[0] > right[0] ? left : right);
+    return { x: p.x + offset[0]*dist, y: p.y + offset[1]*dist };
+  }
+
+  // Beastburger B (Home, #28): halfway down Lanbury Road, west side.
+  const homePos = alongRoad(lanbury, 0.5, 'west', 50);
+  // School polygon centroid y (used as "school latitude" reference for Barry).
+  const schoolY = (SCHOOLS[0]) ? SCHOOLS[0].p.reduce((a,p)=>a+p[1],0)/SCHOOLS[0].p.length : 1316;
+  // Weebily (#132): on Ivydale Road, west side, near the TOP of the visible map.
+  const weebilyPos = alongRoadAtY('Ivydale Road', 80, 'west', 50)
+                   || { x: 3900, y: 80 };
+  // Barry (#279): on Ivydale Road, east side, opposite Ivydale Primary School.
+  const barryPos = alongRoadAtY('Ivydale Road', schoolY, 'east', 50)
+                 || { x: 3300, y: schoolY };
+  // School (Lower site, per Dave): the OSM-tagged school polygon centroid (near NE end of Lanbury).
+  const schoolLowerPos = (SCHOOLS[0]) ? {
+    x: SCHOOLS[0].p.reduce((a,p)=>a+p[0],0)/SCHOOLS[0].p.length,
+    y: SCHOOLS[0].p.reduce((a,p)=>a+p[1],0)/SCHOOLS[0].p.length,
+  } : alongRoad(lanbury, 0.0, 'east', 100);
+  // School (Upper / Inverton site): hand-drawn yellow polygon SW of Lanbury Road.
+  const schoolUpperPos = { x: 3500, y: 1693 };
+  // The Ivy House pub (40 Stuart Road, real OSM coords).
+  const ivyHousePos = { x: 2735, y: 1922 };
+
+  const LANDMARKS = [
+    { id:'home',         name:"little TIIIIIIIIIIIIIIIIIIIIIM's",            pos: homePos,        color: LM_COLORS.home,    type:'house' },
+    { id:'weebily',      name:"big john's",                pos: weebilyPos,     color: LM_COLORS.weebily, type:'house' },
+    { id:'barry',        name:"emny pluffins Ggg's",       pos: barryPos,       color: LM_COLORS.barry,   type:'house' },
+    { id:'carcar',       name:"Car-car's",                 pos: { x: 3643, y: 2031 }, color: LM_COLORS.carcar,    type:'house' },
+    { id:'stevedave',    name:"skateing fray's",           pos: { x: 3956, y: 3110 }, color: LM_COLORS.stevedave, type:'house' },
+    { id:'peacock',      name:"Peacock Man's",             pos: { x: 3301, y: 2699 }, color: LM_COLORS.peacock,   type:'house' },
+    { id:'school-lower', name:'Ivydale School (Bellwood)', pos: schoolLowerPos, type:'building' },
+    { id:'school-upper', name:'Ivydale School (Inverton)', pos: schoolUpperPos, type:'building' },
+    { id:'ivy-house',    name:'The Ivy House',             pos: ivyHousePos,    type:'building' },
+    { id:'cemetery',     name:'Nunhead Cemetery',          pos: { x: 3000, y: 500 }, type:'building' },
+    { id:'playground',   name:'Adventure Playground',      pos: { x: 1830, y: 1850 }, color: '#1b5e20', type:'playground' },
+  ];
+
+  const landmarksLayer = document.getElementById('landmarks-layer');
+  for (const lm of LANDMARKS) {
+    // Buildings (schools + pub) are drawn as polygons in the schools layer — no marker here.
+    if (lm.type === 'building') continue;
+    const g = el('g', { 'data-id': lm.id });
+    if (lm.type === 'playground') {
+      // Yellow disc with a little slide+swing pictogram for the Adventure Playground
+      g.appendChild(el('circle', { cx: lm.pos.x, cy: lm.pos.y, r: 26,
+        fill: '#ffeb3b', stroke: '#4a3c28', 'stroke-width': 3 }));
+      // slide (diagonal line)
+      g.appendChild(el('line', { x1: lm.pos.x - 10, y1: lm.pos.y + 10,
+        x2: lm.pos.x + 10, y2: lm.pos.y - 8,
+        stroke: '#c62828', 'stroke-width': 4, 'stroke-linecap': 'round' }));
+      // swing seat
+      g.appendChild(el('rect', { x: lm.pos.x - 4, y: lm.pos.y + 4, width: 8, height: 2,
+        fill: '#4a3c28' }));
+      // swing ropes
+      g.appendChild(el('line', { x1: lm.pos.x - 3, y1: lm.pos.y + 4,
+        x2: lm.pos.x - 6, y2: lm.pos.y - 10, stroke: '#4a3c28', 'stroke-width': 1 }));
+      g.appendChild(el('line', { x1: lm.pos.x + 3, y1: lm.pos.y + 4,
+        x2: lm.pos.x + 6, y2: lm.pos.y - 10, stroke: '#4a3c28', 'stroke-width': 1 }));
+      const nameText = el('text', { class: 'landmark-name', x: lm.pos.x, y: lm.pos.y + 50 });
+      nameText.textContent = lm.name;
+      g.appendChild(nameText);
+    } else {
+      // House marker: small coloured circle (no number inside any more), name above, sub below.
+      g.appendChild(el('circle', {
+        class: 'landmark-marker',
+        cx: lm.pos.x, cy: lm.pos.y, r: 14,
+        fill: lm.color,
+      }));
+      const nameText = el('text', { class: 'landmark-name', x: lm.pos.x, y: lm.pos.y - 24 });
+      nameText.textContent = lm.name;
+      g.appendChild(nameText);
+      if (lm.sub) {
+        const subText = el('text', {
+          class: 'landmark-name', x: lm.pos.x, y: lm.pos.y + 34,
+          style: 'font-size:13px;fill:#555;',
+        });
+        subText.textContent = lm.sub;
+        g.appendChild(subText);
+      }
+    }
+    landmarksLayer.appendChild(g);
+  }
+
+  // ============================================================
+  // Player + camera
+  // ============================================================
+  const world = document.getElementById('world');
+  const character = document.getElementById('character-group');
+  const statusText = document.getElementById('status-text');
+
+  let charX = homePos.x;
+  let charY = homePos.y;
+
+  function updateCamera() {
+    let tx = -charX + VIEW_W / 2;
+    let ty = -charY + VIEW_H / 2;
+    // Clamp so we don't see past the world edges
+    tx = Math.min(0, Math.max(VIEW_W - WORLD_W, tx));
+    ty = Math.min(0, Math.max(VIEW_H - WORLD_H, ty));
+    world.setAttribute('transform', `translate(${tx} ${ty})`);
+    updateMinimap();
+    updateProximityStatus();
+    checkWitnessTriggers();
+  }
+
+  function updateCharacter() {
+    character.setAttribute('transform', `translate(${charX} ${charY})`);
+  }
+
+  // Status text always nudges the player toward the next quest stop.
+  function updateProximityStatus() {
+    if (typeof currentTargetIndex !== 'undefined' && currentTargetIndex >= MAIN_QUEST_IDS.length) {
+      statusText.textContent = '🎉 Quest complete — Mochi is home safe!';
+      return;
+    }
+    const targetId = (typeof currentTargetIndex !== 'undefined')
+      ? MAIN_QUEST_IDS[currentTargetIndex] : null;
+    const target = targetId ? LANDMARKS.find(l => l.id === targetId) : null;
+    let closest = null, minD = Infinity;
+    for (const lm of LANDMARKS) {
+      const d = Math.hypot(lm.pos.x - charX, lm.pos.y - charY);
+      if (d < minD) { minD = d; closest = lm; }
+    }
+    if (closest && minD < 60 && target && closest.id === target.id) {
+      statusText.textContent = `📍 You're at ${closest.name}`;
+    } else if (closest && minD < 60 && target && completed.has(closest.id)) {
+      // Already completed this stop — point onward to the next one
+      statusText.textContent = `🎯 Next stop: ${target.name}`;
+    } else if (closest && minD < 60 && target) {
+      statusText.textContent = `🚷 Wrong stop — go to ${target.name} next!`;
+    } else if (target) {
+      statusText.textContent = `🎯 Next stop: ${target.name}`;
+    } else {
+      statusText.textContent = `Walking around the neighbourhood…`;
+    }
+  }
+
+  // ============================================================
+  // Witnesses + quest loop
+  // ============================================================
+  // Each main-quest landmark has a witness with a multiple-choice question.
+  // Walk near a landmark → witness appears → answer correctly → mark complete + get clue.
+  // First wrong answer reveals the hint. After all 5 main stops are done, Mochi is found.
+  // The son will rewrite these in Quest Master mode (Milestone 5).
+  // Each witness has CHARACTER data (avatar / name / question pool) that stays the
+  // same across every quest. The quest-specific story bits (line, clue) live in QUESTS.
+  // Questions are aimed at 7-11 year olds (KS2). Random pick per visit.
+  const WITNESSES = {
+    home: {
+      avatar: '👩', name: "little TIIIIIIIIIIIIIIIIIIIIIM's Mum",
+      questions: [
+        { question: 'How many legs does a cat have?', options: ['2', '4', '6', '8'], correct: 1, hint: 'Same number as a dog.' },
+        { question: "What's 6 × 7?", options: ['36', '42', '48', '54'], correct: 1, hint: '6 × 6 = 36, plus one more 6.' },
+        { question: 'How do you spell the word that means "a mate"?', options: ['FREIND', 'FRIEND', 'FRYEND', 'FREND'], correct: 1, hint: 'I before E, except after C.' },
+        { question: "What's the past tense of RUN?", options: ['RUNNED', 'RAN', 'RUNS', 'RUNNING'], correct: 1, hint: "Say 'yesterday I ___ to school'." },
+        { question: 'Half of 80 is…', options: ['30', '35', '40', '45'], correct: 2, hint: '80 ÷ 2.' },
+        { question: 'Which planet is closest to the Sun?', options: ['Earth', 'Venus', 'Mars', 'Mercury'], correct: 3, hint: "It's also the smallest one." },
+        { question: 'Which of these is a mammal?', options: ['Goldfish', 'Lizard', 'Whale', 'Frog'], correct: 2, hint: 'It breathes air and has live babies — even though it lives in the sea.' },
+        { question: 'What is 100 − 47?', options: ['43', '53', '57', '63'], correct: 1, hint: 'Count up from 47 to 100.' },
+      ],
+    },
+
+    weebily: {
+      avatar: '🧒', name: 'big john',
+      questions: [
+        { question: 'How many cats does big john have?', options: ['Two', 'None', 'One', 'Three'], correct: 3, hint: 'He got two new kittens last month — plus the old one.' },
+        { question: 'What colour are London pigeons usually?', options: ['Pink', 'Grey', 'Red', 'Yellow'], correct: 1, hint: 'Same colour as a rainy London sky.' },
+        { question: 'What do butterflies start life as?', options: ['Eggs', 'Caterpillars', 'Bees', 'Worms'], correct: 1, hint: 'They\'re fuzzy and crawl along leaves.' },
+        { question: 'How many legs does a spider have?', options: ['4', '6', '8', '10'], correct: 2, hint: 'Twice as many as a cat.' },
+        { question: 'What do bees make?', options: ['Honey', 'Milk', 'Cheese', 'Jam'], correct: 0, hint: "It's sweet, sticky and golden." },
+        { question: 'Where do polar bears live?', options: ['Africa', 'The Arctic', 'The Sahara', 'Australia'], correct: 1, hint: 'Somewhere cold and snowy.' },
+        { question: 'Which is biggest?', options: ['Mouse', 'Cat', 'Elephant', 'Pigeon'], correct: 2, hint: 'It has a trunk.' },
+        { question: 'Which is NOT a reptile?', options: ['Snake', 'Lizard', 'Crocodile', 'Frog'], correct: 3, hint: 'It starts life as a tadpole.' },
+      ],
+    },
+
+    'school-upper': {
+      avatar: '🧑‍🏫', name: 'Mrs Head',
+      questions: [
+        { question: 'What gives plants their green colour?', options: ['Sugar', 'Chlorophyll', 'Water', 'Sunshine'], correct: 1, hint: 'Starts with "chl-".' },
+        { question: 'Which planet has rings around it?', options: ['Mars', 'Saturn', 'Venus', 'Mercury'], correct: 1, hint: 'Between Jupiter and Uranus.' },
+        { question: 'How many bones does an adult human have (roughly)?', options: ['100', '206', '350', '1000'], correct: 1, hint: 'Just over 200.' },
+        { question: 'Which is the largest continent?', options: ['Africa', 'Asia', 'Europe', 'Antarctica'], correct: 1, hint: 'It includes China and India.' },
+        { question: 'Photosynthesis uses which gas from the air?', options: ['Oxygen', 'Carbon dioxide', 'Helium', 'Nitrogen'], correct: 1, hint: "It's what WE breathe OUT." },
+        { question: 'Which is faster?', options: ['Sound', 'A car', 'Light', 'A snail'], correct: 2, hint: "That's why we see lightning before we hear thunder." },
+        { question: 'How many sides does a heptagon have?', options: ['5', '6', '7', '8'], correct: 2, hint: '"Hept-" means seven.' },
+        { question: 'What is the closest star to Earth?', options: ['Polaris', 'The Sun', 'Sirius', 'Alpha Centauri'], correct: 1, hint: 'Look up in the daytime.' },
+      ],
+    },
+
+    'school-lower': {
+      avatar: '🧑‍🔧', name: 'Mr Caretaker',
+      questions: [
+        { question: 'How do you spell the word for "the reason why"?', options: ['BECAUS', 'BEECAUSE', 'BECAUSE', 'BECASE'], correct: 2, hint: 'B-E-C-A-U-S-E.' },
+        { question: 'What is the opposite of BRAVE?', options: ['Strong', 'Happy', 'Loud', 'Scared'], correct: 3, hint: 'How you might feel before a big test.' },
+        { question: 'What does H₂O mean?', options: ['Sugar', 'Water', 'Oxygen', 'Salt'], correct: 1, hint: 'You drink it every day.' },
+        { question: 'Who wrote Matilda?', options: ['J.K. Rowling', 'Roald Dahl', 'David Walliams', 'Julia Donaldson'], correct: 1, hint: 'He also wrote about a chocolate factory.' },
+        { question: 'A noun is…', options: ['A doing word', 'A naming word', 'A describing word', 'A joining word'], correct: 1, hint: '"Mum", "table" and "school" are all examples.' },
+        { question: 'How many sides does a hexagon have?', options: ['5', '6', '7', '8'], correct: 1, hint: 'Same shape as honeycomb cells.' },
+        { question: 'How many continents are there?', options: ['5', '6', '7', '8'], correct: 2, hint: 'Africa, Antarctica, Asia, Australia, Europe, North America… and one more.' },
+        { question: 'What language do they speak in Brazil?', options: ['Spanish', 'Portuguese', 'French', 'Brazilian'], correct: 1, hint: 'It is NOT Spanish.' },
+      ],
+    },
+
+    barry: {
+      avatar: '👦', name: 'emny pluffins Ggg',
+      questions: [
+        { question: "What's 8 × 7?", options: ['54', '56', '63', '49'], correct: 1, hint: 'Count up in 8s: 8, 16, 24, 32, 40, 48…' },
+        { question: 'What is 144 ÷ 12?', options: ['11', '12', '13', '14'], correct: 1, hint: '12 × 12 = 144.' },
+        { question: 'Half of 250 is…', options: ['100', '115', '125', '150'], correct: 2, hint: '250 ÷ 2.' },
+        { question: "What's 9 × 6?", options: ['45', '54', '56', '63'], correct: 1, hint: '9 × 5 = 45, plus another 9.' },
+        { question: 'What is 3⁄4 of 100?', options: ['50', '60', '75', '80'], correct: 2, hint: 'A quarter of 100 is 25, so three quarters is…' },
+        { question: 'Which is bigger?', options: ['0.5', '0.45', "They're the same", "Can't tell"], correct: 0, hint: '0.5 is the same as 0.50.' },
+        { question: 'What is 25 squared (25 × 25)?', options: ['50', '125', '500', '625'], correct: 3, hint: '20 × 25 = 500. Then add 5 more lots of 25.' },
+        { question: "What is the next prime number after 7?", options: ['8', '9', '11', '13'], correct: 2, hint: 'A prime number is only divisible by 1 and itself. Not 8 (4×2), not 9 (3×3).' },
+      ],
+    },
+
+    playground: {
+      avatar: '🦺', name: 'Park Keeper',
+      questions: [
+        { question: 'What do trees breathe out?', options: ['Carbon dioxide', 'Oxygen', 'Water', 'Smoke'], correct: 1, hint: "It's what we breathe IN." },
+        { question: 'What season comes AFTER Spring?', options: ['Winter', 'Autumn', 'Summer', 'August'], correct: 2, hint: "It's the hottest one." },
+        { question: 'Where does a fox sleep?', options: ['A nest', 'A web', 'A den', 'A pond'], correct: 2, hint: 'A small burrow in the ground.' },
+        { question: 'Which has the biggest wingspan?', options: ['Sparrow', 'Eagle', 'Pigeon', 'Robin'], correct: 1, hint: "A hunter that swoops down from the sky." },
+        { question: 'How many seasons are there in a year?', options: ['2', '3', '4', '5'], correct: 2, hint: 'Spring, Summer, Autumn, Winter.' },
+        { question: 'What do squirrels collect for winter?', options: ['Stones', 'Acorns', 'Worms', 'Pebbles'], correct: 1, hint: 'They come from oak trees.' },
+        { question: 'Which is a London park?', options: ['Hyde Park', 'Sahara Park', 'Atlas Park', 'Equator Park'], correct: 0, hint: "It's near Buckingham Palace." },
+        { question: 'Which is the LONGEST?', options: ['A second', 'An hour', 'A minute', 'A millisecond'], correct: 1, hint: 'There are 60 of these in an hour.' },
+      ],
+    },
+
+    'ivy-house': {
+      avatar: '🧔', name: 'The Landlord',
+      questions: [
+        { question: 'What is the capital of France?', options: ['London', 'Paris', 'Madrid', 'Berlin'], correct: 1, hint: 'Famous for the Eiffel Tower.' },
+        { question: 'Which is the longest river in the UK?', options: ['Thames', 'Severn', 'Avon', 'Mersey'], correct: 1, hint: 'It rises in Wales and flows through Worcester.' },
+        { question: 'In which year was the Great Fire of London?', options: ['1066', '1666', '1776', '1865'], correct: 1, hint: 'Lots of sixes.' },
+        { question: 'Which is the highest mountain in the UK?', options: ['Snowdon', 'Ben Nevis', 'Scafell Pike', 'Mont Blanc'], correct: 1, hint: "It's in Scotland." },
+        { question: "What's the smallest country in the world?", options: ['Monaco', 'Vatican City', 'San Marino', 'Liechtenstein'], correct: 1, hint: "It's inside Rome." },
+        { question: 'What language do they speak in Brazil?', options: ['Spanish', 'Portuguese', 'French', 'Brazilian'], correct: 1, hint: 'It is NOT Spanish — but they sound similar.' },
+        { question: 'Which is NOT a London river?', options: ['Thames', 'Tyne', 'Lea', 'Wandle'], correct: 1, hint: 'One of these is in Newcastle.' },
+        { question: 'Which has been the most popular pet name in the UK recently?', options: ['Bella', 'Mochi', 'Spike', 'Rover'], correct: 0, hint: "Means 'beautiful' in Italian." },
+      ],
+    },
+
+    carcar: {
+      avatar: '🚗', name: 'Car-car',
+      questions: [
+        { question: 'How many wheels does a tricycle have?', options: ['2', '3', '4', '6'], correct: 1, hint: '"Tri" means three.' },
+        { question: 'What colour are traditional London buses?', options: ['Red', 'Blue', 'Green', 'Yellow'], correct: 0, hint: 'Same colour as a postbox.' },
+        { question: 'Which is NOT a real car brand?', options: ['Toyota', 'Ford', 'Apple', 'BMW'], correct: 2, hint: 'One of these makes phones, not cars.' },
+        { question: 'Where do trains run?', options: ['On water', 'On rails', 'In the air', 'In gardens'], correct: 1, hint: 'Long parallel metal tracks.' },
+        { question: 'What makes a bicycle move?', options: ['An engine', 'Pedals', 'Sails', 'Magic'], correct: 1, hint: 'You push them with your feet.' },
+        { question: 'Which is FASTEST on a motorway?', options: ['A bicycle', 'A horse', 'A car', 'A skateboard'], correct: 2, hint: 'It has an engine and four wheels.' },
+        { question: 'What does a RED traffic light mean?', options: ['Go', 'Stop', 'Slow', 'Reverse'], correct: 1, hint: 'The opposite of green.' },
+        { question: 'How many wheels does a standard car have?', options: ['2', '3', '4', '6'], correct: 2, hint: 'One at each corner.' },
+      ],
+    },
+
+    stevedave: {
+      avatar: '🤓', name: 'skateing fray',
+      questions: [
+        { question: 'What is 7 × 7?', options: ['49', '56', '63', '14'], correct: 0, hint: '7 × 7 = 50 − 1.' },
+        { question: 'How many seconds in a minute?', options: ['30', '60', '100', '12'], correct: 1, hint: 'Same as the number of minutes in an hour.' },
+        { question: 'What does CPU stand for?', options: ['Cool Power Up', 'Central Processing Unit', 'Computer Power Use', 'Counted Pixel Units'], correct: 1, hint: 'The "brain" of a computer.' },
+        { question: 'Which is the LARGEST?', options: ['A megabyte', 'A kilobyte', 'A gigabyte', 'A byte'], correct: 2, hint: '"Giga" means a billion.' },
+        { question: 'How many faces does a cube have?', options: ['4', '5', '6', '8'], correct: 2, hint: 'Top, bottom, and four sides.' },
+        { question: 'What is BINARY?', options: ['A computer code using only 0 and 1', 'A type of pasta', 'A river in Italy', 'A small dog'], correct: 0, hint: '"Bi" means two.' },
+        { question: 'How many minutes in 2 hours?', options: ['60', '100', '120', '200'], correct: 2, hint: '60 minutes × 2.' },
+        { question: 'What is the largest single-digit number?', options: ['1', '5', '9', '10'], correct: 2, hint: '10 has TWO digits.' },
+      ],
+    },
+
+    peacock: {
+      avatar: '🦚', name: 'Peacock Man',
+      questions: [
+        { question: "What colour is a peacock's tail?", options: ['Grey', 'Blue and green', 'Red only', 'Yellow'], correct: 1, hint: 'Think ocean waves and grass.' },
+        { question: 'Which family do peacocks belong to?', options: ['Pheasants', 'Ducks', 'Eagles', 'Owls'], correct: 0, hint: 'They\'re related to chickens.' },
+        { question: 'Which of these is NOT a bird?', options: ['Peacock', 'Bat', 'Robin', 'Owl'], correct: 1, hint: 'It flies but has fur, not feathers.' },
+        { question: 'What are baby birds called?', options: ['Kittens', 'Chicks', 'Cubs', 'Pups'], correct: 1, hint: 'Same word for baby chickens.' },
+        { question: 'How many colours are in a rainbow?', options: ['5', '6', '7', '8'], correct: 2, hint: 'Richard Of York Gave Battle In Vain.' },
+        { question: 'What is the largest bird in the world?', options: ['Peacock', 'Ostrich', 'Eagle', 'Swan'], correct: 1, hint: 'It cannot fly — but it can run FAST.' },
+        { question: 'What do birds have that mammals do NOT?', options: ['Fur', 'Feathers', 'Fingers', 'Teeth'], correct: 1, hint: 'It keeps them warm and helps them fly.' },
+        { question: 'Which is a primary colour?', options: ['Green', 'Blue', 'Orange', 'Purple'], correct: 1, hint: 'Red, Yellow and ___.' },
+      ],
+    },
+
+    cemetery: {
+      avatar: '🦊', name: 'Foxy the Fox',
+      questions: [
+        { question: 'What do foxes eat?', options: ['Just grass', 'Meat AND berries', 'Only fish', 'Only honey'], correct: 1, hint: 'Foxes are omnivores — they eat both.' },
+        { question: 'Which animal is MOST active at night?', options: ['Sparrow', 'Owl', 'Butterfly', 'Bee'], correct: 1, hint: 'It says "twit twoo".' },
+        { question: 'Where does a fox sleep?', options: ['A nest', 'A web', 'A den', 'Underwater'], correct: 2, hint: "It's a burrow in the ground." },
+        { question: 'What is a baby fox called?', options: ['Kitten', 'A cub', 'Lamb', 'Foal'], correct: 1, hint: 'Same word as a baby bear.' },
+        { question: 'Which animal is nocturnal (active at night)?', options: ['Sheep', 'Bat', 'Robin', 'Cow'], correct: 1, hint: 'It hangs upside down.' },
+        { question: 'What kind of tree is traditionally planted in cemeteries?', options: ['Apple', 'Yew', 'Cabbage', 'Cactus'], correct: 1, hint: 'Dark green, slow-growing, can live thousands of years.' },
+        { question: 'Which is NOT actually a ghost in stories?', options: ['Casper', 'The Bloody Baron', 'Foxy', 'Slimer'], correct: 2, hint: 'Pick the one with FOUR legs and a fluffy tail.' },
+        { question: 'How many hours are there in a day?', options: ['12', '24', '60', '7'], correct: 1, hint: 'Twice 12.' },
+      ],
+    },
+  };
+  LANDMARKS.forEach(lm => { if (WITNESSES[lm.id]) lm.witness = WITNESSES[lm.id]; });
+
+  // =====================================================================
+  // Quests: story narrative per stop (the question pool stays per character).
+  // =====================================================================
+  const QUESTS = [
+    {
+      id: 'lost-pet',
+      title: 'The Lost Pet',
+      icon: '🐱',
+      desc: "Mochi the cat has run away!",
+      introCall: 'Mochi the cat has run away! Can you come round and help us find her?',
+      finalMessage: '🎉 YOU FOUND MOCHI! 🎉',
+      stops: [
+        { landmarkId: 'home',         line: '"Oh no! Mochi the cat ran out the door when the postie rang the bell!"',                       clue: "Try big john's — Mochi loves his garden!"},
+        { landmarkId: 'weebily',      line: '"A grey furball shot through my garden chasing a pigeon!"',                                      clue: "The pigeon flew off towards Ivydale School — try the Inverton site!" },
+        { landmarkId: 'school-upper', line: '"A grey cat darted across our playground! She slipped over to our Bellwood site."',              clue: "Try the Bellwood site — she went that way!" },
+        { landmarkId: 'school-lower', line: '"A cheeky cat slipped through the school gate at break time!"',                                  clue: "Try Car-car's place — Mochi might have caught a lift!" },
+        { landmarkId: 'carcar',       line: '"Mochi jumped into my car when I opened the door — and out again at the next traffic light!"', clue: "She probably went to The Ivy House for treats — try there!" },
+        { landmarkId: 'ivy-house',    line: '"Aye, a little tabby cat snuck in for some scraps! Then off she went, bold as brass!"',         clue: "She headed up Spooky Path — try the cemetery!" },
+        { landmarkId: 'cemetery',     line: '"I saw a tabby cat earlier! She was watching me chase a butterfly between the gravestones."',   clue: "She trotted off towards emny pluffins Ggg's place — go check!" },
+        { landmarkId: 'barry',        line: '"I gave her a little bit of milk — then she trotted off down the road!"',                       clue: "Maybe skateing fray can pinpoint where — he tracks everything!" },
+        { landmarkId: 'stevedave',    line: '"I calculated her exact trajectory — 99.94% probability she\'s at the playground!"',           clue: "Off to the Adventure Playground!" },
+        { landmarkId: 'peacock',      line: '"A tabby cat cut through my garden and STARTLED my peacocks — feathers everywhere!"',           clue: "She sped off towards the playground!" },
+        { landmarkId: 'playground',   line: '"A little tabby cat is curled up fast asleep under the slide!"',                                 clue: "You found Mochi! She's been here all afternoon, having a snooze." },
+      ],
+    },
+    {
+      id: 'treasure-hunt',
+      title: 'The Treasure Hunt',
+      icon: '🗺️',
+      desc: "Follow an old treasure map.",
+      introCall: 'I just found an old treasure map in the loft! Can you come and help me figure it out?',
+      finalMessage: '🎉 YOU FOUND THE TREASURE! 🎉',
+      stops: [
+        { landmarkId: 'home',         line: '"This old map says: ‘Start where the grown-ups gather for a pint.’ Hmm…"',                                              clue: "Sounds like The Ivy House! Head over to the pub." },
+        { landmarkId: 'ivy-house',    line: '"Aha! The next clue says: ‘Find where children laugh and learn.’"',                                                      clue: "That must mean the school! Try the Bellwood site." },
+        { landmarkId: 'school-lower', line: '"Children laughing and learning, yes! Map says next: ‘Visit the OTHER place of learning.’"',                              clue: "The other site! Head over to Ivydale School (Inverton)." },
+        { landmarkId: 'school-upper', line: '"Aha, more clues at our Inverton site! ‘Find the one with the spikiest hair.’"',                                          clue: "Spikiest hair? That has to be big john! Go and ask him."},
+        { landmarkId: 'weebily',      line: '"My hair IS pretty spiky. The map says next: ‘Find the one obsessed with wheels.’"',                                     clue: "Wheels? That has to be Car-car! Go see her."},
+        { landmarkId: 'carcar',       line: '"Wheels obsessed, that\'s me! Map says: ‘Visit the pirate of the playground.’"',                                          clue: "The pirate is emny pluffins Ggg — he has the eye patch! Off to him."},
+        { landmarkId: 'barry',        line: '"Aye aye! My eye patch IS pirate-y. The map says: ‘Find the resting place of those gone before.’"',                      clue: "That must be Nunhead Cemetery — head over there!" },
+        { landmarkId: 'cemetery',     line: '"I dug a clue out from under a mossy gravestone: ‘Verify with the calculator.’"',                                         clue: "Sounds like skateing fray! Ask him to check the maths."},
+        { landmarkId: 'stevedave',    line: '"Triangulating coordinates… recalculating… X = the Adventure Playground! Confirmed!"',                                    clue: "X marks the playground swing — head there!" },
+        { landmarkId: 'peacock',      line: '"The map clue says: ‘Find the one with the most colourful pet.’ That\'s me and my peacocks!"',                            clue: "Next clue: X marks the playground swing!" },
+        { landmarkId: 'playground',   line: '"Look — under the swing! There\'s a wooden box covered in moss…"',                                                        clue: "It's a box of vintage marbles and an old gold coin! TREASURE!" },
+      ],
+    },
+    {
+      id: 'spooky-mystery',
+      title: 'The Spooky Mystery',
+      icon: '👻',
+      desc: "Strange noises from Nunhead Cemetery.",
+      introCall: 'Spooky noises have been coming from Nunhead Cemetery at night! Can you help solve the mystery?',
+      finalMessage: '🎉 MYSTERY SOLVED — IT WAS A FAMILY OF FOXES! 🎉',
+      stops: [
+        { landmarkId: 'home',         line: '"Last night I heard the SPOOKIEST howling coming from Nunhead Cemetery!"',                                              clue: "Ask Mr Caretaker at the Bellwood site — he was there late, he might have heard it." },
+        { landmarkId: 'school-lower', line: '"Yes! I heard it. Sounded like a wailing ghost. But… ghosts aren\'t real, are they?"',                                    clue: "Ask Mrs Head at our Inverton site — she usually closes up that one." },
+        { landmarkId: 'school-upper', line: '"Yes, the same eerie wailing! I told the kids the staff were practising for school assembly…"',                          clue: "The regulars at The Ivy House know all the local gossip — ask them!" },
+        { landmarkId: 'ivy-house',    line: '"The locals say they\'ve seen GLOWING EYES in the cemetery! And paw prints!"',                                              clue: "Ask big john — his house is closest to Spooky Path."},
+        { landmarkId: 'weebily',      line: '"I heard scratching and rustling. Something was definitely moving through Spooky Path!"',                                  clue: "Car-car drives around at all hours — maybe she saw something. Ask her!"},
+        { landmarkId: 'carcar',       line: '"I drove past the cemetery last night and my headlights caught GLOWING EYES in the trees!"',                              clue: "Ask emny pluffins Ggg — he\'s the bravest. He might have got closer!"},
+        { landmarkId: 'barry',        line: '"I crept down Spooky Path with my eye patch on! I saw glowing eyes too!"',                                                 clue: "Go investigate Nunhead Cemetery yourself — but be brave!" },
+        { landmarkId: 'cemetery',     line: '"*whispers* It\'s me! I\'m just a fox family living in the old crypt. Sorry for the spooky noises!"',                       clue: "Mystery solved! Log it with skateing fray — he keeps the records."},
+        { landmarkId: 'stevedave',    line: '"Logged in my spreadsheet — noises peaked at midnight. That matches typical fox activity perfectly!"',                    clue: "Final report to the Park Keeper at the playground!" },
+        { landmarkId: 'peacock',      line: '"My peacocks were UNSETTLED last night — they saw glowing eyes creeping around the garden!"',                             clue: "Sounds like the same suspects — head to the cemetery to check!" },
+        { landmarkId: 'playground',   line: '"FOXES! That makes perfect sense. They love quiet places like the cemetery."',                                            clue: "Case closed! The spooky cemetery is now home to a family of urban foxes." },
+      ],
+    },
+  ];
+
+  let activeQuest = QUESTS[0];                                                  // default until quest-pick screen sets it
+  let MAIN_QUEST_IDS = activeQuest.stops.map(s => s.landmarkId);                // mutable so quest changes update it
+
+  const completed = new Set();
+  const nearbyState = {};
+  let paused = false;
+  let currentLandmark = null;
+  let currentQuestion = null;
+  let wrongAttempts = 0;
+  let currentTargetIndex = 0;  // index into MAIN_QUEST_IDS — only the current target triggers a question
+
+  const dialogEl   = document.getElementById('witness-dialog');
+  const avatarEl   = document.getElementById('witness-avatar');
+  const wnameEl    = document.getElementById('witness-name');
+  const wlineEl    = document.getElementById('witness-line');
+  const questionEl = document.getElementById('witness-question');
+  const optionsEl  = document.getElementById('witness-options');
+  const hintEl     = document.getElementById('witness-hint');
+  const clueEl     = document.getElementById('witness-clue');
+  const closeBtn   = document.getElementById('witness-close');
+  const playAnotherBtn = document.getElementById('play-another');
+
+  function showWitness(lm) {
+    paused = true;
+    wrongAttempts = 0;
+    currentLandmark = lm;
+    const w = lm.witness;
+    // Look up the line/clue from the ACTIVE quest's stop for this landmark.
+    const stop = activeQuest.stops.find(s => s.landmarkId === lm.id) || {};
+    // Pick a random question from the character's pool.
+    currentQuestion = w.questions[Math.floor(Math.random() * w.questions.length)];
+    const q = currentQuestion;
+    avatarEl.textContent = w.avatar;
+    wnameEl.textContent = w.name;
+    wlineEl.textContent = stop.line || '';
+    questionEl.textContent = q.question;
+    optionsEl.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => handleAnswer(i, btn);
+      optionsEl.appendChild(btn);
+    });
+    hintEl.classList.add('hidden');
+    clueEl.classList.add('hidden');
+    closeBtn.classList.add('hidden');
+    playAnotherBtn.classList.add('hidden');
+    questionEl.classList.remove('hidden');
+    optionsEl.classList.remove('hidden');
+    dialogEl.classList.remove('hidden');
+  }
+
+  function handleAnswer(idx, btn) {
+    if (!currentLandmark || !currentQuestion) return;
+    const w = currentLandmark.witness;
+    const q = currentQuestion;
+    if (idx === q.correct) {
+      btn.classList.add('correct');
+      completed.add(currentLandmark.id);
+      // Advance the quest pointer to the next stop
+      if (currentLandmark.id === MAIN_QUEST_IDS[currentTargetIndex]) {
+        currentTargetIndex++;
+      }
+      markLandmarkComplete(currentLandmark.id);
+      // Refresh the status bar straight away so the player sees "Next stop: X"
+      // without having to wait for a movement tick.
+      updateProximityStatus();
+      const stop = activeQuest.stops.find(s => s.landmarkId === currentLandmark.id) || {};
+      setTimeout(() => {
+        questionEl.classList.add('hidden');
+        optionsEl.classList.add('hidden');
+        hintEl.classList.add('hidden');
+        let clueText = '✓ ' + (stop.clue || '');
+        const questComplete = MAIN_QUEST_IDS.every(id => completed.has(id));
+        if (questComplete) {
+          clueText = activeQuest.finalMessage + '  ' + (stop.clue || '');
+        }
+        clueEl.textContent = clueText;
+        clueEl.classList.remove('hidden');
+        closeBtn.classList.remove('hidden');
+        if (questComplete) playAnotherBtn.classList.remove('hidden');
+      }, 450);
+    } else {
+      wrongAttempts++;
+      btn.classList.add('wrong');
+      if (wrongAttempts === 1 && q.hint) {
+        hintEl.textContent = '💡 Hint: ' + q.hint;
+      } else {
+        hintEl.textContent = 'Nope — try again!';
+      }
+      hintEl.classList.remove('hidden');
+      setTimeout(() => btn.classList.remove('wrong'), 800);
+    }
+  }
+
+  function closeDialog() {
+    dialogEl.classList.add('hidden');
+    paused = false;
+    currentLandmark = null;
+  }
+  closeBtn.addEventListener('click', closeDialog);
+
+  // "Play another mission!" — close dialog, send the player back to their own home,
+  // and re-open the quest-select so they can pick any of the three.
+  playAnotherBtn.addEventListener('click', () => {
+    dialogEl.classList.add('hidden');
+    playAnotherBtn.classList.add('hidden');
+    currentLandmark = null;
+    currentQuestion = null;
+    paused = true;
+    // Teleport back to the player's home
+    const home = CHARACTER_HOMES[playerCharacterId];
+    if (home) { charX = home.x; charY = home.y; updateCharacter(); updateCamera(); }
+    // Show the quest-select overlay
+    document.getElementById('quest-select').classList.remove('hidden');
+  });
+
+  const completedMarkers = document.getElementById('completed-markers');
+  function markLandmarkComplete(id) {
+    const lm = LANDMARKS.find(l => l.id === id);
+    if (!lm) return;
+    const g = el('g', { 'data-completed': id });
+    g.appendChild(el('circle', {
+      cx: lm.pos.x + 22, cy: lm.pos.y - 22, r: 13,
+      fill: '#2e7d32', stroke: 'white', 'stroke-width': 2.5,
+    }));
+    const t = el('text', {
+      x: lm.pos.x + 22, y: lm.pos.y - 16,
+      'text-anchor': 'middle', 'font-size': 16, 'font-weight': 'bold', fill: 'white',
+      'font-family': 'sans-serif',
+    });
+    t.textContent = '✓';
+    g.appendChild(t);
+    completedMarkers.appendChild(g);
+  }
+
+  function checkWitnessTriggers() {
+    if (paused) return;
+    if (currentTargetIndex >= MAIN_QUEST_IDS.length) return; // quest done
+    const targetId = MAIN_QUEST_IDS[currentTargetIndex];
+    for (const lm of LANDMARKS) {
+      if (!lm.witness) continue;
+      const d = Math.hypot(lm.pos.x - charX, lm.pos.y - charY);
+      const isNearby = d < 100;
+      const wasNearby = nearbyState[lm.id] || false;
+      // Only the CURRENT target landmark fires its witness — others are passed silently.
+      if (lm.id === targetId && isNearby && !wasNearby && !completed.has(lm.id)) {
+        nearbyState[lm.id] = true;
+        showWitness(lm);
+        return;
+      }
+      nearbyState[lm.id] = isNearby;
+    }
+  }
+
+  // ============================================================
+  // Minimap
+  // ============================================================
+  const MINI_W = 174, MINI_H = 120;
+  const miniContent = document.getElementById('mini-content');
+  const miniScale = Math.min(MINI_W / WORLD_W, MINI_H / WORLD_H);
+  const miniOffsetX = (MINI_W - WORLD_W * miniScale) / 2;
+  const miniOffsetY = (MINI_H - WORLD_H * miniScale) / 2;
+  function W2mx(x) { return miniOffsetX + x * miniScale; }
+  function W2my(y) { return miniOffsetY + y * miniScale; }
+
+  // Park silhouette
+  miniContent.appendChild(el('polygon', {
+    class: 'mini-park',
+    points: parkPolygon.map(p => `${W2mx(p[0])},${W2my(p[1])}`).join(' '),
+  }));
+
+  // Lightweight road sketch — only major roads to avoid clutter
+  for (const r of ROADS) {
+    if (!['primary','secondary','tertiary','unclassified','residential'].includes(r.k)) continue;
+    miniContent.appendChild(el('polyline', {
+      class: 'mini-roads',
+      points: r.p.map(p => `${W2mx(p[0])},${W2my(p[1])}`).join(' '),
+    }));
+  }
+
+  // Landmark dots
+  for (const lm of LANDMARKS) {
+    miniContent.appendChild(el('circle', {
+      class: 'mini-landmark', cx: W2mx(lm.pos.x), cy: W2my(lm.pos.y), r: 2, fill: lm.color,
+    }));
+  }
+
+  const miniViewRect = el('rect', { class: 'mini-view' });
+  miniContent.appendChild(miniViewRect);
+  const miniCharDot = el('circle', { class: 'mini-char', r: 3 });
+  miniContent.appendChild(miniCharDot);
+
+  function updateMinimap() {
+    const vx = Math.max(0, Math.min(WORLD_W - VIEW_W, charX - VIEW_W/2));
+    const vy = Math.max(0, Math.min(WORLD_H - VIEW_H, charY - VIEW_H/2));
+    miniViewRect.setAttribute('x', W2mx(vx));
+    miniViewRect.setAttribute('y', W2my(vy));
+    miniViewRect.setAttribute('width', VIEW_W * miniScale);
+    miniViewRect.setAttribute('height', VIEW_H * miniScale);
+    miniCharDot.setAttribute('cx', W2mx(charX));
+    miniCharDot.setAttribute('cy', W2my(charY));
+  }
+
+  // ============================================================
+  // Input + game loop
+  // ============================================================
+  const keys = { up:false, down:false, left:false, right:false };
+
+  const keyMap = {
+    'ArrowUp':    'up',    'KeyW': 'up',    'w': 'up',    'W': 'up',
+    'ArrowDown':  'down',  'KeyS': 'down',  's': 'down',  'S': 'down',
+    'ArrowLeft':  'left',  'KeyA': 'left',  'a': 'left',  'A': 'left',
+    'ArrowRight': 'right', 'KeyD': 'right', 'd': 'right', 'D': 'right',
+  };
+
+  window.addEventListener('keydown', e => {
+    const k = keyMap[e.key] || keyMap[e.code];
+    if (k) { keys[k] = true; e.preventDefault(); }
+  });
+  window.addEventListener('keyup', e => {
+    const k = keyMap[e.key] || keyMap[e.code];
+    if (k) { keys[k] = false; e.preventDefault(); }
+  });
+
+  function bindDpad(buttonId, dirs) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    const dirArr = Array.isArray(dirs) ? dirs : [dirs];
+    const press = (e) => { dirArr.forEach(d => keys[d] = true); e.preventDefault(); };
+    const release = (e) => { dirArr.forEach(d => keys[d] = false); e.preventDefault(); };
+    btn.addEventListener('mousedown', press);
+    btn.addEventListener('mouseup', release);
+    btn.addEventListener('mouseleave', release);
+    btn.addEventListener('touchstart', press, { passive: false });
+    btn.addEventListener('touchend', release);
+    btn.addEventListener('touchcancel', release);
+  }
+  bindDpad('up', 'up');
+  bindDpad('down', 'down');
+  bindDpad('left', 'left');
+  bindDpad('right', 'right');
+  bindDpad('upleft',    ['up', 'left']);
+  bindDpad('upright',   ['up', 'right']);
+  bindDpad('downleft',  ['down', 'left']);
+  bindDpad('downright', ['down', 'right']);
+
+  const SPEED = 280; // world px / second
+  let lastTime = performance.now();
+
+  // ---- Walkable surfaces ----
+  // You can walk on roads, inside the park, inside any building polygon, and within a
+  // small buffer around each landmark (so you can reach the doorstep without floating
+  // off the road network).
+  const ROAD_BUFFER = 58;       // wide buffer — easier to round corners and avoid getting stuck
+  const LANDMARK_BUFFER = 130;  // generous doorstep zone around each landmark
+  const ROAD_BUFFER_SQ = ROAD_BUFFER * ROAD_BUFFER;
+  const LANDMARK_BUFFER_SQ = LANDMARK_BUFFER * LANDMARK_BUFFER;
+
+  function distToSegSq(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1, dy = y2 - y1;
+    if (dx === 0 && dy === 0) return (px - x1) ** 2 + (py - y1) ** 2;
+    let t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+    if (t < 0) t = 0; else if (t > 1) t = 1;
+    const cx = x1 + t * dx, cy = y1 + t * dy;
+    return (px - cx) ** 2 + (py - cy) ** 2;
+  }
+
+  function onAnyRoad(x, y) {
+    for (const r of ROADS) {
+      const pts = r.p;
+      for (let i = 1; i < pts.length; i++) {
+        if (distToSegSq(x, y, pts[i-1][0], pts[i-1][1], pts[i][0], pts[i][1]) < ROAD_BUFFER_SQ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function pointInPolygon(x, y, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i][0], yi = polygon[i][1];
+      const xj = polygon[j][0], yj = polygon[j][1];
+      if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
+  function nearAnyLandmark(x, y) {
+    for (const lm of LANDMARKS) {
+      const dx = lm.pos.x - x, dy = lm.pos.y - y;
+      if (dx*dx + dy*dy < LANDMARK_BUFFER_SQ) return true;
+    }
+    return false;
+  }
+
+  function canStandAt(x, y) {
+    if (onAnyRoad(x, y)) return true;
+    if (nearAnyLandmark(x, y)) return true;
+    if (pointInPolygon(x, y, parkPolygon)) return true;
+    if (pointInPolygon(x, y, cemeteryPolygon)) return true;
+    for (const s of SCHOOLS) if (pointInPolygon(x, y, s.p)) return true;
+    for (const b of EXTRA_BUILDINGS) if (pointInPolygon(x, y, b.points)) return true;
+    return false;
+  }
+
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    if (!paused) {
+      let dx = 0, dy = 0;
+      if (keys.up) dy -= 1;
+      if (keys.down) dy += 1;
+      if (keys.left) dx -= 1;
+      if (keys.right) dx += 1;
+      if (dx !== 0 || dy !== 0) {
+        const L = Math.hypot(dx, dy);
+        dx /= L; dy /= L;
+        const stepX = dx * SPEED * dt;
+        const stepY = dy * SPEED * dt;
+        const newX = charX + stepX;
+        const newY = charY + stepY;
+        let moved = false;
+        if (canStandAt(newX, newY)) {
+          charX = newX; charY = newY; moved = true;
+        } else if (stepX !== 0 && canStandAt(newX, charY)) {
+          // slide along Y axis (vertical wall)
+          charX = newX; moved = true;
+        } else if (stepY !== 0 && canStandAt(charX, newY)) {
+          // slide along X axis (horizontal wall)
+          charY = newY; moved = true;
+        }
+        if (moved) {
+          charX = Math.max(0, Math.min(WORLD_W, charX));
+          charY = Math.max(0, Math.min(WORLD_H, charY));
+          updateCharacter();
+          updateCamera();
+        }
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ============================================================
+  // Character selection (Milestone 4)
+  // ============================================================
+  const CHARACTER_IMAGES = {
+    beastburger: 'character.jpg',
+    weebily: 'Weebily.jpg',
+    barry: 'Barry.jpg',
+    carcar: 'PXL_20260627_124809935.jpg',
+    stevedave: 'PXL_20260627_124805605.jpg',
+    peacock: 'PXL_20260710_073526209.jpg',
+  };
+  const CHARACTER_NAMES = {
+    beastburger: 'little TIIIIIIIIIIIIIIIIIIIIIM',
+    weebily: 'big john',
+    barry: 'emny pluffins Ggg',
+    carcar: 'Car-car',
+    stevedave: 'skateing fray',
+    peacock: 'Peacock Man',
+  };
+  let playerCharacterId = null;
+  // Each character spawns at their own house
+  const CHARACTER_HOMES = {
+    beastburger: homePos,
+    weebily: weebilyPos,
+    barry: barryPos,
+    carcar: { x: 3643, y: 2031 },
+    stevedave: { x: 3956, y: 3110 },
+    peacock: { x: 3301, y: 2699 },
+  };
+
+  function setPlayerCharacter(charId) {
+    playerCharacterId = charId;
+    const charGroup = document.getElementById('character-group');
+    while (charGroup.firstChild) charGroup.removeChild(charGroup.firstChild);
+    // Use the cartoon SVG defined in <defs>
+    const use = el('use', { href: '#char-' + charId });
+    charGroup.appendChild(use);
+    // Teleport to the chosen character's house
+    const home = CHARACTER_HOMES[charId];
+    if (home) {
+      charX = home.x;
+      charY = home.y;
+      // Reset proximity so triggers fire freshly on the new walk
+      for (const k of Object.keys(nearbyState)) delete nearbyState[k];
+      updateCharacter();
+      // Recentre camera on the character's house (otherwise it stays at whatever was last shown).
+      // Skipped if updateCamera isn't yet defined (initial load order).
+      if (typeof updateCamera === 'function') updateCamera();
+    }
+  }
+
+  function showMumPhoneCallIntro(charId) {
+    paused = true;
+    currentLandmark = null;
+    currentQuestion = null;
+    avatarEl.textContent = '📞';
+    wnameEl.textContent = "little TIIIIIIIIIIIIIIIIIIIIIM's Mum (on the phone)";
+    wlineEl.textContent = '"Hi ' + CHARACTER_NAMES[charId] + '! ' + activeQuest.introCall + '"';
+    questionEl.classList.add('hidden');
+    optionsEl.classList.add('hidden');
+    hintEl.classList.add('hidden');
+    optionsEl.innerHTML = '';
+    clueEl.textContent = activeQuest.icon + " Walk to little TIIIIIIIIIIIIIIIIIIIIIM's house to start!";
+    clueEl.classList.remove('hidden');
+    closeBtn.classList.remove('hidden');
+    dialogEl.classList.remove('hidden');
+  }
+
+  // Populate quest-pick cards from QUESTS data
+  const questGrid = document.getElementById('quest-grid');
+  QUESTS.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'quest-pick';
+    btn.dataset.quest = q.id;
+    btn.innerHTML = `
+      <span class="quest-icon">${q.icon}</span>
+      <span class="quest-title">${q.title}</span>
+      <span class="quest-desc">${q.desc}</span>
+    `;
+    btn.addEventListener('click', () => {
+      selectActiveQuest(q.id);
+      document.getElementById('quest-select').classList.add('hidden');
+      paused = false;
+      // Recentre the camera on the chosen character's house before the quest starts.
+      const home = CHARACTER_HOMES[playerCharacterId];
+      if (home) { charX = home.x; charY = home.y; updateCharacter(); }
+      updateCamera();
+      if (playerCharacterId !== 'beastburger') {
+        showMumPhoneCallIntro(playerCharacterId);
+      }
+    });
+    questGrid.appendChild(btn);
+  });
+
+  // Pick a random subset of N stops from the quest, always keeping the first and
+  // last stops as bookends. Replace the navigation clue at each intermediate stop
+  // with one auto-generated for the actual next stop (so the trail stays coherent).
+  function selectActiveQuest(questId) {
+    const quest = QUESTS.find(q => q.id === questId);
+    if (!quest) return;
+    const TARGET_COUNT = 5;
+    const all = quest.stops;
+    const first = all[0];
+    const last = all[all.length - 1];
+    const middle = all.slice(1, -1);
+    // Shuffle a copy of middle, take however many we need (TARGET_COUNT - 2), then
+    // restore original order so the narrative direction roughly matches.
+    const shuffled = middle.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const pick = shuffled.slice(0, Math.max(0, TARGET_COUNT - 2));
+    pick.sort((a, b) => middle.indexOf(a) - middle.indexOf(b));
+    const subset = [first, ...pick, last];
+
+    const landmarkName = id => {
+      const lm = LANDMARKS.find(l => l.id === id);
+      return lm ? lm.name : id;
+    };
+    // Replace each clue (except the final one) with a pointer to the next subset stop.
+    const stops = subset.map((stop, i) => {
+      if (i === subset.length - 1) return stop;
+      const nextStop = subset[i + 1];
+      return { ...stop, clue: `Head to ${landmarkName(nextStop.landmarkId)} next!` };
+    });
+
+    activeQuest = { ...quest, stops };
+    MAIN_QUEST_IDS = stops.map(s => s.landmarkId);
+    currentTargetIndex = 0;
+    completed.clear();
+    for (const k of Object.keys(nearbyState)) delete nearbyState[k];
+    // Clear any green ✓ badges left over from the previous quest.
+    while (completedMarkers.firstChild) completedMarkers.removeChild(completedMarkers.firstChild);
+  }
+
+  document.querySelectorAll('.character-pick').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const charId = btn.dataset.character;
+      setPlayerCharacter(charId);
+      document.getElementById('character-select').classList.add('hidden');
+      // Show quest-select instead of starting immediately
+      document.getElementById('quest-select').classList.remove('hidden');
+    });
+  });
+
+  // Start paused — the game waits for the player to pick a character.
+  paused = true;
+
+  // Initial draw
+  updateCharacter();
+  updateCamera();
+  requestAnimationFrame(tick);
+</script>
+
+</body>
+</html>
