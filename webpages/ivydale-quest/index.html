@@ -400,7 +400,7 @@
       </filter>
 
       <!-- ====== Stylised cartoon characters (feet at y=0, head ~y=-100) ====== -->
-      <g id="char-beastburger">
+      <g id="char-rw">
         <ellipse cx="0" cy="-2" rx="16" ry="3.5" fill="#000" opacity="0.3"/>
         <rect x="-9" y="-22" width="6" height="22" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="3"/>
         <rect x="3" y="-22" width="6" height="22" fill="#fff5d7" stroke="#3d2817" stroke-width="2" rx="3"/>
@@ -427,7 +427,7 @@
         <path d="M -2,-57 Q 0,-55 2,-57" stroke="#3d2817" stroke-width="1.5" fill="none" stroke-linecap="round"/>
       </g>
 
-      <g id="char-weebily">
+      <g id="char-epj">
         <ellipse cx="0" cy="-2" rx="16" ry="3.5" fill="#000" opacity="0.3"/>
         <!-- Red balloon up-left -->
         <ellipse cx="-38" cy="-115" rx="11" ry="14" fill="#e57373" stroke="#3d2817" stroke-width="1.5"/>
@@ -472,7 +472,7 @@
         <ellipse cx="0" cy="-62" rx="1.5" ry="2" fill="#c62828"/>
       </g>
 
-      <g id="char-barry">
+      <g id="char-glb">
         <!-- Rocket flame & exhaust trail below feet -->
         <g fill="#ff6b35">
           <polygon points="-4,2 4,2 6,14 -6,14"/>
@@ -524,7 +524,7 @@
         <path d="M -2,-58 Q 0,-56 2,-58" stroke="#3d2817" stroke-width="1.5" fill="none" stroke-linecap="round"/>
       </g>
 
-      <g id="char-carcar">
+      <g id="char-cgl">
         <!-- Marshmallow body with flame hair holding a steaming mug -->
         <ellipse cx="0" cy="-2" rx="15" ry="3" fill="#000" opacity="0.3"/>
         <!-- Feet -->
@@ -567,7 +567,7 @@
         <ellipse cx="0" cy="-40" rx="1.5" ry="2.5" fill="#ef5350"/>
       </g>
 
-      <g id="char-stevedave">
+      <g id="char-fss">
         <!-- Square body, round glasses, on a skateboard -->
         <ellipse cx="0" cy="-1" rx="22" ry="3" fill="#000" opacity="0.3"/>
         <!-- Skateboard wheels -->
@@ -600,7 +600,7 @@
         <ellipse cx="0" cy="-39" rx="1.5" ry="2.5" fill="#ef5350"/>
       </g>
 
-      <g id="char-peacock">
+      <g id="char-tm">
         <!-- Tall pillar body, zigzag crown, long eyes, big mouth, peacock fan on the side -->
         <ellipse cx="0" cy="-2" rx="14" ry="3" fill="#000" opacity="0.3"/>
         <!-- Peacock tail feathers - colourful fan on the right -->
@@ -724,29 +724,29 @@
     <h2>Who are you playing as?</h2>
     <div class="select-sub">Pick one of the gang to start the Mochi rescue.</div>
     <div class="character-grid">
-      <button class="character-pick" data-character="beastburger">
-        <img src="character.jpg" alt="little TIIIIIIIIIIIIIIIIIIIIIM">
-        <span>little TIIIIIIIIIIIIIIIIIIIIIM</span>
+      <button class="character-pick" data-character="rw">
+        <img src="rw.jpg" alt="RW">
+        <span>RW</span>
       </button>
-      <button class="character-pick" data-character="weebily">
-        <img src="Weebily.jpg" alt="big john">
-        <span>big john</span>
+      <button class="character-pick" data-character="epj">
+        <img src="epj.jpg" alt="EP-Johnyhomes">
+        <span>EP-Johnyhomes</span>
       </button>
-      <button class="character-pick" data-character="barry">
-        <img src="Barry.jpg" alt="emny pluffins Ggg">
-        <span>emny pluffins Ggg</span>
+      <button class="character-pick" data-character="glb">
+        <img src="glb.jpg" alt="GL-Boodiewoo">
+        <span>GL-Boodiewoo</span>
       </button>
-      <button class="character-pick" data-character="carcar">
-        <img src="PXL_20260627_124809935.jpg" alt="Car-car">
-        <span>Car-car</span>
+      <button class="character-pick" data-character="cgl">
+        <img src="cgl.jpg" alt="CGL">
+        <span>CGL</span>
       </button>
-      <button class="character-pick" data-character="stevedave">
-        <img src="PXL_20260627_124805605.jpg" alt="skateing fray">
-        <span>skateing fray</span>
+      <button class="character-pick" data-character="fss">
+        <img src="fss.jpg" alt="FS-Stevedave7777777">
+        <span>FS-Stevedave7777777</span>
       </button>
-      <button class="character-pick" data-character="peacock">
-        <img src="PXL_20260710_073526209.jpg" alt="Peacock Man">
-        <span>Peacock Man</span>
+      <button class="character-pick" data-character="tm">
+        <img src="tm.jpg" alt="TM">
+        <span>TM</span>
       </button>
     </div>
   </div>
@@ -1179,7 +1179,7 @@ const SCHOOLS = [
   const lanbury = findLongestRoad('Lanbury Road');
   if (!lanbury) console.error('Lanbury Road not found in ROADS data');
 
-  const LM_COLORS = { home:'#c62828', weebily:'#2e7d32', barry:'#1565c0', carcar:'#fb8c00', stevedave:'#7b1fa2', peacock:'#00695c', 'school-upper':'#6d4c00', 'school-lower':'#6d4c00' };
+  const LM_COLORS = { home:'#c62828', epj:'#2e7d32', glb:'#1565c0', cgl:'#fb8c00', fss:'#7b1fa2', tm:'#00695c', 'school-upper':'#6d4c00', 'school-lower':'#6d4c00' };
 
   // Position along any road, on west or east side
   function alongRoad(road, t, side='west', dist=40) {
@@ -1223,15 +1223,15 @@ const SCHOOLS = [
     return { x: p.x + offset[0]*dist, y: p.y + offset[1]*dist };
   }
 
-  // Beastburger B (Home, #28): halfway down Lanbury Road, west side.
+  // RW (Home, #28): halfway down Lanbury Road, west side.
   const homePos = alongRoad(lanbury, 0.5, 'west', 50);
-  // School polygon centroid y (used as "school latitude" reference for Barry).
+  // School polygon centroid y (used as "school latitude" reference for GLB).
   const schoolY = (SCHOOLS[0]) ? SCHOOLS[0].p.reduce((a,p)=>a+p[1],0)/SCHOOLS[0].p.length : 1316;
-  // Weebily (#132): on Ivydale Road, west side, near the TOP of the visible map.
-  const weebilyPos = alongRoadAtY('Ivydale Road', 80, 'west', 50)
+  // EPJ (#132): on Ivydale Road, west side, near the TOP of the visible map.
+  const epjPos = alongRoadAtY('Ivydale Road', 80, 'west', 50)
                    || { x: 3900, y: 80 };
-  // Barry (#279): on Ivydale Road, east side, opposite Ivydale Primary School.
-  const barryPos = alongRoadAtY('Ivydale Road', schoolY, 'east', 50)
+  // GLB (#279): on Ivydale Road, east side, opposite Ivydale Primary School.
+  const glbPos = alongRoadAtY('Ivydale Road', schoolY, 'east', 50)
                  || { x: 3300, y: schoolY };
   // School (Lower site, per Dave): the OSM-tagged school polygon centroid (near NE end of Lanbury).
   const schoolLowerPos = (SCHOOLS[0]) ? {
@@ -1244,12 +1244,12 @@ const SCHOOLS = [
   const ivyHousePos = { x: 2735, y: 1922 };
 
   const LANDMARKS = [
-    { id:'home',         name:"little TIIIIIIIIIIIIIIIIIIIIIM's",            pos: homePos,        color: LM_COLORS.home,    type:'house' },
-    { id:'weebily',      name:"big john's",                pos: weebilyPos,     color: LM_COLORS.weebily, type:'house' },
-    { id:'barry',        name:"emny pluffins Ggg's",       pos: barryPos,       color: LM_COLORS.barry,   type:'house' },
-    { id:'carcar',       name:"Car-car's",                 pos: { x: 3643, y: 2031 }, color: LM_COLORS.carcar,    type:'house' },
-    { id:'stevedave',    name:"skateing fray's",           pos: { x: 3956, y: 3110 }, color: LM_COLORS.stevedave, type:'house' },
-    { id:'peacock',      name:"Peacock Man's",             pos: { x: 3301, y: 2699 }, color: LM_COLORS.peacock,   type:'house' },
+    { id:'home',         name:"RW's",            pos: homePos,        color: LM_COLORS.home,    type:'house' },
+    { id:'epj',      name:"EP-Johnyhomes's",                pos: epjPos,     color: LM_COLORS.epj, type:'house' },
+    { id:'glb',        name:"GL-Boodiewoo's",       pos: glbPos,       color: LM_COLORS.glb,   type:'house' },
+    { id:'cgl',       name:"CGL's",                 pos: { x: 3643, y: 2031 }, color: LM_COLORS.cgl,    type:'house' },
+    { id:'fss',    name:"FS-Stevedave7777777's",           pos: { x: 3956, y: 3110 }, color: LM_COLORS.fss, type:'house' },
+    { id:'tm',      name:"TM's",             pos: { x: 3301, y: 2699 }, color: LM_COLORS.tm,   type:'house' },
     { id:'school-lower', name:'Ivydale School (Bellwood)', pos: schoolLowerPos, type:'building' },
     { id:'school-upper', name:'Ivydale School (Inverton)', pos: schoolUpperPos, type:'building' },
     { id:'ivy-house',    name:'The Ivy House',             pos: ivyHousePos,    type:'building' },
@@ -1369,7 +1369,7 @@ const SCHOOLS = [
   // Questions are aimed at 7-11 year olds (KS2). Random pick per visit.
   const WITNESSES = {
     home: {
-      avatar: '👩', name: "little TIIIIIIIIIIIIIIIIIIIIIM's Mum",
+      avatar: '👩', name: "RW's Mum",
       questions: [
         { question: 'How many legs does a cat have?', options: ['2', '4', '6', '8'], correct: 1, hint: 'Same number as a dog.' },
         { question: "What's 6 × 7?", options: ['36', '42', '48', '54'], correct: 1, hint: '6 × 6 = 36, plus one more 6.' },
@@ -1382,10 +1382,10 @@ const SCHOOLS = [
       ],
     },
 
-    weebily: {
-      avatar: '🧒', name: 'big john',
+    epj: {
+      avatar: '🧒', name: 'EP-Johnyhomes',
       questions: [
-        { question: 'How many cats does big john have?', options: ['Two', 'None', 'One', 'Three'], correct: 3, hint: 'He got two new kittens last month — plus the old one.' },
+        { question: 'How many cats does EP-Johnyhomes have?', options: ['Two', 'None', 'One', 'Three'], correct: 3, hint: 'He got two new kittens last month — plus the old one.' },
         { question: 'What colour are London pigeons usually?', options: ['Pink', 'Grey', 'Red', 'Yellow'], correct: 1, hint: 'Same colour as a rainy London sky.' },
         { question: 'What do butterflies start life as?', options: ['Eggs', 'Caterpillars', 'Bees', 'Worms'], correct: 1, hint: 'They\'re fuzzy and crawl along leaves.' },
         { question: 'How many legs does a spider have?', options: ['4', '6', '8', '10'], correct: 2, hint: 'Twice as many as a cat.' },
@@ -1424,8 +1424,8 @@ const SCHOOLS = [
       ],
     },
 
-    barry: {
-      avatar: '👦', name: 'emny pluffins Ggg',
+    glb: {
+      avatar: '👦', name: 'GL-Boodiewoo',
       questions: [
         { question: "What's 8 × 7?", options: ['54', '56', '63', '49'], correct: 1, hint: 'Count up in 8s: 8, 16, 24, 32, 40, 48…' },
         { question: 'What is 144 ÷ 12?', options: ['11', '12', '13', '14'], correct: 1, hint: '12 × 12 = 144.' },
@@ -1466,8 +1466,8 @@ const SCHOOLS = [
       ],
     },
 
-    carcar: {
-      avatar: '🚗', name: 'Car-car',
+    cgl: {
+      avatar: '🚗', name: 'CGL',
       questions: [
         { question: 'How many wheels does a tricycle have?', options: ['2', '3', '4', '6'], correct: 1, hint: '"Tri" means three.' },
         { question: 'What colour are traditional London buses?', options: ['Red', 'Blue', 'Green', 'Yellow'], correct: 0, hint: 'Same colour as a postbox.' },
@@ -1480,8 +1480,8 @@ const SCHOOLS = [
       ],
     },
 
-    stevedave: {
-      avatar: '🤓', name: 'skateing fray',
+    fss: {
+      avatar: '🤓', name: 'FS-Stevedave7777777',
       questions: [
         { question: 'What is 7 × 7?', options: ['49', '56', '63', '14'], correct: 0, hint: '7 × 7 = 50 − 1.' },
         { question: 'How many seconds in a minute?', options: ['30', '60', '100', '12'], correct: 1, hint: 'Same as the number of minutes in an hour.' },
@@ -1494,8 +1494,8 @@ const SCHOOLS = [
       ],
     },
 
-    peacock: {
-      avatar: '🦚', name: 'Peacock Man',
+    tm: {
+      avatar: '🦚', name: 'TM',
       questions: [
         { question: "What colour is a peacock's tail?", options: ['Grey', 'Blue and green', 'Red only', 'Yellow'], correct: 1, hint: 'Think ocean waves and grass.' },
         { question: 'Which family do peacocks belong to?', options: ['Pheasants', 'Ducks', 'Eagles', 'Owls'], correct: 0, hint: 'They\'re related to chickens.' },
@@ -1536,16 +1536,16 @@ const SCHOOLS = [
       introCall: 'Mochi the cat has run away! Can you come round and help us find her?',
       finalMessage: '🎉 YOU FOUND MOCHI! 🎉',
       stops: [
-        { landmarkId: 'home',         line: '"Oh no! Mochi the cat ran out the door when the postie rang the bell!"',                       clue: "Try big john's — Mochi loves his garden!"},
-        { landmarkId: 'weebily',      line: '"A grey furball shot through my garden chasing a pigeon!"',                                      clue: "The pigeon flew off towards Ivydale School — try the Inverton site!" },
+        { landmarkId: 'home',         line: '"Oh no! Mochi the cat ran out the door when the postie rang the bell!"',                       clue: "Try EP-Johnyhomes's — Mochi loves his garden!"},
+        { landmarkId: 'epj',      line: '"A grey furball shot through my garden chasing a pigeon!"',                                      clue: "The pigeon flew off towards Ivydale School — try the Inverton site!" },
         { landmarkId: 'school-upper', line: '"A grey cat darted across our playground! She slipped over to our Bellwood site."',              clue: "Try the Bellwood site — she went that way!" },
-        { landmarkId: 'school-lower', line: '"A cheeky cat slipped through the school gate at break time!"',                                  clue: "Try Car-car's place — Mochi might have caught a lift!" },
-        { landmarkId: 'carcar',       line: '"Mochi jumped into my car when I opened the door — and out again at the next traffic light!"', clue: "She probably went to The Ivy House for treats — try there!" },
+        { landmarkId: 'school-lower', line: '"A cheeky cat slipped through the school gate at break time!"',                                  clue: "Try CGL's place — Mochi might have caught a lift!" },
+        { landmarkId: 'cgl',       line: '"Mochi jumped into my car when I opened the door — and out again at the next traffic light!"', clue: "She probably went to The Ivy House for treats — try there!" },
         { landmarkId: 'ivy-house',    line: '"Aye, a little tabby cat snuck in for some scraps! Then off she went, bold as brass!"',         clue: "She headed up Spooky Path — try the cemetery!" },
-        { landmarkId: 'cemetery',     line: '"I saw a tabby cat earlier! She was watching me chase a butterfly between the gravestones."',   clue: "She trotted off towards emny pluffins Ggg's place — go check!" },
-        { landmarkId: 'barry',        line: '"I gave her a little bit of milk — then she trotted off down the road!"',                       clue: "Maybe skateing fray can pinpoint where — he tracks everything!" },
-        { landmarkId: 'stevedave',    line: '"I calculated her exact trajectory — 99.94% probability she\'s at the playground!"',           clue: "Off to the Adventure Playground!" },
-        { landmarkId: 'peacock',      line: '"A tabby cat cut through my garden and STARTLED my peacocks — feathers everywhere!"',           clue: "She sped off towards the playground!" },
+        { landmarkId: 'cemetery',     line: '"I saw a tabby cat earlier! She was watching me chase a butterfly between the gravestones."',   clue: "She trotted off towards GL-Boodiewoo's place — go check!" },
+        { landmarkId: 'glb',        line: '"I gave her a little bit of milk — then she trotted off down the road!"',                       clue: "Maybe FS-Stevedave7777777 can pinpoint where — he tracks everything!" },
+        { landmarkId: 'fss',    line: '"I calculated her exact trajectory — 99.94% probability she\'s at the playground!"',           clue: "Off to the Adventure Playground!" },
+        { landmarkId: 'tm',      line: '"A tabby cat cut through my garden and STARTLED my peacocks — feathers everywhere!"',           clue: "She sped off towards the playground!" },
         { landmarkId: 'playground',   line: '"A little tabby cat is curled up fast asleep under the slide!"',                                 clue: "You found Mochi! She's been here all afternoon, having a snooze." },
       ],
     },
@@ -1560,13 +1560,13 @@ const SCHOOLS = [
         { landmarkId: 'home',         line: '"This old map says: ‘Start where the grown-ups gather for a pint.’ Hmm…"',                                              clue: "Sounds like The Ivy House! Head over to the pub." },
         { landmarkId: 'ivy-house',    line: '"Aha! The next clue says: ‘Find where children laugh and learn.’"',                                                      clue: "That must mean the school! Try the Bellwood site." },
         { landmarkId: 'school-lower', line: '"Children laughing and learning, yes! Map says next: ‘Visit the OTHER place of learning.’"',                              clue: "The other site! Head over to Ivydale School (Inverton)." },
-        { landmarkId: 'school-upper', line: '"Aha, more clues at our Inverton site! ‘Find the one with the spikiest hair.’"',                                          clue: "Spikiest hair? That has to be big john! Go and ask him."},
-        { landmarkId: 'weebily',      line: '"My hair IS pretty spiky. The map says next: ‘Find the one obsessed with wheels.’"',                                     clue: "Wheels? That has to be Car-car! Go see her."},
-        { landmarkId: 'carcar',       line: '"Wheels obsessed, that\'s me! Map says: ‘Visit the pirate of the playground.’"',                                          clue: "The pirate is emny pluffins Ggg — he has the eye patch! Off to him."},
-        { landmarkId: 'barry',        line: '"Aye aye! My eye patch IS pirate-y. The map says: ‘Find the resting place of those gone before.’"',                      clue: "That must be Nunhead Cemetery — head over there!" },
-        { landmarkId: 'cemetery',     line: '"I dug a clue out from under a mossy gravestone: ‘Verify with the calculator.’"',                                         clue: "Sounds like skateing fray! Ask him to check the maths."},
-        { landmarkId: 'stevedave',    line: '"Triangulating coordinates… recalculating… X = the Adventure Playground! Confirmed!"',                                    clue: "X marks the playground swing — head there!" },
-        { landmarkId: 'peacock',      line: '"The map clue says: ‘Find the one with the most colourful pet.’ That\'s me and my peacocks!"',                            clue: "Next clue: X marks the playground swing!" },
+        { landmarkId: 'school-upper', line: '"Aha, more clues at our Inverton site! ‘Find the one with the spikiest hair.’"',                                          clue: "Spikiest hair? That has to be EP-Johnyhomes! Go and ask him."},
+        { landmarkId: 'epj',      line: '"My hair IS pretty spiky. The map says next: ‘Find the one obsessed with wheels.’"',                                     clue: "Wheels? That has to be CGL! Go see her."},
+        { landmarkId: 'cgl',       line: '"Wheels obsessed, that\'s me! Map says: ‘Visit the pirate of the playground.’"',                                          clue: "The pirate is GL-Boodiewoo — he has the eye patch! Off to him."},
+        { landmarkId: 'glb',        line: '"Aye aye! My eye patch IS pirate-y. The map says: ‘Find the resting place of those gone before.’"',                      clue: "That must be Nunhead Cemetery — head over there!" },
+        { landmarkId: 'cemetery',     line: '"I dug a clue out from under a mossy gravestone: ‘Verify with the calculator.’"',                                         clue: "Sounds like FS-Stevedave7777777! Ask him to check the maths."},
+        { landmarkId: 'fss',    line: '"Triangulating coordinates… recalculating… X = the Adventure Playground! Confirmed!"',                                    clue: "X marks the playground swing — head there!" },
+        { landmarkId: 'tm',      line: '"The map clue says: ‘Find the one with the most colourful pet.’ That\'s me and my peacocks!"',                            clue: "Next clue: X marks the playground swing!" },
         { landmarkId: 'playground',   line: '"Look — under the swing! There\'s a wooden box covered in moss…"',                                                        clue: "It's a box of vintage marbles and an old gold coin! TREASURE!" },
       ],
     },
@@ -1581,13 +1581,13 @@ const SCHOOLS = [
         { landmarkId: 'home',         line: '"Last night I heard the SPOOKIEST howling coming from Nunhead Cemetery!"',                                              clue: "Ask Mr Caretaker at the Bellwood site — he was there late, he might have heard it." },
         { landmarkId: 'school-lower', line: '"Yes! I heard it. Sounded like a wailing ghost. But… ghosts aren\'t real, are they?"',                                    clue: "Ask Mrs Head at our Inverton site — she usually closes up that one." },
         { landmarkId: 'school-upper', line: '"Yes, the same eerie wailing! I told the kids the staff were practising for school assembly…"',                          clue: "The regulars at The Ivy House know all the local gossip — ask them!" },
-        { landmarkId: 'ivy-house',    line: '"The locals say they\'ve seen GLOWING EYES in the cemetery! And paw prints!"',                                              clue: "Ask big john — his house is closest to Spooky Path."},
-        { landmarkId: 'weebily',      line: '"I heard scratching and rustling. Something was definitely moving through Spooky Path!"',                                  clue: "Car-car drives around at all hours — maybe she saw something. Ask her!"},
-        { landmarkId: 'carcar',       line: '"I drove past the cemetery last night and my headlights caught GLOWING EYES in the trees!"',                              clue: "Ask emny pluffins Ggg — he\'s the bravest. He might have got closer!"},
-        { landmarkId: 'barry',        line: '"I crept down Spooky Path with my eye patch on! I saw glowing eyes too!"',                                                 clue: "Go investigate Nunhead Cemetery yourself — but be brave!" },
-        { landmarkId: 'cemetery',     line: '"*whispers* It\'s me! I\'m just a fox family living in the old crypt. Sorry for the spooky noises!"',                       clue: "Mystery solved! Log it with skateing fray — he keeps the records."},
-        { landmarkId: 'stevedave',    line: '"Logged in my spreadsheet — noises peaked at midnight. That matches typical fox activity perfectly!"',                    clue: "Final report to the Park Keeper at the playground!" },
-        { landmarkId: 'peacock',      line: '"My peacocks were UNSETTLED last night — they saw glowing eyes creeping around the garden!"',                             clue: "Sounds like the same suspects — head to the cemetery to check!" },
+        { landmarkId: 'ivy-house',    line: '"The locals say they\'ve seen GLOWING EYES in the cemetery! And paw prints!"',                                              clue: "Ask EP-Johnyhomes — his house is closest to Spooky Path."},
+        { landmarkId: 'epj',      line: '"I heard scratching and rustling. Something was definitely moving through Spooky Path!"',                                  clue: "CGL drives around at all hours — maybe she saw something. Ask her!"},
+        { landmarkId: 'cgl',       line: '"I drove past the cemetery last night and my headlights caught GLOWING EYES in the trees!"',                              clue: "Ask GL-Boodiewoo — he\'s the bravest. He might have got closer!"},
+        { landmarkId: 'glb',        line: '"I crept down Spooky Path with my eye patch on! I saw glowing eyes too!"',                                                 clue: "Go investigate Nunhead Cemetery yourself — but be brave!" },
+        { landmarkId: 'cemetery',     line: '"*whispers* It\'s me! I\'m just a fox family living in the old crypt. Sorry for the spooky noises!"',                       clue: "Mystery solved! Log it with FS-Stevedave7777777 — he keeps the records."},
+        { landmarkId: 'fss',    line: '"Logged in my spreadsheet — noises peaked at midnight. That matches typical fox activity perfectly!"',                    clue: "Final report to the Park Keeper at the playground!" },
+        { landmarkId: 'tm',      line: '"My peacocks were UNSETTLED last night — they saw glowing eyes creeping around the garden!"',                             clue: "Sounds like the same suspects — head to the cemetery to check!" },
         { landmarkId: 'playground',   line: '"FOXES! That makes perfect sense. They love quiet places like the cemetery."',                                            clue: "Case closed! The spooky cemetery is now home to a family of urban foxes." },
       ],
     },
@@ -1945,30 +1945,30 @@ const SCHOOLS = [
   // Character selection (Milestone 4)
   // ============================================================
   const CHARACTER_IMAGES = {
-    beastburger: 'character.jpg',
-    weebily: 'Weebily.jpg',
-    barry: 'Barry.jpg',
-    carcar: 'PXL_20260627_124809935.jpg',
-    stevedave: 'PXL_20260627_124805605.jpg',
-    peacock: 'PXL_20260710_073526209.jpg',
+    rw: 'rw.jpg',
+    epj: 'epj.jpg',
+    glb: 'glb.jpg',
+    cgl: 'cgl.jpg',
+    fss: 'fss.jpg',
+    tm: 'tm.jpg',
   };
   const CHARACTER_NAMES = {
-    beastburger: 'little TIIIIIIIIIIIIIIIIIIIIIM',
-    weebily: 'big john',
-    barry: 'emny pluffins Ggg',
-    carcar: 'Car-car',
-    stevedave: 'skateing fray',
-    peacock: 'Peacock Man',
+    rw: 'RW',
+    epj: 'EP-Johnyhomes',
+    glb: 'GL-Boodiewoo',
+    cgl: 'CGL',
+    fss: 'FS-Stevedave7777777',
+    tm: 'TM',
   };
   let playerCharacterId = null;
   // Each character spawns at their own house
   const CHARACTER_HOMES = {
-    beastburger: homePos,
-    weebily: weebilyPos,
-    barry: barryPos,
-    carcar: { x: 3643, y: 2031 },
-    stevedave: { x: 3956, y: 3110 },
-    peacock: { x: 3301, y: 2699 },
+    rw: homePos,
+    epj: epjPos,
+    glb: glbPos,
+    cgl: { x: 3643, y: 2031 },
+    fss: { x: 3956, y: 3110 },
+    tm: { x: 3301, y: 2699 },
   };
 
   function setPlayerCharacter(charId) {
@@ -1997,13 +1997,13 @@ const SCHOOLS = [
     currentLandmark = null;
     currentQuestion = null;
     avatarEl.textContent = '📞';
-    wnameEl.textContent = "little TIIIIIIIIIIIIIIIIIIIIIM's Mum (on the phone)";
+    wnameEl.textContent = "RW's Mum (on the phone)";
     wlineEl.textContent = '"Hi ' + CHARACTER_NAMES[charId] + '! ' + activeQuest.introCall + '"';
     questionEl.classList.add('hidden');
     optionsEl.classList.add('hidden');
     hintEl.classList.add('hidden');
     optionsEl.innerHTML = '';
-    clueEl.textContent = activeQuest.icon + " Walk to little TIIIIIIIIIIIIIIIIIIIIIM's house to start!";
+    clueEl.textContent = activeQuest.icon + " Walk to RW's house to start!";
     clueEl.classList.remove('hidden');
     closeBtn.classList.remove('hidden');
     dialogEl.classList.remove('hidden');
@@ -2028,7 +2028,7 @@ const SCHOOLS = [
       const home = CHARACTER_HOMES[playerCharacterId];
       if (home) { charX = home.x; charY = home.y; updateCharacter(); }
       updateCamera();
-      if (playerCharacterId !== 'beastburger') {
+      if (playerCharacterId !== 'rw') {
         showMumPhoneCallIntro(playerCharacterId);
       }
     });
