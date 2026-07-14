@@ -1332,7 +1332,7 @@ const SCHOOLS = [
   // Status text always nudges the player toward the next quest stop.
   function updateProximityStatus() {
     if (typeof currentTargetIndex !== 'undefined' && currentTargetIndex >= MAIN_QUEST_IDS.length) {
-      statusText.textContent = '🎉 Quest complete — Mochi is home safe!';
+      statusText.textContent = activeQuest.finalMessage;
       return;
     }
     const targetId = (typeof currentTargetIndex !== 'undefined')
@@ -1538,7 +1538,7 @@ const SCHOOLS = [
       stops: [
         { landmarkId: 'home',         line: '"Oh no! Mochi the cat ran out the door when the postie rang the bell!"',                       clue: "Try EP-Johnyhomes's — Mochi loves his garden!"},
         { landmarkId: 'epj',      line: '"A grey furball shot through my garden chasing a pigeon!"',                                      clue: "The pigeon flew off towards Ivydale School — try the Inverton site!" },
-        { landmarkId: 'school-upper', line: '"A grey cat darted across our playground! She slipped over to our Bellwood site."',              clue: "Try the Bellwood site — she went that way!" },
+        { landmarkId: 'school-upper', line: '"A grey cat darted across our playground during lunch — miaowed at the kids and vanished into a hedge!"',              clue: "Try the next stop — she went that way!" },
         { landmarkId: 'school-lower', line: '"A cheeky cat slipped through the school gate at break time!"',                                  clue: "Try CGL's place — Mochi might have caught a lift!" },
         { landmarkId: 'cgl',       line: '"Mochi jumped into my car when I opened the door — and out again at the next traffic light!"', clue: "She probably went to The Ivy House for treats — try there!" },
         { landmarkId: 'ivy-house',    line: '"Aye, a little tabby cat snuck in for some scraps! Then off she went, bold as brass!"',         clue: "She headed up Spooky Path — try the cemetery!" },
