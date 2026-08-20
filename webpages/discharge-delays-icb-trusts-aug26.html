@@ -41,7 +41,15 @@ var TIP=document.createElement('div');TIP.className='hc-tip';document.body.appen
 function tipShow(ev,lines){
   TIP.textContent='';
   lines.forEach(function(L,i){
-    var el=document.createElement(i===0?'b':'div');el.textContent=L;TIP.appendChild(el);
+    var el=document.createElement(i===0?'b':'div');
+    if(typeof L==='object'){
+      if(L.c){var k=document.createElement('span');
+        k.style.cssText='display:inline-block;width:12px;height:3px;border-radius:1px;'
+          +'margin-right:6px;vertical-align:middle;background:'+L.c;
+        el.appendChild(k);}
+      el.appendChild(document.createTextNode(L.t));
+    }else{el.textContent=L;}
+    TIP.appendChild(el);
   });
   TIP.style.display='block';tipMove(ev);
 }
@@ -168,6 +176,52 @@ function lineChart(el,cfg){
     tipShow(ev,[cfg.dec?p.v.toFixed(2)+' days':fmt(p.v)+' patients a day',mm]);});
   hit.addEventListener('pointerleave',function(){
     hair.setAttribute('opacity',0);dot.setAttribute('opacity',0);tipHide();});
+}
+
+function multiLineChart(el,cfg){
+  var W=el.clientWidth||720,H=cfg.h||340,L=52,R=16,T=14,B=26;
+  var ser=cfg.series,n=ser[0].points.length;
+  var vmax=niceMax(Math.max.apply(null,ser.map(function(sr){
+    return Math.max.apply(null,sr.points.map(function(p){return p.v;}));})));
+  var x=function(i){return L+i/(n-1)*(W-L-R);};
+  var y=function(v){return T+(1-v/vmax)*(H-T-B);};
+  var svg=S('svg',{viewBox:'0 0 '+W+' '+H,width:W,height:H},el);
+  var steps=cfg.ySteps||4;
+  for(var i=0;i<=steps;i++){var v=vmax*i/steps;
+    S('line',{x1:L,y1:y(v),x2:W-R,y2:y(v),stroke:'#EBECEC','stroke-width':1},svg);
+    var t=S('text',{x:L-6,y:y(v)+4,'text-anchor':'end','font-size':11,fill:'#515259'},svg);
+    t.textContent=fmt(v);}
+  ser[0].points.forEach(function(p,i){
+    if(p.m.slice(5,7)==='01'){
+      var t2=S('text',{x:x(i),y:H-8,'text-anchor':'middle','font-size':11,fill:'#515259'},svg);
+      t2.textContent=p.m.slice(0,4);}});
+  ser.forEach(function(sr){
+    var d=sr.points.map(function(p,i){return (i?'L':'M')+x(i)+' '+y(p.v);}).join('');
+    S('path',{d:d,fill:'none',stroke:sr.color,'stroke-width':2,
+      'stroke-linejoin':'round','stroke-linecap':'round'},svg);
+    var last=sr.points[n-1];
+    S('circle',{cx:x(n-1),cy:y(last.v),r:4,fill:sr.color,
+      stroke:'#fff','stroke-width':2},svg);});
+  var hair=S('line',{y1:T,y2:H-B,stroke:'#8B8D95','stroke-width':1,opacity:0},svg);
+  var dots=ser.map(function(sr){return S('circle',{r:4,fill:sr.color,
+    stroke:'#fff','stroke-width':2,opacity:0},svg);});
+  var hit=S('rect',{x:0,y:0,width:W,height:H,fill:'transparent'},svg);
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  hit.addEventListener('pointermove',function(ev){
+    var box=svg.getBoundingClientRect();
+    var mx=(ev.clientX-box.left)*(W/box.width);
+    var i=Math.round((mx-L)/(W-L-R)*(n-1));i=Math.max(0,Math.min(n-1,i));
+    hair.setAttribute('x1',x(i));hair.setAttribute('x2',x(i));hair.setAttribute('opacity',.7);
+    var rows=ser.map(function(sr,si){
+      dots[si].setAttribute('cx',x(i));dots[si].setAttribute('cy',y(sr.points[i].v));
+      dots[si].setAttribute('opacity',1);
+      return {v:sr.points[i].v,t:fmt(sr.points[i].v)+'  '+sr.name,c:sr.color};});
+    rows.sort(function(a,b){return b.v-a.v;});
+    var p0=ser[0].points[i];
+    tipShow(ev,[MON[+p0.m.slice(5,7)-1]+' '+p0.m.slice(0,4)].concat(rows));});
+  hit.addEventListener('pointerleave',function(){
+    hair.setAttribute('opacity',0);
+    dots.forEach(function(d){d.setAttribute('opacity',0);});tipHide();});
 }
 
 var ROWS=[{"label": "West and North London", "chg": 111.8, "pct": 22.47, "t12": 55.0, "q0": 497.3, "q1": 609.1, "color": "#C90C0F", "head": true}, {"label": "London North West University Healthcare", "chg": 49.8, "pct": 46.67, "t12": 31.4, "q0": 106.8, "q1": 156.6, "color": "#e2a49f"}, {"label": "Royal Free London", "chg": 38.7, "pct": 31.54, "t12": -3.3, "q0": 122.7, "q1": 161.4, "color": "#e2a49f"}, {"gap": true}, {"label": "Devon", "chg": 65.4, "pct": 50.64, "t12": 37.5, "q0": 129.2, "q1": 194.6, "color": "#C90C0F", "head": true}, {"label": "Royal Devon University Healthcare", "chg": 37.0, "pct": 55.34, "t12": 25.3, "q0": 66.8, "q1": 103.8, "color": "#e2a49f"}, {"label": "Torbay and South Devon", "chg": 18.6, "pct": 172.98, "t12": 6.9, "q0": 10.7, "q1": 29.3, "color": "#e2a49f"}, {"gap": true}, {"label": "North East London", "chg": 56.0, "pct": 28.09, "t12": 31.6, "q0": 199.3, "q1": 255.3, "color": "#C90C0F", "head": true}, {"label": "Barts Health", "chg": 30.6, "pct": 29.08, "t12": 2.1, "q0": 105.3, "q1": 136.0, "color": "#e2a49f"}, {"label": "Barking, Havering and Redbridge University Hospitals", "chg": 26.9, "pct": 39.88, "t12": 28.1, "q0": 67.5, "q1": 94.5, "color": "#e2a49f"}, {"gap": true}, {"label": "West Yorkshire", "chg": 47.5, "pct": 10.57, "t12": 59.3, "q0": 449.5, "q1": 497.1, "color": "#C90C0F", "head": true}, {"label": "Mid Yorkshire Hospitals", "chg": 24.2, "pct": 26.11, "t12": 27.5, "q0": 92.7, "q1": 116.9, "color": "#e2a49f"}, {"label": "Airedale", "chg": 11.8, "pct": 43.37, "t12": 2.1, "q0": 27.2, "q1": 38.9, "color": "#e2a49f"}, {"gap": true}, {"label": "Hampshire and Isle of Wight", "chg": 46.5, "pct": 10.79, "t12": 43.1, "q0": 431.1, "q1": 477.6, "color": "#C90C0F", "head": true}, {"label": "Portsmouth Hospitals University", "chg": 42.0, "pct": 29.47, "t12": 27.7, "q0": 142.6, "q1": 184.7, "color": "#e2a49f"}, {"label": "Isle of Wight", "chg": 24.8, "pct": 69.66, "t12": 10.6, "q0": 35.6, "q1": 60.5, "color": "#e2a49f"}, {"gap": true}, {"label": "Central East", "chg": 41.0, "pct": 10.61, "t12": 32.6, "q0": 385.9, "q1": 426.9, "color": "#C90C0F", "head": true}, {"label": "Cambridge University Hospitals", "chg": 20.0, "pct": 20.23, "t12": 27.1, "q0": 98.7, "q1": 118.6, "color": "#e2a49f"}, {"label": "Bedfordshire Hospitals", "chg": 12.4, "pct": 15.75, "t12": 4.6, "q0": 78.7, "q1": 91.1, "color": "#e2a49f"}];
