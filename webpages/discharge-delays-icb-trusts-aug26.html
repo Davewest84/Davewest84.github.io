@@ -4,8 +4,12 @@
 <meta name="robots" content="noindex"><title>Where delays are rising fastest</title>
 <style>
  *{box-sizing:border-box;}
- body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#232126;}
- .hc-wrap{max-width:760px;margin:0 auto;padding:6px 10px 4px;}
+ html,body{height:100%;margin:0;overflow:hidden;}
+ body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#232126;}
+ .hc-wrap{max-width:760px;height:100%;margin:0 auto;padding:6px 10px 4px;
+   display:flex;flex-direction:column;}
+ .hc-panel.hc-on{display:flex;flex-direction:column;flex:1;min-height:0;}
+ .hc-chart{flex:1;min-height:0;}
  .hc-nav{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px;}
  .hc-tab{padding:6px 11px;border:1px solid #B6B9BF;border-radius:4px;font-size:13px;
    cursor:pointer;color:#232126;background:#EBECEC;font-family:inherit;}
@@ -84,7 +88,11 @@ function niceMax(v){var p=Math.pow(10,Math.floor(Math.log10(v)));
 
 function hbarChart(el,cfg){
   var W=el.clientWidth||720,LAB=W<540?128:190,RPAD=W<540?86:120,rowH=cfg.rowH||34;
-  var rows=cfg.rows,nData=rows.filter(function(r){return !r.gap;}).length,H=nData*rowH+(cfg.groupGaps||0)*12+6;
+  var rows=cfg.rows,nData=rows.filter(function(r){return !r.gap;}).length;
+  var gapPx=(cfg.groupGaps||0)*12;
+  var avail=el.clientHeight||0;
+  if(avail>60)rowH=Math.max(22,Math.min(rowH,Math.floor((avail-gapPx-6)/nData)));
+  var H=nData*rowH+gapPx+6;
   var lo=0,hi=0;
   rows.forEach(function(r){if(r.gap)return;
     lo=Math.min(lo,r.chg,(r.t12!=null?r.t12:0));hi=Math.max(hi,r.chg,(r.t12!=null?r.t12:0));});
@@ -133,7 +141,8 @@ function hbarChart(el,cfg){
 }
 
 function lineChart(el,cfg){
-  var W=el.clientWidth||720,H=cfg.h||360,L=52,R=14,T=14,B=26;
+  var W=el.clientWidth||720,H=el.clientHeight>60?el.clientHeight:(cfg.h||360),
+    L=52,R=14,T=14,B=26;
   var pts=cfg.points,n=pts.length;
   var vmax=niceMax(Math.max.apply(null,pts.map(function(p){return p.v;})));
   var x=function(i){return L+i/(n-1)*(W-L-R);};
@@ -179,7 +188,8 @@ function lineChart(el,cfg){
 }
 
 function multiLineChart(el,cfg){
-  var W=el.clientWidth||720,H=cfg.h||340,L=52,R=16,T=14,B=26;
+  var W=el.clientWidth||720,H=el.clientHeight>60?el.clientHeight:(cfg.h||340),
+    L=52,R=16,T=14,B=26;
   var ser=cfg.series,n=ser[0].points.length;
   var vmax=niceMax(Math.max.apply(null,ser.map(function(sr){
     return Math.max.apply(null,sr.points.map(function(p){return p.v;}));})));
