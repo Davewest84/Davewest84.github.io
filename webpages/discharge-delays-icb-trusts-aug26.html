@@ -94,7 +94,13 @@ function hbarChart(el,cfg){
     var bar=S('path',{d:barPath(x0,by,w,bh,w>=0),fill:r.color},svg);
     var lab=S('text',{x:LAB-8,y:by+bh/2+4,'text-anchor':'end','font-size':W<540?10.5:12,
       fill:'#232126','font-weight':r.head?'bold':'normal'},svg);
-    lab.textContent=r.label.length>(W<540?20:30)?r.label.slice(0,W<540?19:29)+'\u2026':r.label;
+    if(r.lines){
+      lab.setAttribute('y',by+bh/2-2);
+      r.lines.forEach(function(ln,li){
+        var ts=S('tspan',{x:LAB-8,dy:li?13:0},lab);ts.textContent=ln;});
+    }else{
+      lab.textContent=r.label.length>(W<540?20:30)?r.label.slice(0,W<540?19:29)+'…':r.label;
+    }
     if(r.t12!=null)S('rect',{x:x(r.t12)-1.5,y:by-2,width:3,height:bh+4,rx:1,
       fill:'#232126'},svg);
     // negative bars label to the right of the zero line, where the space is
