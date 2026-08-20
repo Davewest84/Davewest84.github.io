@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>Where delays are rising fastest</title>
+<style>
+ *{box-sizing:border-box;}
+ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#232126;}
+ .hc-wrap{max-width:760px;margin:0 auto;padding:6px 10px 4px;}
+ .hc-nav{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px;}
+ .hc-tab{padding:6px 11px;border:1px solid #B6B9BF;border-radius:4px;font-size:13px;
+   cursor:pointer;color:#232126;background:#EBECEC;font-family:inherit;}
+ .hc-tab.hc-on{background:#C90C0F;color:#fff;border-color:#C90C0F;}
+ .hc-panel{display:none;}
+ .hc-panel.hc-on{display:block;}
+ .hc-title{font-size:15px;font-weight:bold;margin:2px 0 0;}
+ .hc-sub{font-size:12px;color:#515259;margin:1px 0 4px;}
+ .hc-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:#515259;
+   margin:2px 0 2px;align-items:center;}
+ .hc-legend span{display:inline-flex;align-items:center;gap:5px;}
+ .hc-sw{width:11px;height:11px;border-radius:2px;display:inline-block;}
+ .hc-tick{width:3px;height:13px;background:#232126;border-radius:1px;display:inline-block;}
+ .hc-src{font-size:10.5px;color:#8B8D95;margin:2px 0 4px;}
+ svg text{font-family:Arial,Helvetica,sans-serif;}
+ .hc-tip{position:fixed;pointer-events:none;background:#232126;color:#fff;
+   padding:7px 10px;border-radius:5px;font-size:12px;line-height:1.45;z-index:50;
+   display:none;max-width:250px;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+ .hc-tip b{font-size:13px;}
+ .hc-hover{filter:brightness(1.12);}
+</style></head><body>
+<div class="hc-wrap">
+<div class="hc-title">Where delays are rising fastest</div>
+<div class="hc-sub">Change in patients delayed 14+ days per day, May-July 2026 v same
+months 2025; the six fastest-rising ICBs and each one's two biggest trust rises</div>
+<div class="hc-legend"><span><i class="hc-sw" style="background:#C90C0F"></i>ICB total</span><span><i class="hc-sw" style="background:#e2a49f"></i>Trust within the ICB</span><span><i class="hc-tick"></i>12-month change</span></div>
+<div id="hc-icb"></div>
+<div class="hc-src">Source: NHS England acute discharge situation report</div>
+</div>
+<script>
+
+var TIP=document.createElement('div');TIP.className='hc-tip';document.body.appendChild(TIP);
+function tipShow(ev,lines){
+  TIP.textContent='';
+  lines.forEach(function(L,i){
+    var el=document.createElement(i===0?'b':'div');el.textContent=L;TIP.appendChild(el);
+  });
+  TIP.style.display='block';tipMove(ev);
+}
+function tipMove(ev){
+  var x=ev.clientX+14,y=ev.clientY+12,r=TIP.getBoundingClientRect();
+  if(x+r.width>window.innerWidth-8)x=ev.clientX-r.width-12;
+  if(y+r.height>window.innerHeight-8)y=ev.clientY-r.height-10;
+  TIP.style.left=x+'px';TIP.style.top=y+'px';
+}
+function tipHide(){TIP.style.display='none';}
+function S(tag,attrs,parent){
+  var el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  for(var k in attrs)el.setAttribute(k,attrs[k]);
+  if(parent)parent.appendChild(el);return el;
+}
+function fmt(n){return (n<0?'-':'')+Math.abs(Math.round(n)).toString()
+  .replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function fmtSigned(n){return (n>=0?'+':'-')+fmt(Math.abs(n));}
+function barPath(x,y,w,h,rightRound){
+  var r=Math.min(4,Math.abs(w)/2,h/2);
+  if(w>=0){
+    if(rightRound)return 'M'+x+' '+y+'h'+(w-r)+'a'+r+' '+r+' 0 0 1 '+r+' '+r+
+      'v'+(h-2*r)+'a'+r+' '+r+' 0 0 1 -'+r+' '+r+'h-'+(w-r)+'z';
+  }
+  var aw=Math.abs(w);
+  return 'M'+x+' '+y+'h-'+(aw-r)+'a'+r+' '+r+' 0 0 0 -'+r+' '+r+
+    'v'+(h-2*r)+'a'+r+' '+r+' 0 0 0 '+r+' '+r+'h'+(aw-r)+'z';
+}
+function niceMax(v){var p=Math.pow(10,Math.floor(Math.log10(v)));
+  var c=[1,1.2,1.5,2,2.5,3,4,5,6,8,10];
+  for(var i=0;i<c.length;i++){if(c[i]*p>=v)return c[i]*p;}return 10*p;}
+
+function hbarChart(el,cfg){
+  var W=el.clientWidth||720,LAB=W<540?128:190,RPAD=W<540?86:120,rowH=cfg.rowH||34;
+  var rows=cfg.rows,nData=rows.filter(function(r){return !r.gap;}).length,H=nData*rowH+(cfg.groupGaps||0)*12+6;
+  var lo=0,hi=0;
+  rows.forEach(function(r){if(r.gap)return;
+    lo=Math.min(lo,r.chg,(r.t12!=null?r.t12:0));hi=Math.max(hi,r.chg,(r.t12!=null?r.t12:0));});
+  hi=niceMax(hi);if(lo<0)lo=-niceMax(-lo);
+  var plotW=W-LAB-RPAD-8;
+  var x=function(v){return LAB+(v-lo)/(hi-lo)*plotW;};
+  var svg=S('svg',{viewBox:'0 0 '+W+' '+H,width:W,height:H},el);
+  var y=2;
+  var x0=x(0);
+  S('line',{x1:x0,y1:0,x2:x0,y2:H-2,stroke:'#B6B9BF','stroke-width':1},svg);
+  rows.forEach(function(r){
+    if(r.gap){y+=12;return;}
+    var bh=r.head?22:20,pad=(rowH-bh)/2,by=y+pad;
+    var w=x(r.chg)-x0;
+    var bar=S('path',{d:barPath(x0,by,w,bh,w>=0),fill:r.color},svg);
+    var lab=S('text',{x:LAB-8,y:by+bh/2+4,'text-anchor':'end','font-size':W<540?10.5:12,
+      fill:'#232126','font-weight':r.head?'bold':'normal'},svg);
+    lab.textContent=r.label.length>(W<540?20:30)?r.label.slice(0,W<540?19:29)+'\u2026':r.label;
+    if(r.t12!=null)S('rect',{x:x(r.t12)-1.5,y:by-2,width:3,height:bh+4,rx:1,
+      fill:'#232126'},svg);
+    // negative bars label to the right of the zero line, where the space is
+    var vx=r.chg<0?x0+7:Math.max(x(r.chg),r.t12!=null?x(r.t12):x0)+7;
+    var val=S('text',{x:vx,y:by+bh/2+4,'font-size':W<540?10.5:12,
+      fill:'#232126'},svg);
+    val.textContent=fmtSigned(r.chg)+' a day ('+(r.pct>=0?'+':'')+Math.round(r.pct)+'%)';
+    var hit=S('rect',{x:0,y:y,width:W,height:rowH,fill:'transparent'},svg);
+    (function(row,barEl){
+      hit.addEventListener('pointermove',function(ev){
+        barEl.classList.add('hc-hover');
+        var lines=[fmtSigned(row.chg)+' a day ('+(row.pct>=0?'+':'')+Math.round(row.pct)+'%)',
+          row.full||row.label,
+          'May-Jul 2025: '+fmt(row.q0)+'  \u2192  2026: '+fmt(row.q1),
+          '12-month change: '+fmtSigned(row.t12)+' a day'];
+        if(row.bkt)lines.splice(2,0,'Group: '+row.bkt);
+        tipShow(ev,lines);});
+      hit.addEventListener('pointerleave',function(){barEl.classList.remove('hc-hover');tipHide();});
+    })(r,bar);
+    y+=rowH;
+  });
+}
+
+function lineChart(el,cfg){
+  var W=el.clientWidth||720,H=cfg.h||360,L=52,R=14,T=14,B=26;
+  var pts=cfg.points,n=pts.length;
+  var vmax=niceMax(Math.max.apply(null,pts.map(function(p){return p.v;})));
+  var x=function(i){return L+i/(n-1)*(W-L-R);};
+  var y=function(v){return T+(1-v/vmax)*(H-T-B);};
+  var svg=S('svg',{viewBox:'0 0 '+W+' '+H,width:W,height:H},el);
+  var steps=cfg.ySteps||4;
+  for(var i=0;i<=steps;i++){var v=vmax*i/steps;
+    S('line',{x1:L,y1:y(v),x2:W-R,y2:y(v),stroke:'#EBECEC','stroke-width':1},svg);
+    var t=S('text',{x:L-6,y:y(v)+4,'text-anchor':'end','font-size':11,fill:'#515259'},svg);
+    t.textContent=cfg.dec?v.toFixed(2):fmt(v);}
+  var years={};
+  pts.forEach(function(p,i){var yy=p.m.slice(0,4);
+    if(!(yy in years)&&p.m.slice(5,7)==='01')years[yy]=i;});
+  for(var yy in years){var i=years[yy];
+    var t2=S('text',{x:x(i),y:H-8,'text-anchor':'middle','font-size':11,fill:'#515259'},svg);
+    t2.textContent=yy;}
+  var dPath=pts.map(function(p,i){return (i?'L':'M')+x(i)+' '+y(p.v);}).join('');
+  S('path',{d:dPath,fill:'none',stroke:cfg.color,'stroke-width':2,
+    'stroke-linejoin':'round','stroke-linecap':'round'},svg);
+  (cfg.marks||[]).forEach(function(mk){
+    var i=pts.findIndex(function(p){return p.m===mk.m;});if(i<0)return;
+    S('circle',{cx:x(i),cy:y(pts[i].v),r:5,fill:mk.color||cfg.color,
+      stroke:'#fff','stroke-width':2},svg);
+    var anchor=mk.anchor||'middle';
+    var lb=S('text',{x:x(i)+(mk.dx||0),y:y(pts[i].v)+(mk.dy||-12),'text-anchor':anchor,
+      'font-size':11.5,'font-weight':mk.bold?'bold':'normal',
+      fill:mk.color||'#515259'},svg);
+    lb.textContent=mk.text;});
+  var hair=S('line',{y1:T,y2:H-B,stroke:'#8B8D95','stroke-width':1,opacity:0},svg);
+  var dot=S('circle',{r:4.5,fill:cfg.color,stroke:'#fff','stroke-width':2,opacity:0},svg);
+  var hit=S('rect',{x:0,y:0,width:W,height:H,fill:'transparent'},svg);
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  hit.addEventListener('pointermove',function(ev){
+    var box=svg.getBoundingClientRect();
+    var mx=(ev.clientX-box.left)*(W/box.width);
+    var i=Math.round((mx-L)/(W-L-R)*(n-1));i=Math.max(0,Math.min(n-1,i));
+    hair.setAttribute('x1',x(i));hair.setAttribute('x2',x(i));hair.setAttribute('opacity',.7);
+    dot.setAttribute('cx',x(i));dot.setAttribute('cy',y(pts[i].v));dot.setAttribute('opacity',1);
+    var p=pts[i],mm=MON[+p.m.slice(5,7)-1]+' '+p.m.slice(0,4);
+    tipShow(ev,[cfg.dec?p.v.toFixed(2)+' days':fmt(p.v)+' patients a day',mm]);});
+  hit.addEventListener('pointerleave',function(){
+    hair.setAttribute('opacity',0);dot.setAttribute('opacity',0);tipHide();});
+}
+
+var ROWS=[{"label": "West and North London", "chg": 111.8, "pct": 22.47, "t12": 55.0, "q0": 497.3, "q1": 609.1, "color": "#C90C0F", "head": true}, {"label": "London North West University Healthcare", "chg": 49.8, "pct": 46.67, "t12": 31.4, "q0": 106.8, "q1": 156.6, "color": "#e2a49f"}, {"label": "Royal Free London", "chg": 38.7, "pct": 31.54, "t12": -3.3, "q0": 122.7, "q1": 161.4, "color": "#e2a49f"}, {"gap": true}, {"label": "Devon", "chg": 65.4, "pct": 50.64, "t12": 37.5, "q0": 129.2, "q1": 194.6, "color": "#C90C0F", "head": true}, {"label": "Royal Devon University Healthcare", "chg": 37.0, "pct": 55.34, "t12": 25.3, "q0": 66.8, "q1": 103.8, "color": "#e2a49f"}, {"label": "Torbay and South Devon", "chg": 18.6, "pct": 172.98, "t12": 6.9, "q0": 10.7, "q1": 29.3, "color": "#e2a49f"}, {"gap": true}, {"label": "North East London", "chg": 56.0, "pct": 28.09, "t12": 31.6, "q0": 199.3, "q1": 255.3, "color": "#C90C0F", "head": true}, {"label": "Barts Health", "chg": 30.6, "pct": 29.08, "t12": 2.1, "q0": 105.3, "q1": 136.0, "color": "#e2a49f"}, {"label": "Barking, Havering and Redbridge University Hospitals", "chg": 26.9, "pct": 39.88, "t12": 28.1, "q0": 67.5, "q1": 94.5, "color": "#e2a49f"}, {"gap": true}, {"label": "West Yorkshire", "chg": 47.5, "pct": 10.57, "t12": 59.3, "q0": 449.5, "q1": 497.1, "color": "#C90C0F", "head": true}, {"label": "Mid Yorkshire Hospitals", "chg": 24.2, "pct": 26.11, "t12": 27.5, "q0": 92.7, "q1": 116.9, "color": "#e2a49f"}, {"label": "Airedale", "chg": 11.8, "pct": 43.37, "t12": 2.1, "q0": 27.2, "q1": 38.9, "color": "#e2a49f"}, {"gap": true}, {"label": "Hampshire and Isle of Wight", "chg": 46.5, "pct": 10.79, "t12": 43.1, "q0": 431.1, "q1": 477.6, "color": "#C90C0F", "head": true}, {"label": "Portsmouth Hospitals University", "chg": 42.0, "pct": 29.47, "t12": 27.7, "q0": 142.6, "q1": 184.7, "color": "#e2a49f"}, {"label": "Isle of Wight", "chg": 24.8, "pct": 69.66, "t12": 10.6, "q0": 35.6, "q1": 60.5, "color": "#e2a49f"}, {"gap": true}, {"label": "Central East", "chg": 41.0, "pct": 10.61, "t12": 32.6, "q0": 385.9, "q1": 426.9, "color": "#C90C0F", "head": true}, {"label": "Cambridge University Hospitals", "chg": 20.0, "pct": 20.23, "t12": 27.1, "q0": 98.7, "q1": 118.6, "color": "#e2a49f"}, {"label": "Bedfordshire Hospitals", "chg": 12.4, "pct": 15.75, "t12": 4.6, "q0": 78.7, "q1": 91.1, "color": "#e2a49f"}];
+function render(){
+  document.getElementById('hc-icb').textContent='';
+  hbarChart(document.getElementById('hc-icb'),{rows:ROWS,rowH:30,groupGaps:5});
+}
+render();
+var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(render,150);});
+</script></body></html>
