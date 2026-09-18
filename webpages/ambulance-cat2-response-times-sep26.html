@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Category 2 ambulance response times by service</title>
+<style>
+ html,body{margin:0;padding:0;background:#fcfcfb;}
+ body{padding:8px 10px 10px;}
+</style>
+</head>
+<body>
+<!-- ==========================================================================
+     HSJ embed: Category 2 ambulance response times by ambulance service
+     Self-contained. No <head>, no external files, no CDN. Paste the whole
+     block into the CMS body, or host it and iframe it.
+     Every CSS class is prefixed hsjc2- and scoped under #hsj-c2-app.
+     ========================================================================== -->
+<div id="hsj-c2-app">
+<style>
+#hsj-c2-app{
+  max-width:760px;margin:0 auto;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Calibri,Arial,Helvetica,sans-serif;
+  color:#232126;background:#fcfcfb;
+}
+#hsj-c2-app *,#hsj-c2-app *:before,#hsj-c2-app *:after{box-sizing:border-box;}
+#hsj-c2-app .hsjc2-title{font-size:17px;line-height:1.3;font-weight:700;margin:0 0 4px;color:#000D42;}
+#hsj-c2-app .hsjc2-sub{font-size:13px;line-height:1.45;color:#515259;margin:0 0 10px;}
+#hsj-c2-app .hsjc2-key{font-size:12px;color:#515259;margin:0 0 6px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
+#hsj-c2-app .hsjc2-key span{display:inline-flex;align-items:center;gap:6px;}
+#hsj-c2-app .hsjc2-swatch{display:inline-block;width:16px;height:3px;border-radius:2px;}
+#hsj-c2-app .hsjc2-hint{color:#8B8D95;}
+#hsj-c2-app .hsjc2-wrap{position:relative;width:100%;}
+#hsj-c2-app .hsjc2-svg{display:block;width:100%;height:auto;overflow:visible;}
+#hsj-c2-app .hsjc2-tip{
+  position:absolute;pointer-events:none !important;display:none;z-index:20;
+  background:rgba(255,255,255,0.97);border:1px solid #CFD3D6;border-radius:4px;
+  padding:7px 9px;font-size:11.5px;line-height:1.35;color:#232126;
+  box-shadow:0 2px 6px rgba(0,0,0,0.12);min-width:172px;
+}
+#hsj-c2-app .hsjc2-tip *{pointer-events:none !important;}
+#hsj-c2-app .hsjc2-tip-h{font-weight:700;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid #EBECEC;color:#000D42;}
+#hsj-c2-app .hsjc2-tip-r{display:flex;justify-content:space-between;gap:14px;}
+#hsj-c2-app .hsjc2-tip-r b{font-weight:700;}
+#hsj-c2-app .hsjc2-tip-eng{color:#C90C0F;font-weight:700;}
+#hsj-c2-app .hsjc2-tip-on{font-weight:700;}
+#hsj-c2-app .hsjc2-source{font-size:11.5px;color:#6B6C74;margin:8px 0 0;line-height:1.45;}
+#hsj-c2-app .hsjc2-data{margin:10px 0 0;font-size:12px;}
+#hsj-c2-app .hsjc2-data summary{cursor:pointer;color:#515259;font-size:12px;}
+#hsj-c2-app .hsjc2-table{border-collapse:collapse;width:100%;margin-top:8px;font-size:11.5px;}
+#hsj-c2-app .hsjc2-table th,#hsj-c2-app .hsjc2-table td{border-bottom:1px solid #EBECEC;padding:4px 5px;text-align:right;white-space:nowrap;}
+#hsj-c2-app .hsjc2-table th:first-child,#hsj-c2-app .hsjc2-table td:first-child{text-align:left;}
+#hsj-c2-app .hsjc2-table thead th{color:#515259;font-weight:700;border-bottom:1px solid #CFD3D6;}
+#hsj-c2-app .hsjc2-table tbody tr:last-child td{font-weight:700;color:#C90C0F;}
+</style>
+
+<p class="hsjc2-title" id="hsjc2-title"></p>
+<p class="hsjc2-sub" id="hsjc2-sub"></p>
+<div class="hsjc2-key">
+  <span><i class="hsjc2-swatch" style="background:#C90C0F;height:4px;"></i>England</span>
+  <span><i class="hsjc2-swatch" style="background:#8B8D95;"></i>Individual ambulance services</span>
+  <span class="hsjc2-hint">Hover the chart for every service&rsquo;s figure</span>
+</div>
+
+<div class="hsjc2-wrap" id="hsjc2-wrap">
+  <svg class="hsjc2-svg" id="hsjc2-svg" role="img" aria-label="Line chart of Category 2 ambulance response times by ambulance service, 2019-20 to 2026-27"></svg>
+  <div class="hsjc2-tip" id="hsjc2-tip"></div>
+</div>
+
+<p class="hsjc2-source" id="hsjc2-source"></p>
+
+<details class="hsjc2-data">
+  <summary>View the data</summary>
+  <div id="hsjc2-table"></div>
+</details>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- EDIT HERE ------------------------------------------------------- */
+  var META = {
+    metric : "mean",            /* change to "90th centile" if that is what these are */
+    title  : "Category 2 ambulance response times are below their 2022-23 peak but above pre-pandemic levels at most services",
+    sub    : "Mean Category 2 response time by ambulance service, 2019-20 to 2026-27 to date. England-wide the mean stands at 29:00 so far in 2026-27, against a peak of 50:00 in 2022-23 and 23:50 in 2019-20.",
+    source : "Source: NHS England ambulance quality indicators. 2026-27 figures are year to date and are not directly comparable with full years. Isle of Wight Ambulance Service is not shown."
+  };
+  /* ---------------------------------------------------------------------- */
+
+  var YEARS = ["2019-20","2020-21","2021-22","2022-23","2023-24","2024-25","2025-26","2026-27*"];
+
+  /* Values held verbatim as hh:mm:ss and parsed in the browser, so nothing is
+     hand-converted to seconds anywhere in this file. */
+  var SERIES = [
+    {label:"South Western",  full:"South Western Ambulance Service",  v:["00:28:38","00:23:30","01:01:57","01:09:04","00:42:51","00:45:25","00:34:18","00:38:41"]},
+    {label:"East Midlands",  full:"East Midlands Ambulance Service",  v:["00:30:30","00:23:37","00:47:19","01:05:54","00:43:16","00:43:08","00:38:51","00:33:59"]},
+    {label:"East of England",full:"East of England Ambulance Service",v:["00:28:28","00:21:33","00:45:42","01:06:56","00:43:51","00:42:49","00:35:48","00:32:47"]},
+    {label:"South Central",  full:"South Central Ambulance Service",  v:["00:17:47","00:15:33","00:28:04","00:34:31","00:34:14","00:31:58","00:30:02","00:32:08"]},
+    {label:"London",         full:"London Ambulance Service",         v:["00:23:48","00:19:44","00:38:17","00:46:55","00:38:39","00:37:39","00:30:17","00:31:24"]},
+    {label:"South East Coast",full:"South East Coast Ambulance Service",v:["00:20:02","00:19:19","00:30:08","00:34:49","00:28:02","00:28:50","00:27:49","00:27:26"]},
+    {label:"North West",     full:"North West Ambulance Service",     v:["00:26:00","00:26:49","00:47:39","00:42:19","00:28:44","00:29:50","00:27:00","00:24:22"]},
+    {label:"Yorkshire",      full:"Yorkshire Ambulance Service",      v:["00:20:34","00:20:36","00:36:06","00:42:04","00:32:29","00:31:55","00:26:15","00:24:13"]},
+    {label:"West Midlands",  full:"West Midlands Ambulance Service",  v:["00:13:20","00:12:42","00:32:53","00:48:12","00:36:03","00:29:06","00:24:40","00:20:42"]},
+    {label:"North East",     full:"North East Ambulance Service",     v:["00:29:28","00:25:39","00:36:49","00:46:26","00:35:03","00:27:32","00:21:34","00:19:13"]},
+    {label:"England",        full:"All England",  national:true,      v:["00:23:50","00:20:57","00:41:18","00:50:00","00:36:23","00:35:22","00:30:04","00:29:00"]}
+  ];
+
+  var C_ENG = "#C90C0F", C_OTHER = "#8B8D95", C_HI = "#2f6db0",
+      C_GRID = "#EBECEC", C_AXIS = "#CFD3D6", C_INK = "#232126", C_INK2 = "#515259";
+
+  /* ---- time helpers: hh:mm:ss <-> seconds ------------------------------ */
+  function toSec(s){
+    if (typeof s !== "string") return null;
+    var p = s.trim().split(":");
+    if (p.length !== 3) return null;
+    var h = parseInt(p[0],10), m = parseInt(p[1],10), sec = parseInt(p[2],10);
+    if (isNaN(h)||isNaN(m)||isNaN(sec)) return null;
+    return h*3600 + m*60 + sec;
+  }
+  function pad(n){ return (n<10?"0":"")+n; }
+  /* Axis ticks: mm:ss under an hour, h:mm:ss at or above. */
+  function fmtTick(t){
+    if (t === 0) return "0";
+    var h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
+    return h ? h+":"+pad(m)+":"+pad(s) : pad(m)+":"+pad(s);
+  }
+  function esc(str){ return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  SERIES.forEach(function(d){ d.sec = d.v.map(toSec); });
+
+  /* Scale top: round the largest value up to the next 10-minute mark. */
+  var maxSec = 0;
+  SERIES.forEach(function(d){ d.sec.forEach(function(s){ if (s !== null && s > maxSec) maxSec = s; }); });
+  var STEP = 600, Y_MAX = Math.ceil(maxSec/STEP)*STEP;   /* y axis always starts at 0 */
+  var TICKS = []; for (var t = 0; t <= Y_MAX; t += STEP) TICKS.push(t);
+
+  var svgEl  = document.getElementById("hsjc2-svg"),
+      wrapEl = document.getElementById("hsjc2-wrap"),
+      tipEl  = document.getElementById("hsjc2-tip");
+
+  document.getElementById("hsjc2-title").textContent  = META.title;
+  document.getElementById("hsjc2-sub").textContent    = META.sub;
+  document.getElementById("hsjc2-source").textContent = META.source;
+
+  var geom = null;   /* filled by render(), reused by the hover handler */
+
+  function render(){
+    var W = Math.max(320, Math.min(760, wrapEl.clientWidth || 720));
+    var narrow = W < 560;
+    var mL = narrow ? 50 : 60,
+        mR = narrow ? 96 : 122,
+        mT = 12,
+        mB = 30,
+        plotH = narrow ? 340 : 420,
+        H = mT + plotH + mB;
+    var x0 = mL, x1 = W - mR, y0 = mT, y1 = mT + plotH;
+    var fs = narrow ? 10 : 11.5;
+
+    function X(i){ return x0 + (x1 - x0) * (i / (YEARS.length - 1)); }
+    function Y(s){ return y1 - (y1 - y0) * (s / Y_MAX); }
+
+    var o = [];
+    o.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'">');
+
+    /* gridlines + y tick labels */
+    TICKS.forEach(function(t){
+      var y = Y(t);
+      o.push('<line x1="'+x0+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="'+(t===0?C_AXIS:C_GRID)+'" stroke-width="1"/>');
+      o.push('<text x="'+(x0-8)+'" y="'+(y+3.5)+'" text-anchor="end" font-size="'+fs+'" fill="'+C_INK2+'">'+fmtTick(t)+'</text>');
+    });
+
+    /* x tick labels — thinned when the slot is too narrow, counting back from the
+       latest year so the most recent period is always labelled */
+    var slotW  = (x1 - x0) / (YEARS.length - 1),
+        labelW = fs * 0.58 * 7 + 8,
+        step   = Math.max(1, Math.ceil(labelW / slotW)),
+        show   = {};
+    for (var xi = YEARS.length - 1; xi >= 0; xi -= step) show[xi] = true;
+    YEARS.forEach(function(yr,i){
+      if (!show[i]) return;
+      o.push('<text x="'+X(i)+'" y="'+(y1+17)+'" text-anchor="middle" font-size="'+fs+'" fill="'+C_INK2+'">'+esc(yr)+'</text>');
+      o.push('<line x1="'+X(i)+'" y1="'+y1+'" x2="'+X(i)+'" y2="'+(y1+4)+'" stroke="'+C_AXIS+'" stroke-width="1"/>');
+    });
+
+    /* lines: individual services first, England painted last so it sits on top */
+    var order = [];
+    SERIES.forEach(function(d,i){ if (!d.national) order.push(i); });
+    SERIES.forEach(function(d,i){ if (d.national) order.push(i); });
+
+    order.forEach(function(i){
+      var d = SERIES[i], pts = [];
+      d.sec.forEach(function(s,j){ if (s !== null) pts.push(X(j)+","+Y(s)); });
+      o.push('<polyline class="hsjc2-line" data-i="'+i+'" points="'+pts.join(" ")+'" fill="none" '+
+             'stroke="'+(d.national?C_ENG:C_OTHER)+'" stroke-width="'+(d.national?3:1.8)+'" '+
+             'stroke-linejoin="round" stroke-linecap="round" opacity="'+(d.national?1:0.95)+'"/>');
+    });
+
+    /* right-edge labels, pushed apart so none collide */
+    var lab = SERIES.map(function(d,i){
+      var last = null;
+      for (var j = d.sec.length - 1; j >= 0; j--){ if (d.sec[j] !== null){ last = j; break; } }
+      return {i:i, anchorY:Y(d.sec[last]), anchorX:X(last), y:Y(d.sec[last]), label:d.label, national:!!d.national};
+    });
+    var gap = narrow ? 12 : 13.5;
+    lab.sort(function(a,b){ return a.y - b.y; });
+    for (var k = 1; k < lab.length; k++){
+      if (lab[k].y < lab[k-1].y + gap) lab[k].y = lab[k-1].y + gap;
+    }
+    var over = lab[lab.length-1].y - (y1 + 4);
+    if (over > 0){
+      lab[lab.length-1].y -= over;
+      for (var k2 = lab.length - 2; k2 >= 0; k2--){
+        if (lab[k2].y > lab[k2+1].y - gap) lab[k2].y = lab[k2+1].y - gap; else break;
+      }
+    }
+    lab.forEach(function(L){
+      var lx = x1 + 9;
+      if (Math.abs(L.y - L.anchorY) > 1.5){
+        o.push('<path d="M '+(L.anchorX+1)+' '+L.anchorY+' L '+(lx-4)+' '+L.y+'" fill="none" stroke="'+C_AXIS+'" stroke-width="1"/>');
+      }
+      o.push('<text class="hsjc2-lab" data-i="'+L.i+'" x="'+lx+'" y="'+(L.y+3.5)+'" font-size="'+fs+'" '+
+             'fill="'+(L.national?C_ENG:C_INK)+'" font-weight="'+(L.national?"700":"400")+'">'+esc(L.label)+'</text>');
+    });
+
+    /* hover furniture, drawn last */
+    o.push('<line id="hsjc2-cross" x1="0" y1="'+y0+'" x2="0" y2="'+y1+'" stroke="'+C_AXIS+'" stroke-width="1" opacity="0"/>');
+    o.push('<circle id="hsjc2-dot" r="4.5" fill="#fcfcfb" stroke="'+C_HI+'" stroke-width="2" opacity="0"/>');
+    o.push('<polyline id="hsjc2-hl" points="" fill="none" stroke="'+C_HI+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="0"/>');
+    o.push('<rect id="hsjc2-hit" x="'+x0+'" y="'+y0+'" width="'+(x1-x0)+'" height="'+(y1-y0)+'" fill="transparent" style="pointer-events:auto"/>');
+    o.push('</svg>');
+
+    svgEl.outerHTML = o.join("");
+    svgEl = document.getElementById("hsjc2-svg") || wrapEl.querySelector("svg");
+    svgEl.setAttribute("class","hsjc2-svg");
+    svgEl.setAttribute("id","hsjc2-svg");
+
+    geom = {W:W,H:H,x0:x0,x1:x1,y0:y0,y1:y1,X:X,Y:Y,narrow:narrow};
+    bindHover();
+  }
+
+  function bindHover(){
+    var hit   = svgEl.querySelector("#hsjc2-hit"),
+        cross = svgEl.querySelector("#hsjc2-cross"),
+        dot   = svgEl.querySelector("#hsjc2-dot"),
+        hl    = svgEl.querySelector("#hsjc2-hl");
+    if (!hit) return;
+
+    function clear(){
+      cross.setAttribute("opacity","0");
+      dot.setAttribute("opacity","0");
+      hl.setAttribute("opacity","0");
+      tipEl.style.setProperty("display","none","important");
+    }
+
+    function move(ev){
+      var box = svgEl.getBoundingClientRect(),
+          scale = box.width / geom.W,
+          px = (ev.clientX - box.left) / scale,
+          py = (ev.clientY - box.top) / scale;
+
+      /* nearest year */
+      var frac = (px - geom.x0) / (geom.x1 - geom.x0) * (YEARS.length - 1);
+      var j = Math.max(0, Math.min(YEARS.length - 1, Math.round(frac)));
+      var cx = geom.X(j);
+
+      /* nearest series at that year */
+      var best = -1, bestD = Infinity;
+      SERIES.forEach(function(d,i){
+        if (d.sec[j] === null) return;
+        var dy = Math.abs(geom.Y(d.sec[j]) - py);
+        if (dy < bestD){ bestD = dy; best = i; }
+      });
+
+      cross.setAttribute("x1",cx); cross.setAttribute("x2",cx); cross.setAttribute("opacity","1");
+
+      if (best >= 0){
+        var d = SERIES[best], pts = [];
+        d.sec.forEach(function(s,k){ if (s !== null) pts.push(geom.X(k)+","+geom.Y(s)); });
+        hl.setAttribute("points", pts.join(" "));
+        hl.setAttribute("stroke", d.national ? C_ENG : C_HI);
+        hl.setAttribute("opacity","1");
+        dot.setAttribute("cx",cx); dot.setAttribute("cy",geom.Y(d.sec[j]));
+        dot.setAttribute("stroke", d.national ? C_ENG : C_HI);
+        dot.setAttribute("opacity","1");
+      }
+
+      /* tooltip: every service at this year, fastest first, original hh:mm:ss */
+      var rows = SERIES.map(function(d,i){ return {i:i,d:d,s:d.sec[j]}; })
+                       .filter(function(r){ return r.s !== null; })
+                       .sort(function(a,b){ return a.s - b.s; });
+      var html = '<div class="hsjc2-tip-h">'+esc(YEARS[j].replace("*"," to date"))+'</div>';
+      rows.forEach(function(r){
+        var cls = r.d.national ? "hsjc2-tip-eng" : (r.i === best ? "hsjc2-tip-on" : "");
+        html += '<div class="hsjc2-tip-r '+cls+'"><span>'+esc(r.d.label)+'</span><b>'+esc(r.d.v[j])+'</b></div>';
+      });
+      tipEl.innerHTML = html;
+      tipEl.style.setProperty("display","block","important");
+
+      /* clamp inside the wrapper */
+      var wb = wrapEl.getBoundingClientRect(),
+          tw = tipEl.offsetWidth, th = tipEl.offsetHeight,
+          lx = ev.clientX - wb.left + 14,
+          ly = ev.clientY - wb.top + 14;
+      if (lx + tw > wb.width - 2)  lx = ev.clientX - wb.left - tw - 14;
+      if (ly + th > wb.height - 2) ly = Math.max(2, wb.height - th - 2);
+      if (lx < 2) lx = 2;
+      tipEl.style.left = lx + "px";
+      tipEl.style.top  = ly + "px";
+    }
+
+    hit.addEventListener("mousemove", move);
+    hit.addEventListener("mouseover", move);
+    hit.addEventListener("mouseout", clear);
+    hit.addEventListener("touchstart", function(ev){
+      if (ev.touches && ev.touches.length) move(ev.touches[0]);
+    }, {passive:true});
+    hit.addEventListener("touchmove", function(ev){
+      if (ev.touches && ev.touches.length) move(ev.touches[0]);
+    }, {passive:true});
+  }
+
+  /* accessible table view of the same verbatim values */
+  (function buildTable(){
+    var h = '<table class="hsjc2-table"><thead><tr><th>Ambulance service</th>';
+    YEARS.forEach(function(y){ h += '<th>'+esc(y)+'</th>'; });
+    h += '</tr></thead><tbody>';
+    SERIES.forEach(function(d){
+      h += '<tr><td>'+esc(d.full)+'</td>';
+      d.v.forEach(function(v){ h += '<td>'+esc(v)+'</td>'; });
+      h += '</tr>';
+    });
+    h += '</tbody></table>';
+    document.getElementById("hsjc2-table").innerHTML = h;
+  })();
+
+  render();
+  var rt;
+  window.addEventListener("resize", function(){
+    clearTimeout(rt);
+    rt = setTimeout(render, 150);   /* re-render at the new width; font sizes stay constant */
+  });
+})();
+</script>
+</div>
+</body></html>
