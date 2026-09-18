@@ -23,8 +23,6 @@
   color:#232126;background:#fcfcfb;
 }
 #hsj-c2-app *,#hsj-c2-app *:before,#hsj-c2-app *:after{box-sizing:border-box;}
-#hsj-c2-app .hsjc2-title{font-size:17px;line-height:1.3;font-weight:700;margin:0 0 4px;color:#000D42;}
-#hsj-c2-app .hsjc2-sub{font-size:13px;line-height:1.45;color:#515259;margin:0 0 10px;}
 #hsj-c2-app .hsjc2-key{font-size:12px;color:#515259;margin:0 0 6px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
 #hsj-c2-app .hsjc2-key span{display:inline-flex;align-items:center;gap:6px;}
 #hsj-c2-app .hsjc2-swatch{display:inline-block;width:16px;height:3px;border-radius:2px;}
@@ -43,7 +41,6 @@
 #hsj-c2-app .hsjc2-tip-r b{font-weight:700;}
 #hsj-c2-app .hsjc2-tip-eng{color:#C90C0F;font-weight:700;}
 #hsj-c2-app .hsjc2-tip-on{font-weight:700;}
-#hsj-c2-app .hsjc2-source{font-size:11.5px;color:#6B6C74;margin:8px 0 0;line-height:1.45;}
 #hsj-c2-app .hsjc2-data{margin:10px 0 0;font-size:12px;}
 #hsj-c2-app .hsjc2-data summary{cursor:pointer;color:#515259;font-size:12px;}
 #hsj-c2-app .hsjc2-table{border-collapse:collapse;width:100%;margin-top:8px;font-size:11.5px;}
@@ -53,8 +50,6 @@
 #hsj-c2-app .hsjc2-table tbody tr:last-child td{font-weight:700;color:#C90C0F;}
 </style>
 
-<p class="hsjc2-title" id="hsjc2-title"></p>
-<p class="hsjc2-sub" id="hsjc2-sub"></p>
 <div class="hsjc2-key">
   <span><i class="hsjc2-swatch" style="background:#C90C0F;height:4px;"></i>England</span>
   <span><i class="hsjc2-swatch" style="background:#8B8D95;"></i>Individual ambulance services</span>
@@ -66,8 +61,6 @@
   <div class="hsjc2-tip" id="hsjc2-tip"></div>
 </div>
 
-<p class="hsjc2-source" id="hsjc2-source"></p>
-
 <details class="hsjc2-data">
   <summary>View the data</summary>
   <div id="hsjc2-table"></div>
@@ -77,14 +70,8 @@
 (function(){
   "use strict";
 
-  /* ---- EDIT HERE ------------------------------------------------------- */
-  var META = {
-    metric : "mean",            /* change to "90th centile" if that is what these are */
-    title  : "Category 2 ambulance response times are below their 2022-23 peak but above pre-pandemic levels at most services",
-    sub    : "Mean Category 2 response time by ambulance service, 2019-20 to 2026-27 to date. England-wide the mean stands at 29:00 so far in 2026-27, against a peak of 50:00 in 2022-23 and 23:50 in 2019-20.",
-    source : "Source: NHS England ambulance quality indicators. 2026-27 figures are year to date and are not directly comparable with full years. Isle of Wight Ambulance Service is not shown."
-  };
-  /* ---------------------------------------------------------------------- */
+  /* Title, standfirst and source line are deliberately not rendered here —
+     they are carried by the story furniture in the CMS. */
 
   var YEARS = ["2019-20","2020-21","2021-22","2022-23","2023-24","2024-25","2025-26","2026-27*"];
 
@@ -136,10 +123,6 @@
   var svgEl  = document.getElementById("hsjc2-svg"),
       wrapEl = document.getElementById("hsjc2-wrap"),
       tipEl  = document.getElementById("hsjc2-tip");
-
-  document.getElementById("hsjc2-title").textContent  = META.title;
-  document.getElementById("hsjc2-sub").textContent    = META.sub;
-  document.getElementById("hsjc2-source").textContent = META.source;
 
   var geom = null;   /* filled by render(), reused by the hover handler */
 
