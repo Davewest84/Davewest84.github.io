@@ -26,6 +26,7 @@
 #hsj-c2-app .hsjc2-key{font-size:12px;color:#515259;margin:0 0 6px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
 #hsj-c2-app .hsjc2-key span{display:inline-flex;align-items:center;gap:6px;}
 #hsj-c2-app .hsjc2-swatch{display:inline-block;width:16px;height:3px;border-radius:2px;}
+#hsj-c2-app .hsjc2-swatch-dash{height:0;background:none;border-radius:0;border-top:2px dashed #515259;}
 #hsj-c2-app .hsjc2-hint{color:#8B8D95;}
 #hsj-c2-app .hsjc2-wrap{position:relative;width:100%;}
 #hsj-c2-app .hsjc2-svg{display:block;width:100%;height:auto;overflow:visible;}
@@ -40,6 +41,7 @@
 #hsj-c2-app .hsjc2-tip-r{display:flex;justify-content:space-between;gap:14px;}
 #hsj-c2-app .hsjc2-tip-r b{font-weight:700;}
 #hsj-c2-app .hsjc2-tip-eng{color:#C90C0F;font-weight:700;}
+#hsj-c2-app .hsjc2-tip-better{color:#1b7f4f;font-weight:700;}
 #hsj-c2-app .hsjc2-tip-on{font-weight:700;}
 #hsj-c2-app .hsjc2-data{margin:10px 0 0;font-size:12px;}
 #hsj-c2-app .hsjc2-data summary{cursor:pointer;color:#515259;font-size:12px;}
@@ -52,7 +54,9 @@
 
 <div class="hsjc2-key">
   <span><i class="hsjc2-swatch" style="background:#C90C0F;height:4px;"></i>England</span>
-  <span><i class="hsjc2-swatch" style="background:#8B8D95;"></i>Individual ambulance services</span>
+  <span><i class="hsjc2-swatch" style="background:#1b7f4f;"></i>Now faster than 2019-20</span>
+  <span><i class="hsjc2-swatch" style="background:#8B8D95;"></i>Other ambulance services</span>
+  <span><i class="hsjc2-swatch hsjc2-swatch-dash"></i>2026-27 recovery target</span>
   <span class="hsjc2-hint">Hover the chart for every service&rsquo;s figure</span>
 </div>
 
@@ -84,15 +88,24 @@
     {label:"South Central",  full:"South Central Ambulance Service",  v:["00:17:47","00:15:33","00:28:04","00:34:31","00:34:14","00:31:58","00:30:02","00:32:08"]},
     {label:"London",         full:"London Ambulance Service",         v:["00:23:48","00:19:44","00:38:17","00:46:55","00:38:39","00:37:39","00:30:17","00:31:24"]},
     {label:"South East Coast",full:"South East Coast Ambulance Service",v:["00:20:02","00:19:19","00:30:08","00:34:49","00:28:02","00:28:50","00:27:49","00:27:26"]},
-    {label:"North West",     full:"North West Ambulance Service",     v:["00:26:00","00:26:49","00:47:39","00:42:19","00:28:44","00:29:50","00:27:00","00:24:22"]},
+    {label:"North West",     full:"North West Ambulance Service",     better:true, v:["00:26:00","00:26:49","00:47:39","00:42:19","00:28:44","00:29:50","00:27:00","00:24:22"]},
     {label:"Yorkshire",      full:"Yorkshire Ambulance Service",      v:["00:20:34","00:20:36","00:36:06","00:42:04","00:32:29","00:31:55","00:26:15","00:24:13"]},
     {label:"West Midlands",  full:"West Midlands Ambulance Service",  v:["00:13:20","00:12:42","00:32:53","00:48:12","00:36:03","00:29:06","00:24:40","00:20:42"]},
-    {label:"North East",     full:"North East Ambulance Service",     v:["00:29:28","00:25:39","00:36:49","00:46:26","00:35:03","00:27:32","00:21:34","00:19:13"]},
+    {label:"North East",     full:"North East Ambulance Service",     better:true, v:["00:29:28","00:25:39","00:36:49","00:46:26","00:35:03","00:27:32","00:21:34","00:19:13"]},
     {label:"England",        full:"All England",  national:true,      v:["00:23:50","00:20:57","00:41:18","00:50:00","00:36:23","00:35:22","00:30:04","00:29:00"]}
   ];
 
   var C_ENG = "#C90C0F", C_OTHER = "#8B8D95", C_HI = "#2f6db0",
-      C_GRID = "#EBECEC", C_AXIS = "#CFD3D6", C_INK = "#232126", C_INK2 = "#515259";
+      C_GRID = "#EBECEC", C_AXIS = "#CFD3D6", C_INK = "#232126", C_INK2 = "#515259",
+      /* Deliberately a deep green with a touch of teal. A leafy green scores a
+         CVD Delta E of ~4.5 against the England red — indistinguishable to a
+         red-green colourblind reader. This one clears the threshold, and the
+         green lines are also named in green at the right edge, so identity
+         never rests on colour alone. */
+      C_BETTER = "#1b7f4f";
+
+  /* Dotted reference line: the 2026-27 response time recovery target. */
+  var TARGET = { label: "2026-27 recovery target 25:00", time: "00:25:00" };
 
   /* ---- time helpers: hh:mm:ss <-> seconds ------------------------------ */
   function toSec(s){
@@ -164,24 +177,45 @@
       o.push('<line x1="'+X(i)+'" y1="'+y1+'" x2="'+X(i)+'" y2="'+(y1+4)+'" stroke="'+C_AXIS+'" stroke-width="1"/>');
     });
 
-    /* lines: individual services first, England painted last so it sits on top */
+    /* dotted reference line: the recovery target. Drawn under the data so the
+       series keep primacy; the label carries a white halo to stay readable. */
+    var tSec = toSec(TARGET.time), targetLabel = "";
+    if (tSec !== null && tSec <= Y_MAX){
+      var ty = Y(tSec);
+      o.push('<line x1="'+x0+'" y1="'+ty+'" x2="'+x1+'" y2="'+ty+'" stroke="'+C_INK2+'" '+
+             'stroke-width="1.5" stroke-dasharray="5 4"/>');
+      /* held back and painted after the series, with a white halo, so crossing
+         lines cannot render it unreadable */
+      targetLabel = '<text x="'+(x0+7)+'" y="'+(ty-7)+'" font-size="'+fs+'" fill="'+C_INK+'" '+
+                    'font-weight="700" stroke="#fcfcfb" stroke-width="5" paint-order="stroke" '+
+                    'stroke-linejoin="round">'+esc(TARGET.label)+'</text>';
+    }
+
+    /* lines: grey services first, then the green ones, then England on top */
+    function strokeOf(d){ return d.national ? C_ENG : (d.better ? C_BETTER : C_OTHER); }
+    function widthOf(d){ return d.national ? 3 : (d.better ? 2.4 : 1.8); }
+
     var order = [];
-    SERIES.forEach(function(d,i){ if (!d.national) order.push(i); });
-    SERIES.forEach(function(d,i){ if (d.national) order.push(i); });
+    SERIES.forEach(function(d,i){ if (!d.national && !d.better) order.push(i); });
+    SERIES.forEach(function(d,i){ if (!d.national &&  d.better) order.push(i); });
+    SERIES.forEach(function(d,i){ if ( d.national) order.push(i); });
 
     order.forEach(function(i){
       var d = SERIES[i], pts = [];
       d.sec.forEach(function(s,j){ if (s !== null) pts.push(X(j)+","+Y(s)); });
       o.push('<polyline class="hsjc2-line" data-i="'+i+'" points="'+pts.join(" ")+'" fill="none" '+
-             'stroke="'+(d.national?C_ENG:C_OTHER)+'" stroke-width="'+(d.national?3:1.8)+'" '+
-             'stroke-linejoin="round" stroke-linecap="round" opacity="'+(d.national?1:0.95)+'"/>');
+             'stroke="'+strokeOf(d)+'" stroke-width="'+widthOf(d)+'" '+
+             'stroke-linejoin="round" stroke-linecap="round" opacity="'+(d.national||d.better?1:0.95)+'"/>');
     });
+
+    o.push(targetLabel);   /* on top of the series */
 
     /* right-edge labels, pushed apart so none collide */
     var lab = SERIES.map(function(d,i){
       var last = null;
       for (var j = d.sec.length - 1; j >= 0; j--){ if (d.sec[j] !== null){ last = j; break; } }
-      return {i:i, anchorY:Y(d.sec[last]), anchorX:X(last), y:Y(d.sec[last]), label:d.label, national:!!d.national};
+      return {i:i, anchorY:Y(d.sec[last]), anchorX:X(last), y:Y(d.sec[last]), label:d.label,
+              national:!!d.national, better:!!d.better};
     });
     var gap = narrow ? 12 : 13.5;
     lab.sort(function(a,b){ return a.y - b.y; });
@@ -200,8 +234,10 @@
       if (Math.abs(L.y - L.anchorY) > 1.5){
         o.push('<path d="M '+(L.anchorX+1)+' '+L.anchorY+' L '+(lx-4)+' '+L.y+'" fill="none" stroke="'+C_AXIS+'" stroke-width="1"/>');
       }
+      var lf = L.national ? C_ENG : (L.better ? C_BETTER : C_INK),
+          lw = (L.national || L.better) ? "700" : "400";
       o.push('<text class="hsjc2-lab" data-i="'+L.i+'" x="'+lx+'" y="'+(L.y+3.5)+'" font-size="'+fs+'" '+
-             'fill="'+(L.national?C_ENG:C_INK)+'" font-weight="'+(L.national?"700":"400")+'">'+esc(L.label)+'</text>');
+             'fill="'+lf+'" font-weight="'+lw+'">'+esc(L.label)+'</text>');
     });
 
     /* hover furniture, drawn last */
@@ -258,11 +294,14 @@
       if (best >= 0){
         var d = SERIES[best], pts = [];
         d.sec.forEach(function(s,k){ if (s !== null) pts.push(geom.X(k)+","+geom.Y(s)); });
+        /* a highlighted line keeps its own identity colour; only the plain grey
+           services borrow the blue */
+        var hc = d.national ? C_ENG : (d.better ? C_BETTER : C_HI);
         hl.setAttribute("points", pts.join(" "));
-        hl.setAttribute("stroke", d.national ? C_ENG : C_HI);
+        hl.setAttribute("stroke", hc);
         hl.setAttribute("opacity","1");
         dot.setAttribute("cx",cx); dot.setAttribute("cy",geom.Y(d.sec[j]));
-        dot.setAttribute("stroke", d.national ? C_ENG : C_HI);
+        dot.setAttribute("stroke", hc);
         dot.setAttribute("opacity","1");
       }
 
@@ -272,7 +311,7 @@
                        .sort(function(a,b){ return a.s - b.s; });
       var html = '<div class="hsjc2-tip-h">'+esc(YEARS[j].replace("*"," to date"))+'</div>';
       rows.forEach(function(r){
-        var cls = r.d.national ? "hsjc2-tip-eng" : (r.i === best ? "hsjc2-tip-on" : "");
+        var cls = r.d.national ? "hsjc2-tip-eng" : (r.d.better ? "hsjc2-tip-better" : (r.i === best ? "hsjc2-tip-on" : ""));
         html += '<div class="hsjc2-tip-r '+cls+'"><span>'+esc(r.d.label)+'</span><b>'+esc(r.d.v[j])+'</b></div>';
       });
       tipEl.innerHTML = html;
