@@ -54,14 +54,14 @@
 
 <div class="hsjc2-key">
   <span><i class="hsjc2-swatch" style="background:#C90C0F;height:4px;"></i>England</span>
-  <span><i class="hsjc2-swatch" style="background:#1b7f4f;"></i>Now faster than 2019-20</span>
+  <span><i class="hsjc2-swatch" style="background:#1b7f4f;"></i>Faster than in April-August 2019</span>
   <span><i class="hsjc2-swatch" style="background:#8B8D95;"></i>Other ambulance services</span>
-  <span><i class="hsjc2-swatch hsjc2-swatch-dash"></i>2026-27 recovery target</span>
-  <span class="hsjc2-hint">Hover the chart for every service&rsquo;s figure</span>
+  <span><i class="hsjc2-swatch hsjc2-swatch-dash"></i>2026/27 target</span>
+  <span class="hsjc2-hint">*April to August only. Hover the chart for every service&rsquo;s figure</span>
 </div>
 
 <div class="hsjc2-wrap" id="hsjc2-wrap">
-  <svg class="hsjc2-svg" id="hsjc2-svg" role="img" aria-label="Line chart of Category 2 ambulance response times by ambulance service, 2019-20 to 2026-27"></svg>
+  <svg class="hsjc2-svg" id="hsjc2-svg" role="img" aria-label="Line chart of Category 2 ambulance response times by ambulance service, 2019/20 to 2026/27 (April to August)"></svg>
   <div class="hsjc2-tip" id="hsjc2-tip"></div>
 </div>
 
@@ -77,7 +77,7 @@
   /* Title, standfirst and source line are deliberately not rendered here —
      they are carried by the story furniture in the CMS. */
 
-  var YEARS = ["2019-20","2020-21","2021-22","2022-23","2023-24","2024-25","2025-26","2026-27*"];
+  var YEARS = ["2019/20","2020/21","2021/22","2022/23","2023/24","2024/25","2025/26","2026/27*"];
 
   /* Values held verbatim as hh:mm:ss and parsed in the browser, so nothing is
      hand-converted to seconds anywhere in this file. */
@@ -88,7 +88,7 @@
     {label:"South Central",  full:"South Central Ambulance Service",  v:["00:17:47","00:15:33","00:28:04","00:34:31","00:34:14","00:31:58","00:30:02","00:32:08"]},
     {label:"London",         full:"London Ambulance Service",         v:["00:23:48","00:19:44","00:38:17","00:46:55","00:38:39","00:37:39","00:30:17","00:31:24"]},
     {label:"South East Coast",full:"South East Coast Ambulance Service",v:["00:20:02","00:19:19","00:30:08","00:34:49","00:28:02","00:28:50","00:27:49","00:27:26"]},
-    {label:"North West",     full:"North West Ambulance Service",     better:true, v:["00:26:00","00:26:49","00:47:39","00:42:19","00:28:44","00:29:50","00:27:00","00:24:22"]},
+    {label:"North West",     full:"North West Ambulance Service",     v:["00:26:00","00:26:49","00:47:39","00:42:19","00:28:44","00:29:50","00:27:00","00:24:22"]},
     {label:"Yorkshire",      full:"Yorkshire Ambulance Service",      v:["00:20:34","00:20:36","00:36:06","00:42:04","00:32:29","00:31:55","00:26:15","00:24:13"]},
     {label:"West Midlands",  full:"West Midlands Ambulance Service",  v:["00:13:20","00:12:42","00:32:53","00:48:12","00:36:03","00:29:06","00:24:40","00:20:42"]},
     {label:"North East",     full:"North East Ambulance Service",     better:true, v:["00:29:28","00:25:39","00:36:49","00:46:26","00:35:03","00:27:32","00:21:34","00:19:13"]},
@@ -104,8 +104,8 @@
          never rests on colour alone. */
       C_BETTER = "#1b7f4f";
 
-  /* Dotted reference line: the 2026-27 response time recovery target. */
-  var TARGET = { label: "2026-27 recovery target 25:00", time: "00:25:00" };
+  /* Dotted reference line: the 2026/27 national category 2 target. */
+  var TARGET = { label: "2026/27 target 25:00", time: "00:25:00" };
 
   /* ---- time helpers: hh:mm:ss <-> seconds ------------------------------ */
   function toSec(s){
