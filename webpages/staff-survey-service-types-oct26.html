@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hospital services compared</title>
+<style>
+  #sst-app { font-family: Arial, Helvetica, sans-serif; color: #232126; background: #ffffff; max-width: 720px; margin: 0 auto; padding: 8px 12px 12px; box-sizing: border-box; }
+  #sst-app * { box-sizing: border-box; }
+  #sst-app .sst-tabs { display: flex; gap: 0; border-bottom: 1px solid #CFD3D6; margin-bottom: 10px; }
+  #sst-app .sst-tab { font: inherit; font-size: 14px; font-weight: 700; padding: 8px 12px; border: 0; border-bottom: 3px solid transparent; background: none; color: #6B6C74; cursor: pointer; }
+  #sst-app .sst-tab[aria-selected="true"] { color: #232126; border-bottom-color: #C90C0F; }
+  #sst-app h3 { font-size: 17px; margin: 4px 0 2px; line-height: 1.25; }
+  #sst-app .sst-sub { font-size: 13px; color: #515259; margin: 0 0 8px; }
+  #sst-app .sst-seg { display: inline-flex; border: 1px solid #B6B9BF; border-radius: 6px; overflow: hidden; margin: 0 0 8px; }
+  #sst-app .sst-seg button { font: inherit; font-size: 13px; padding: 5px 10px; border: 0; background: #fff; color: #515259; cursor: pointer; }
+  #sst-app .sst-seg button + button { border-left: 1px solid #B6B9BF; }
+  #sst-app .sst-seg button[aria-pressed="true"] { background: #EBECEC; color: #232126; font-weight: 700; }
+  #sst-app .sst-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: #515259; margin: 0 0 6px; }
+  #sst-app .sst-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  #sst-app svg { display: block; width: 100%; overflow: visible; }
+  #sst-app svg text { font-family: Arial, Helvetica, sans-serif; }
+  #sst-app .sst-src { font-size: 12px; color: #8B8D95; margin: 6px 0 0; }
+  #sst-app .sst-hidden { display: none; }
+  #sst-tip { position: fixed; pointer-events: none !important; display: none; max-width: 280px; background: #fff; border: 1px solid #CFD3D6; border-radius: 6px;
+             box-shadow: 0 4px 14px rgba(0,0,0,.12); padding: 8px 10px; font: 13px/1.4 Arial, Helvetica, sans-serif; color: #232126; z-index: 10; }
+  #sst-tip b { display: block; margin-bottom: 2px; }
+</style></head>
+<body style="margin:0;background:#ffffff">
+<div id="sst-app">
+  <div class="sst-tabs" role="tablist">
+    <button class="sst-tab" role="tab" aria-selected="true" data-p="rank">Where staff are most positive</button>
+    <button class="sst-tab" role="tab" aria-selected="false" data-p="trend">Change since 2023</button>
+  </div>
+  <div id="sst-p-rank">
+    <h3>Back-office divisions outscore their trusts; emergency care trails</h3>
+    <p class="sst-sub">Share of each type of division scoring above the rest of its own trust, acute trusts, 2025. Types grouped by HSJ.</p>
+    <div class="sst-seg" id="sst-measure"></div>
+    <div class="sst-legend"><span><i style="background:#2f6db0"></i>Back office</span><span><i style="background:#d9702a"></i>Clinical services</span><span style="color:#8B8D95">Dashed line: half of divisions</span></div>
+    <svg id="sst-c1" role="img" aria-label="Bar chart of the share of divisions scoring above the rest of their trust, by service type"></svg>
+  </div>
+  <div id="sst-p-trend" class="sst-hidden">
+    <h3>Emergency care morale has fallen furthest</h3>
+    <p class="sst-sub">Average change in morale score (0-10 scale), 2023 to 2025, divisions tracked across all three surveys. Types grouped by HSJ.</p>
+    <div class="sst-legend"><span><i style="background:#2f6db0"></i>Back office</span><span><i style="background:#d9702a"></i>Clinical services</span><span style="color:#8B8D95">Dashed line: average of all divisions</span></div>
+    <svg id="sst-c2" role="img" aria-label="Bar chart of the average change in morale 2023 to 2025 by service type"></svg>
+  </div>
+  <p class="sst-src">Source: NHS Staff Survey breakdown reports, HSJ analysis. Divisions with 50 or more responses.</p>
+</div>
+<div id="sst-tip"></div>
+<script>
+(function () {
+  const D = {"rank": {"morale": {"label": "Morale", "rows": [{"t": "Women and children", "back": false, "n": 89, "above": 26, "med": -0.12, "mean": 5.73}, {"t": "Clinical support and diagnostics", "back": false, "n": 93, "above": 29, "med": -0.15, "mean": 5.73}, {"t": "Corporate and management", "back": true, "n": 137, "above": 105, "med": 0.21, "mean": 6.04}, {"t": "Estates and facilities", "back": true, "n": 54, "above": 41, "med": 0.29, "mean": 6.1}, {"t": "Research and development", "back": true, "n": 17, "above": 16, "med": 0.34, "mean": 6.28}, {"t": "Community services", "back": false, "n": 27, "above": 13, "med": -0.01, "mean": 5.91}, {"t": "Urgent and emergency care", "back": false, "n": 26, "above": 3, "med": -0.53, "mean": 5.4}, {"t": "Medicine", "back": false, "n": 108, "above": 30, "med": -0.1, "mean": 5.79}, {"t": "Surgery", "back": false, "n": 116, "above": 56, "med": -0.02, "mean": 5.86}, {"t": "Digital and IT", "back": true, "n": 28, "above": 20, "med": 0.28, "mean": 6.06}, {"t": "Workforce", "back": true, "n": 34, "above": 22, "med": 0.15, "mean": 5.94}, {"t": "Cancer and haematology", "back": false, "n": 10, "above": 5, "med": 0.02, "mean": 5.82}, {"t": "Cardiovascular", "back": false, "n": 8, "above": 4, "med": -0.02, "mean": 5.84}, {"t": "Neurosciences and specialist surgery", "back": false, "n": 17, "above": 10, "med": 0.03, "mean": 5.83}, {"t": "Finance", "back": true, "n": 27, "above": 22, "med": 0.34, "mean": 6.11}]}, "safe_and_healthy": {"label": "Safe and healthy", "rows": [{"t": "Women and children", "back": false, "n": 89, "above": 22, "med": -0.17, "mean": 5.91}, {"t": "Clinical support and diagnostics", "back": false, "n": 93, "above": 48, "med": 0.0, "mean": 6.08}, {"t": "Corporate and management", "back": true, "n": 137, "above": 124, "med": 0.52, "mean": 6.48}, {"t": "Estates and facilities", "back": true, "n": 54, "above": 51, "med": 0.58, "mean": 6.58}, {"t": "Research and development", "back": true, "n": 17, "above": 17, "med": 0.63, "mean": 6.81}, {"t": "Community services", "back": false, "n": 27, "above": 10, "med": -0.02, "mean": 6.15}, {"t": "Urgent and emergency care", "back": false, "n": 26, "above": 0, "med": -0.74, "mean": 5.36}, {"t": "Medicine", "back": false, "n": 108, "above": 10, "med": -0.36, "mean": 5.8}, {"t": "Surgery", "back": false, "n": 116, "above": 34, "med": -0.11, "mean": 6.0}, {"t": "Digital and IT", "back": true, "n": 28, "above": 26, "med": 0.62, "mean": 6.63}, {"t": "Workforce", "back": true, "n": 34, "above": 30, "med": 0.43, "mean": 6.47}, {"t": "Cancer and haematology", "back": false, "n": 10, "above": 5, "med": 0.02, "mean": 6.07}, {"t": "Cardiovascular", "back": false, "n": 8, "above": 3, "med": -0.11, "mean": 5.98}, {"t": "Neurosciences and specialist surgery", "back": false, "n": 17, "above": 7, "med": -0.09, "mean": 5.98}, {"t": "Finance", "back": true, "n": 27, "above": 25, "med": 0.66, "mean": 6.67}]}, "engagement": {"label": "Staff engagement", "rows": [{"t": "Women and children", "back": false, "n": 89, "above": 52, "med": 0.04, "mean": 6.74}, {"t": "Clinical support and diagnostics", "back": false, "n": 93, "above": 18, "med": -0.2, "mean": 6.55}, {"t": "Corporate and management", "back": true, "n": 137, "above": 96, "med": 0.12, "mean": 6.8}, {"t": "Estates and facilities", "back": true, "n": 54, "above": 24, "med": -0.07, "mean": 6.66}, {"t": "Research and development", "back": true, "n": 17, "above": 14, "med": 0.23, "mean": 7.05}, {"t": "Community services", "back": false, "n": 27, "above": 22, "med": 0.2, "mean": 6.88}, {"t": "Urgent and emergency care", "back": false, "n": 26, "above": 4, "med": -0.24, "mean": 6.44}, {"t": "Medicine", "back": false, "n": 108, "above": 60, "med": 0.02, "mean": 6.77}, {"t": "Surgery", "back": false, "n": 116, "above": 41, "med": -0.05, "mean": 6.69}, {"t": "Digital and IT", "back": true, "n": 28, "above": 14, "med": -0.01, "mean": 6.68}, {"t": "Workforce", "back": true, "n": 34, "above": 22, "med": 0.09, "mean": 6.8}, {"t": "Cancer and haematology", "back": false, "n": 10, "above": 6, "med": 0.07, "mean": 6.8}, {"t": "Cardiovascular", "back": false, "n": 8, "above": 2, "med": -0.02, "mean": 6.76}, {"t": "Neurosciences and specialist surgery", "back": false, "n": 17, "above": 8, "med": -0.02, "mean": 6.73}, {"t": "Finance", "back": true, "n": 27, "above": 18, "med": 0.16, "mean": 6.78}]}}, "trend": [{"t": "Women and children", "back": false, "n": 67, "chg": -0.019, "fell": 32}, {"t": "Clinical support and diagnostics", "back": false, "n": 67, "chg": -0.026, "fell": 35}, {"t": "Corporate and management", "back": true, "n": 92, "chg": -0.124, "fell": 61}, {"t": "Estates and facilities", "back": true, "n": 41, "chg": -0.048, "fell": 20}, {"t": "Research and development", "back": true, "n": 12, "chg": -0.071, "fell": 7}, {"t": "Community services", "back": false, "n": 22, "chg": -0.138, "fell": 17}, {"t": "Urgent and emergency care", "back": false, "n": 20, "chg": -0.224, "fell": 16}, {"t": "Medicine", "back": false, "n": 79, "chg": -0.064, "fell": 49}, {"t": "Surgery", "back": false, "n": 90, "chg": -0.053, "fell": 44}, {"t": "Digital and IT", "back": true, "n": 17, "chg": -0.114, "fell": 11}, {"t": "Workforce", "back": true, "n": 20, "chg": -0.101, "fell": 13}, {"t": "Finance", "back": true, "n": 18, "chg": -0.126, "fell": 12}], "avg": -0.06, "ncoh": 697};
+  const BLUE = "#2f6db0", ORANGE = "#d9702a", INK = "#232126", INK2 = "#515259", GRID = "#EBECEC", AXIS = "#B6B9BF";
+  const state = {m: "morale"};
+  const tip = document.getElementById("sst-tip");
+  const NS = "http://www.w3.org/2000/svg";
+  function el(tag, a, p) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+  function txt(p, x, y, s, a) { const t = el("text", Object.assign({x: x, y: y, "font-size": 13, fill: INK2}, a || {}), p); t.textContent = s; return t; }
+  function showTip(e, html) { tip.innerHTML = html; tip.style.setProperty("display", "block", "important");
+    const w = tip.offsetWidth, h = tip.offsetHeight; let x = e.clientX + 14, y = e.clientY + 14;
+    if (x + w > window.innerWidth - 4) x = e.clientX - w - 14; if (y + h > window.innerHeight - 4) y = e.clientY - h - 14;
+    tip.style.left = x + "px"; tip.style.top = y + "px"; }
+  function hideTip() { tip.style.setProperty("display", "none", "important"); }
+  const MINUS = "−";
+  const sgn = v => (v > 0 ? "+" : v < 0 ? MINUS : "") + Math.abs(v).toFixed(2);
+
+  function hbar(svg, rows, o) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    // narrow screens: label above each bar instead of beside it
+    const W = Math.max(280, svg.parentNode.clientWidth), narrow = W < 540, RH = narrow ? 40 : 26, TOP = 22, BOT = 8;
+    const L = narrow ? 4 : Math.min(250, Math.max(150, W * 0.38)), R = 46, BY = narrow ? 18 : 5, BH = narrow ? 16 : RH - 10;
+    const H = TOP + rows.length * RH + BOT;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.setAttribute("height", H);
+    const pw = W - L - R, xs = v => L + (v - o.x0) / (o.x1 - o.x0) * pw;
+    o.ticks.forEach(v => { el("line", {x1: xs(v), x2: xs(v), y1: TOP - 4, y2: H - BOT, stroke: GRID}, svg);
+      txt(svg, xs(v), TOP - 8, o.tfmt(v), {"text-anchor": "middle", "font-size": 11}); });
+    el("line", {x1: xs(0), x2: xs(0), y1: TOP - 4, y2: H - BOT, stroke: AXIS}, svg);
+    if (o.ref != null) el("line", {x1: xs(o.ref), x2: xs(o.ref), y1: TOP - 4, y2: H - BOT, stroke: INK2, "stroke-dasharray": "4 3"}, svg);
+    rows.forEach((r, i) => {
+      const y = TOP + i * RH, v = o.val(r), x0 = xs(Math.min(0, v)), x1 = xs(Math.max(0, v));
+      if (narrow) txt(svg, L, y + 13, r.t, {fill: INK});
+      else txt(svg, L - 8, y + RH / 2 + 4, r.t.length > 38 ? r.t.slice(0, 37) + "…" : r.t, {"text-anchor": "end", fill: INK});
+      el("rect", {x: x0, y: y + BY, width: Math.max(1, x1 - x0), height: BH, rx: 3, fill: r.back ? BLUE : ORANGE}, svg);
+      txt(svg, v < 0 ? x0 - 4 : x1 + 4, y + BY + BH / 2 + 4, o.lfmt(r), {"text-anchor": v < 0 ? "end" : "start", fill: INK, "font-size": 12});
+      const hit = el("rect", {x: 0, y: y, width: W, height: RH, fill: "transparent", style: "pointer-events:all !important;cursor:default"}, svg);
+      hit.addEventListener("mousemove", e => showTip(e, o.tip(r))); hit.addEventListener("mouseout", hideTip);
+    });
+  }
+
+  function drawRank() {
+    const M = D.rank[state.m], rows = M.rows.slice().sort((a, b) => b.above / b.n - a.above / a.n || b.med - a.med);
+    hbar(document.getElementById("sst-c1"), rows, {x0: 0, x1: 100, ticks: [0, 25, 50, 75, 100], tfmt: v => v + "%", ref: 50,
+      val: r => 100 * r.above / r.n, lfmt: r => Math.round(100 * r.above / r.n) + "%",
+      tip: r => "<b>" + r.t + "</b>" + r.above + " of " + r.n + " divisions scored above the rest of their trust on " + M.label.toLowerCase() +
+                 "<br>Median gap against the rest of the trust: " + sgn(r.med) + "<br>Average " + M.label.toLowerCase() + " score: " + r.mean.toFixed(2)});
+  }
+  function drawTrend() {
+    const rows = D.trend.slice().sort((a, b) => a.chg - b.chg);
+    const lo = Math.floor(Math.min.apply(null, rows.map(r => r.chg)) * 20) / 20, hi = Math.max(0, Math.ceil(Math.max.apply(null, rows.map(r => r.chg)) * 20) / 20);
+    const ticks = []; for (let v = lo; v <= hi + 1e-9; v += 0.05) ticks.push(Math.round(v * 100) / 100);
+    hbar(document.getElementById("sst-c2"), rows, {x0: lo, x1: hi, ticks: ticks, tfmt: v => v === 0 ? "0" : sgn(v), ref: D.avg,
+      val: r => r.chg, lfmt: r => sgn(r.chg),
+      tip: r => "<b>" + r.t + "</b>Average change in morale, 2023 to 2025: " + sgn(r.chg) + "<br>Morale fell in " + r.fell + " of " + r.n +
+                 " divisions<br>All divisions: " + sgn(D.avg) + " (" + D.ncoh + " divisions)"});
+  }
+  const seg = document.getElementById("sst-measure");
+  Object.keys(D.rank).forEach((k, i) => { const b = document.createElement("button"); b.textContent = D.rank[k].label; b.dataset.m = k;
+    b.setAttribute("aria-pressed", i === 0 ? "true" : "false"); seg.appendChild(b); });
+  seg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.m = b.dataset.m;
+    seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); drawRank(); });
+  document.querySelectorAll("#sst-app .sst-tab").forEach(t => t.addEventListener("click", () => {
+    document.querySelectorAll("#sst-app .sst-tab").forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+    ["rank", "trend"].forEach(p => document.getElementById("sst-p-" + p).classList.toggle("sst-hidden", p !== t.dataset.p));
+    t.dataset.p === "rank" ? drawRank() : drawTrend(); }));
+  window.addEventListener("resize", () => { drawRank(); drawTrend(); });
+  drawRank(); drawTrend();
+})();
+</script>
+</body></html>
