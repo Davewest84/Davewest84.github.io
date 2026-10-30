@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NHS exit packages</title>
+<style>
+  :root {
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #8b8a85;
+    --grid: #e6e5e0; --axis: #c9c8c2;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #8f8e88;
+      --grid: #2c2c2a; --axis: #44443f;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #8f8e88;
+    --grid: #2c2c2a; --axis: #44443f;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink);
+         font-family: Calibri, "Segoe UI", Arial, sans-serif; padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 10px; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tabs button { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+                 border: 1px solid var(--axis); background: var(--surface); color: var(--ink2); }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: var(--page); border-color: var(--ink); }
+  .card { background: var(--surface); border-radius: 8px; padding: 16px 16px 12px; position: relative; }
+  .card[hidden] { display: none; }
+  h2 { margin: 0 0 4px; font-size: 20px; }
+  .sub { margin: 0 0 12px; color: var(--ink2); font-size: 14px; }
+  .legend { display: flex; gap: 6px 18px; flex-wrap: wrap; font-size: 14px; color: var(--ink2); margin-bottom: 6px; }
+  .legend span::before { content: ""; display: inline-block; width: 14px; height: 3px; border-radius: 2px;
+                         background: var(--c); vertical-align: middle; margin-right: 6px; }
+  svg { display: block; overflow: visible; }
+  svg text { font-family: inherit; }
+  .tip { position: absolute; pointer-events: none; background: var(--page); color: var(--ink);
+         border: 1px solid var(--axis); border-radius: 6px; padding: 8px 10px; font-size: 13px;
+         line-height: 1.45; opacity: 0; transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+  .tip b { display: block; margin-bottom: 2px; }
+  .tip i { display: inline-block; width: 10px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  details { font-size: 13px; color: var(--ink2); margin-top: 8px; }
+  table { border-collapse: collapse; margin-top: 6px; }
+  td, th { padding: 2px 10px 2px 0; text-align: right; }
+  td:first-child, th:first-child { text-align: left; }
+  .src { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tabs" role="tablist">
+    <button role="tab" data-t="c1" aria-selected="true">Number</button>
+    <button role="tab" data-t="c2" aria-selected="false">Total cost</button>
+    <button role="tab" data-t="c3" aria-selected="false">Average cost</button>
+  </div>
+  <div class="card" id="c1">
+    <h2>Exit packages agreed, number</h2>
+    <p class="sub">England, 2018/19 to 2025/26</p>
+    <div class="plot"></div>
+  </div>
+  <div class="card" id="c2" hidden>
+    <h2>Exit packages agreed, total cost (£m)</h2>
+    <p class="sub">England, 2018/19 to 2025/26</p>
+    <div class="plot"></div>
+  </div>
+  <div class="card" id="c3" hidden>
+    <h2>Average cost per exit package</h2>
+    <p class="sub">England, 2018/19 to 2025/26</p>
+    <div class="plot"></div>
+  </div>
+</div>
+<script>
+const years = ["2018/19","2019/20","2020/21","2021/22","2022/23","2023/24","2024/25","2025/26"];
+const series = [
+  { name: "Trusts and FTs", c: "--s1",
+    n: [2935,2988,2180,2421,2668,3043,4288,9295], cost: [51,53,31,31,31,53,84,224] },
+  { name: "ICBs/CCGs", c: "--s2",
+    n: [285,359,191,72,277,799,718,5184], cost: [10.9,11.9,9.2,4.1,12.8,43.0,33.9,346.9] },
+  { name: "NHS England (incl CSUs)", c: "--s3",
+    n: [129,296,23,10,963,35,173,2979], cost: [7.7,17.5,1.2,0.6,75.5,2.3,9.0,187.2] },
+];
+series.forEach(s => { s.avg = s.cost.map((c, i) => (c * 1000) / s.n[i]); });
+
+function niceMax(v) {
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  for (const m of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p;
+}
+const fmtN = v => v.toLocaleString("en-GB");
+const fmtC = v => "£" + (v >= 100 ? Math.round(v).toLocaleString("en-GB") : v.toFixed(1)) + "m";
+const fmtA = v => "£" + Math.round(v) + "k";
+const charts = {
+  c1: { key: "n", fmt: fmtN, axis: v => fmtN(v) },
+  c2: { key: "cost", fmt: fmtC, axis: v => "£" + v + "m" },
+  c3: { key: "avg", fmt: fmtA, axis: v => "£" + v + "k" },
+};
+const SRC = "Source: consolidated NHS provider accounts; NHS England annual report and accounts. ICB figures are NHS England group totals minus NHS England and CSUs, and include Supply Chain Coordination Ltd.";
+
+function draw(cardId) {
+  const { key, fmt, axis: axisFmt } = charts[cardId];
+  const card = document.getElementById(cardId);
+  const plot = card.querySelector(".plot");
+  plot.innerHTML = "";
+
+  const leg = document.createElement("div"); leg.className = "legend";
+  series.forEach(s => { const e = document.createElement("span"); e.style.setProperty("--c", `var(${s.c})`); e.textContent = s.name; leg.appendChild(e); });
+  plot.appendChild(leg);
+
+  const W = Math.max(280, plot.clientWidth);
+  const narrow = W < 520;
+  const H = narrow ? 280 : 340;
+  const m = { t: 14, r: narrow ? 52 : 150, b: 34, l: narrow ? 44 : 52 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = niceMax(Math.max(...series.flatMap(s => s[key])));
+  const x = i => m.l + (iw * i) / (years.length - 1);
+  const y = v => m.t + ih - (ih * v) / max;
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", card.querySelector("h2").textContent);
+  const el = (tag, attrs, text) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; svg.appendChild(e); return e; };
+
+  const ticks = 5;
+  for (let i = 0; i <= ticks; i++) {
+    const v = (max * i) / ticks, yy = y(v);
+    el("line", { x1: m.l, x2: m.l + iw, y1: yy, y2: yy, stroke: i ? "var(--grid)" : "var(--axis)", "stroke-width": 1 });
+    el("text", { x: m.l - 6, y: yy + 4, "text-anchor": "end", "font-size": 12, fill: "var(--muted)" }, axisFmt(v));
+  }
+  years.forEach((yr, i) => {
+    if (narrow && i !== years.length - 1 && (i % 2 || i === years.length - 2)) return;
+    el("text", { x: x(i), y: H - 12, "text-anchor": "middle", "font-size": 12, fill: "var(--muted)" }, narrow ? yr.slice(2) : yr);
+  });
+
+  const ends = series.map(s => ({ s, v: s[key][years.length - 1], y: y(s[key][years.length - 1]) })).sort((a, b) => a.y - b.y);
+  const gap = narrow ? 16 : 30;
+  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < gap) ends[i].y = ends[i - 1].y + gap;
+
+  series.forEach(s => {
+    const d = s[key].map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join("");
+    el("path", { d, fill: "none", stroke: `var(${s.c})`, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" });
+    s[key].forEach((v, i) => el("circle", { cx: x(i), cy: y(v), r: narrow ? 3 : 4, fill: `var(${s.c})`, stroke: "var(--surface)", "stroke-width": 2 }));
+  });
+  ends.forEach(e => {
+    el("text", { x: m.l + iw + 8, y: e.y + (narrow ? 4 : -2), "font-size": 13, fill: `var(${e.s.c})`, "font-weight": 700 }, fmt(e.v));
+    if (!narrow) el("text", { x: m.l + iw + 8, y: e.y + 13, "font-size": 12, fill: "var(--ink2)" }, e.s.name);
+  });
+
+  const cross = el("line", { y1: m.t, y2: m.t + ih, stroke: "var(--axis)", "stroke-width": 1, opacity: 0 });
+  const hit = el("rect", { x: m.l - 20, y: m.t, width: iw + 40, height: ih, fill: "transparent" });
+  plot.appendChild(svg);
+  const tip = document.createElement("div"); tip.className = "tip"; plot.appendChild(tip);
+  const move = ev => {
+    const r = svg.getBoundingClientRect(), sx = ev.clientX - r.left;
+    const i = Math.max(0, Math.min(years.length - 1, Math.round(((sx - m.l) / iw) * (years.length - 1))));
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("opacity", 1);
+    tip.innerHTML = `<b>${years[i]}</b>` + series.map(s => `<i style="background:var(${s.c})"></i>${s.name}: ${fmt(s[key][i])}`).join("<br>");
+    const cr = card.getBoundingClientRect(), px = r.left - cr.left + x(i);
+    tip.style.opacity = 1;
+    tip.style.top = (r.top - cr.top + 10) + "px";
+    tip.style.left = Math.max(4, px + 12 + tip.offsetWidth > cr.width ? px - 12 - tip.offsetWidth : px + 12) + "px";
+  };
+  hit.addEventListener("pointermove", move);
+  hit.addEventListener("pointerleave", () => { tip.style.opacity = 0; cross.setAttribute("opacity", 0); });
+
+  const det = document.createElement("details");
+  det.innerHTML = `<summary>Show data table</summary><table><tr><th>Year</th>${series.map(s => `<th>${s.name}</th>`).join("")}</tr>` +
+    years.map((yr, i) => `<tr><td>${yr}</td>${series.map(s => `<td>${fmt(s[key][i])}</td>`).join("")}</tr>`).join("") + "</table>";
+  plot.appendChild(det);
+  const src = document.createElement("p"); src.className = "src"; src.textContent = SRC;
+  plot.appendChild(src);
+}
+
+const tabs = document.querySelectorAll(".tabs button");
+let active = "c1";
+const show = id => {
+  active = id;
+  tabs.forEach(b => b.setAttribute("aria-selected", b.dataset.t === id));
+  Object.keys(charts).forEach(c => { document.getElementById(c).hidden = c !== id; });
+  draw(id);
+};
+tabs.forEach(b => b.addEventListener("click", () => show(b.dataset.t)));
+let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => draw(active), 120); });
+show("c1");
+</script>
+</body>
+</html>
