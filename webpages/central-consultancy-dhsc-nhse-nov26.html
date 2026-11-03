@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Central consultancy spending</title>
+<style>
+ html,body{margin:0;padding:0;overflow-x:hidden;}
+ #cc-chart svg{display:block;}
+ body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#232126;}
+ #cc-app{max-width:720px;margin:0 auto;padding:6px 8px 4px;box-sizing:border-box;}
+ #cc-app .cc-title{font-size:15px;font-weight:bold;margin:2px 0 0;}
+ #cc-app .cc-sub{font-size:12px;color:#515259;margin:1px 0 6px;}
+ #cc-app .cc-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:#515259;margin:0 0 2px;}
+ #cc-app .cc-key{display:inline-flex;align-items:center;gap:5px;}
+ #cc-app .cc-sw{width:11px;height:11px;border-radius:2px;display:inline-block;}
+ #cc-app .cc-src{font-size:10.5px;color:#8B8D95;margin:2px 0 2px;}
+ #cc-app svg text{font-family:Arial,Helvetica,sans-serif;}
+ #cc-app .cc-seg{pointer-events:auto !important;cursor:default;}
+ .cc-tip{position:fixed;pointer-events:none !important;background:#232126;color:#fff;
+   padding:7px 10px;border-radius:5px;font-size:12px;line-height:1.45;z-index:50;
+   display:none;max-width:240px;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+ .cc-tip b{font-size:13px;}
+ .cc-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+</style>
+</head>
+<body>
+<div id="cc-app">
+ <div class="cc-title">Consultancy spending at DHSC and NHS England jumped in 2025/26</div>
+ <div class="cc-sub">Annual consultancy spending, £m</div>
+ <div class="cc-legend">
+  <span class="cc-key"><span class="cc-sw" style="background:#C90C0F"></span>NHS England (incl. commissioning support units)</span>
+  <span class="cc-key"><span class="cc-sw" style="background:#2f6db0"></span>DHSC core department</span>
+ </div>
+ <div id="cc-chart"></div>
+ <div class="cc-src">Source: DHSC and NHS England annual reports and accounts</div>
+ <div class="cc-sr"><table>
+  <caption>Consultancy spending, £m</caption>
+  <tr><th>Year</th><th>NHS England (incl. CSUs)</th><th>DHSC core department</th><th>Total</th></tr>
+  <tr><td>2022/23</td><td>17.3</td><td>4.1</td><td>21.4</td></tr>
+  <tr><td>2023/24</td><td>17.1</td><td>3.9</td><td>21.1</td></tr>
+  <tr><td>2024/25</td><td>16.9</td><td>2.0</td><td>18.9</td></tr>
+  <tr><td>2025/26</td><td>25.4</td><td>4.6</td><td>30.0</td></tr>
+ </table></div>
+</div>
+<div class="cc-tip" id="cc-tip"></div>
+<script>
+(function(){
+ // £'000, from NHSE ARA Note 4 (parent incl CSUs) and DHSC ARA consultancy table (core).
+ var D=[
+  {y:'2022/23',n:17290,d:4092},
+  {y:'2023/24',n:17146,d:3938},
+  {y:'2024/25',n:16886,d:1990},
+  {y:'2025/26',n:25414,d:4602}
+ ];
+ var RED='#C90C0F',BLUE='#2f6db0',H=300,T=22,B=26,L=40,R=8,MAX=35000;
+ var host=document.getElementById('cc-chart'),tip=document.getElementById('cc-tip');
+ var NS='http://www.w3.org/2000/svg';
+ function S(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+ function m(v){return '£'+(v/1000).toFixed(1)+'m';}
+ function pct(a,b){var p=(a/b-1)*100;return (p>=0?'+':'')+Math.round(p)+'%';}
+ function showTip(html,ev){tip.innerHTML=html;tip.style.setProperty('display','block','important');moveTip(ev);}
+ function moveTip(ev){var x=ev.clientX+14,y=ev.clientY+14,w=tip.offsetWidth,h=tip.offsetHeight;
+  if(x+w>window.innerWidth-4)x=ev.clientX-w-14; if(y+h>window.innerHeight-4)y=ev.clientY-h-14;
+  tip.style.left=x+'px';tip.style.top=y+'px';}
+ function hideTip(){tip.style.setProperty('display','none','important');}
+ // Rounded top only: path for a bar with radius r on the top corners.
+ function topRounded(x,y,w,h,r){r=Math.min(r,w/2,h);return 'M'+x+','+(y+h)+'V'+(y+r)+'Q'+x+','+y+' '+(x+r)+','+y+'H'+(x+w-r)+'Q'+(x+w)+','+y+' '+(x+w)+','+(y+r)+'V'+(y+h)+'Z';}
+ function draw(){
+  host.innerHTML='';
+  var W=Math.max(300,host.clientWidth||640); H=W<480?250:300;
+  var svg=S('svg',{width:W,height:H,role:'img','aria-label':'Stacked column chart of consultancy spending at NHS England and DHSC, 2022/23 to 2025/26'},host);
+  var ph=H-T-B,pw=W-L-R;
+  function yv(v){return T+ph-(v/MAX)*ph;}
+  [0,10000,20000,30000].forEach(function(v){
+   S('line',{x1:L,y1:yv(v),x2:W-R,y2:yv(v),stroke:v===0?'#B6B9BF':'#EBECEC','stroke-width':1},svg);
+   var t=S('text',{x:L-6,y:yv(v)+4,'text-anchor':'end','font-size':11,fill:'#515259'},svg);t.textContent='£'+(v/1000)+'m';
+  });
+  var slot=pw/D.length,bw=Math.min(84,slot*0.56);
+  D.forEach(function(r,i){
+   var cx=L+slot*i+slot/2,x=cx-bw/2,tot=r.n+r.d,prev=i?D[i-1]:null;
+   var yN=yv(r.n),hN=yv(0)-yN;
+   var yD=yv(tot),hD=yN-yD-2; // 2px surface gap between segments
+   var segs=[
+    {el:S('rect',{x:x,y:yN,width:bw,height:hN,fill:RED,'class':'cc-seg'},svg),name:'NHS England (incl. CSUs)',v:r.n,pv:prev&&prev.n},
+    {el:S('path',{d:topRounded(x,yD,bw,Math.max(hD,1),4),fill:BLUE,'class':'cc-seg'},svg),name:'DHSC core department',v:r.d,pv:prev&&prev.d}
+   ];
+   segs.forEach(function(s){
+    var html='<b>'+r.y+'</b><br>'+s.name+': '+m(s.v)+(s.pv?' ('+pct(s.v,s.pv)+' on year)':'')+'<br>Combined: '+m(tot)+(prev?' ('+pct(tot,prev.n+prev.d)+')':'');
+    s.el.addEventListener('mouseover',function(ev){showTip(html,ev);s.el.setAttribute('opacity','0.85');});
+    s.el.addEventListener('mousemove',moveTip);
+    s.el.addEventListener('mouseout',function(){hideTip();s.el.removeAttribute('opacity');});
+   });
+   var lab=S('text',{x:cx,y:yD-6,'text-anchor':'middle','font-size':12,'font-weight':i===D.length-1?'bold':'normal',fill:'#232126'},svg);
+   lab.textContent=m(tot);
+   var xl=S('text',{x:cx,y:H-8,'text-anchor':'middle','font-size':11,fill:'#515259'},svg);xl.textContent=r.y;
+  });
+ }
+ draw();
+ var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,120);});
+})();
+</script>
+</body>
+</html>
