@@ -12,7 +12,7 @@
   --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10);
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --neutral: #a1a3aa;
   --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
-  --accent: #C90C0F; --wash: rgba(42,120,214,0.10);
+  --accent: #C90C0F; --wash: rgba(42,120,214,0.10); --keywash: rgba(179,144,57,0.13);
 }
 @media (prefers-color-scheme: dark) {
   .bst {
@@ -20,7 +20,7 @@
     --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
     --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --neutral: #6b6c74;
-    --wash: rgba(57,135,229,0.12);
+    --wash: rgba(57,135,229,0.12); --keywash: rgba(201,166,80,0.16);
   }
 }
 * { box-sizing: border-box; }
@@ -46,6 +46,10 @@ body { margin: 0; }
 .bst th, .bst td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
 .bst th { color: var(--ink2); font-weight: 600; cursor: pointer; white-space: nowrap; position: sticky; top: 0; background: var(--surface); }
 .bst td.n, .bst th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.bst th.key { color: var(--ink); background: linear-gradient(var(--keywash), var(--keywash)), var(--surface);
+  border-bottom: 2px solid var(--accent); }
+.bst td.key { background: var(--keywash); font-weight: 600; font-size: 14px; }
+.bst th.key + th:not(.key), .bst td.key + td:not(.key) { border-left: 2px solid var(--grid); }
 .bst tr.click { cursor: pointer; }
 .bst tr.click:hover td { background: var(--wash); }
 .bst .flag { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; }
@@ -214,19 +218,22 @@ function overview() {
   }).filter(r => !state.flagged || r.flagscore > 0 || (r.wf && (r.wf.funnel_flag || r.wf.change_flag)));
   const { key, dir } = state.sort;
   rows.sort((a, b) => ((a[key] ?? -1) > (b[key] ?? -1) ? 1 : (a[key] ?? -1) < (b[key] ?? -1) ? -1 : 0) * dir);
-  const cols = [["name", "Trust"], ["sector", "Sector"], ["nof", "NOF segment"], ["cap", "Capability rating"],
-    ["dep", "Departures, 12 months", 1], ["rate", "Departure rate", 1], ["flagscore", "Statistical flag"],
-    ["stab", "Stability index", 1], ["interim", "Interim exec share", 1], ["ceo", "CEO changes, 3 yrs", 1],
-    ["chair", "Chair changes, 3 yrs", 1], ["smrate", "Senior managers leaver rate", 1], ["rules", "Rule flags and context"]];
-  const thead = el("tr", {}, ...cols.map(([k, l, n]) => el("th", { class: n ? "n" : "", onclick: () => {
+  // Key calculated measures (rate, flag, stability) sit next to the trust name and are highlighted.
+  const cols = [["name", "Trust"], ["rate", "Departure rate", "n key"], ["flagscore", "Statistical flag", "key"],
+    ["stab", "Stability index", "n key"], ["dep", "Departures, 12 months", "n"],
+    ["sector", "Sector"], ["nof", "NOF segment"], ["cap", "Capability rating"],
+    ["interim", "Interim exec share", "n"], ["ceo", "CEO changes, 3 yrs", "n"],
+    ["chair", "Chair changes, 3 yrs", "n"], ["smrate", "Senior managers leaver rate", "n"], ["rules", "Rule flags and context"]];
+  const thead = el("tr", {}, ...cols.map(([k, l, c]) => el("th", { class: c || "", onclick: () => {
     state.sort = { key: k, dir: state.sort.key === k ? -state.sort.dir : -1 }; render(); } }, l)));
   const body = rows.map(r => el("tr", { class: "click", onclick: () => { state.trust = r.t.ods; state.tab = "trust"; render(); } },
     el("td", { style: "min-width:190px" }, short(r.t.name), el("div", { class: "rule" }, r.t.ods + (r.t.region ? " · " + r.t.region : ""))),
-    el("td", {}, r.t.sector || "–"), el("td", {}, r.t.nof_segment || "–"), el("td", {}, capBadge(r.t.capability)),
+    el("td", { class: "n key" }, pct(r.rate)),
+    el("td", { class: "key" }, flagBadge(r.fl, r.m[cat + "_change_flag"] === r.fl ? "above own baseline" : "above national")),
+    el("td", { class: "n key" }, pct(r.stab)),
     el("td", { class: "n" }, r.dep ?? "–", el("div", { class: "rule" }, r.m[cat + "_seats"] ? "of " + num(r.m[cat + "_seats"]) + " seats" : "")),
-    el("td", { class: "n" }, pct(r.rate)),
-    el("td", {}, flagBadge(r.fl, r.m[cat + "_change_flag"] === r.fl ? "above own baseline" : "above national")),
-    el("td", { class: "n" }, pct(r.stab)), el("td", { class: "n" }, pct(r.interim)),
+    el("td", {}, r.t.sector || "–"), el("td", {}, r.t.nof_segment || "–"), el("td", {}, capBadge(r.t.capability)),
+    el("td", { class: "n" }, pct(r.interim)),
     el("td", { class: "n" }, r.ceo ?? "–"), el("td", { class: "n" }, r.chair ?? "–"),
     el("td", { class: "n" }, pct(r.smrate), r.wf && (r.wf.funnel_flag || r.wf.change_flag) ?
       el("div", {}, flagBadge(r.wf.change_flag || r.wf.funnel_flag, "senior managers")) : ""),
