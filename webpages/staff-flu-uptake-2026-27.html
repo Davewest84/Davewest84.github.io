@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NHS staff flu vaccination uptake by trust, 2026-27 vs 2025-26</title>
+<style>
+  body { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; color: #222; max-width: 1050px; margin: 1em auto; padding: 0 1em; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { font-size: 13px; color: #555; margin: 0 0 1em; }
+  .controls { margin: 0 0 8px; font-size: 13px; }
+  .controls button { font-size: 12px; margin-right: 6px; padding: 3px 8px; cursor: pointer; border: 1px solid #bbb; background: #f6f6f6; border-radius: 3px; }
+  .controls button.active { background: #003366; color: #fff; border-color: #003366; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 5px 8px; text-align: left; border-bottom: 1px solid #e3e3e3; vertical-align: top; }
+  th { background: #003366; color: #fff; cursor: pointer; user-select: none; position: sticky; top: 0; }
+  th:hover { background: #004488; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.chg { font-weight: 600; }
+  tr.fall-big td.chg { color: #b30000; }
+  tr.fall td.chg { color: #c25a00; }
+  tr.rise td.chg { color: #006633; }
+  tr.rise-big td.chg { color: #006633; font-weight: 700; }
+  tr.low td:first-child { border-left: 3px solid #b30000; padding-left: 5px; }
+  tbody tr:hover { background: #f6f8fa; }
+  .foot { font-size: 11px; color: #666; margin-top: 10px; }
+  @media (max-width: 640px) { body { font-size: 13px; } table { font-size: 12px; } th, td { padding: 4px 5px; } }
+</style>
+</head>
+<body>
+<h1>NHS staff flu vaccination uptake by trust</h1>
+<p class="sub">Frontline healthcare workers, 2026-27 season (as of 15 November 2026) vs 2025-26 season at the equivalent point (16 November 2025). Rows marked with a red bar have uptake below 30 per cent. Source: NHS England weekly publication.</p>
+<div class="controls">
+  <button onclick="filterRows('all', this)" class="active">All trusts</button>
+  <button onclick="filterRows('fall', this)">Going backwards</button>
+  <button onclick="filterRows('low', this)">Still below 40%</button>
+  <button onclick="filterRows('rise-big', this)">Risen 10+ ppt</button>
+</div>
+<table id="t">
+<thead>
+<tr>
+  <th onclick="sortBy(0,false)">Trust</th>
+  <th onclick="sortBy(1,false)">Region</th>
+  <th onclick="sortBy(2,true)" class="num">Staff</th>
+  <th onclick="sortBy(3,true)" class="num">2026-27 %</th>
+  <th onclick="sortBy(4,true)" class="num">2025-26 %</th>
+  <th onclick="sortBy(5,true)" class="num">Change (ppt)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fall-big" data-change="-9.08501124731999" data-cur="35.25249276294629"><td>The Queen Elizabeth Hospital, King&#x27;s Lynn, FT</td><td>East Of England</td><td class="num">3,109</td><td class="num">35.3%</td><td class="num">44.3%</td><td class="num chg">-9.1</td></tr>
+<tr class="fall-big" data-change="-8.765727727210198" data-cur="39.13764510779436"><td>George Eliot Hospital Trust</td><td>Midlands</td><td class="num">2,412</td><td class="num">39.1%</td><td class="num">47.9%</td><td class="num chg">-8.8</td></tr>
+<tr class="fall-big" data-change="-8.726237765160967" data-cur="38.31593326178164"><td>Royal Devon University Healthcare FT</td><td>South West</td><td class="num">10,249</td><td class="num">38.3%</td><td class="num">47.0%</td><td class="num chg">-8.7</td></tr>
+<tr class="fall-big" data-change="-6.301854653509508" data-cur="36.65035345296357"><td>Moorfields Eye Hospital FT</td><td>London</td><td class="num">1,839</td><td class="num">36.7%</td><td class="num">43.0%</td><td class="num chg">-6.3</td></tr>
+<tr class="fall-big" data-change="-5.106499579362492" data-cur="35.31344792719919"><td>Ashford And St Peter&#x27;S Hospitals FT</td><td>South East</td><td class="num">3,956</td><td class="num">35.3%</td><td class="num">40.4%</td><td class="num chg">-5.1</td></tr>
+<tr class="fall" data-change="-4.178722553231381" data-cur="46.6356795042054"><td>Great Western Hospitals FT</td><td>South West</td><td class="num">4,518</td><td class="num">46.6%</td><td class="num">50.8%</td><td class="num chg">-4.2</td></tr>
+<tr class="fall" data-change="-4.13448170266625" data-cur="38.17224520496427"><td>Lancashire Teaching Hospitals FT</td><td>North West</td><td class="num">7,977</td><td class="num">38.2%</td><td class="num">42.3%</td><td class="num chg">-4.1</td></tr>
+<tr class="fall" data-change="-2.918614020950848" data-cur="55.05882352941176"><td>Humber Teaching FT</td><td>North East And Yorkshire</td><td class="num">2,550</td><td class="num">55.1%</td><td class="num">58.0%</td><td class="num chg">-2.9</td></tr>
+<tr class="fall" data-change="-2.8806508548625303" data-cur="37.94663048394391"><td>The Shrewsbury And Telford Hospital Trust</td><td>Midlands</td><td class="num">6,633</td><td class="num">37.9%</td><td class="num">40.8%</td><td class="num chg">-2.9</td></tr>
+<tr class="fall" data-change="-2.5307750577942727" data-cur="37.735410369681475"><td>Yorkshire Ambulance Service Trust</td><td>North East And Yorkshire</td><td class="num">4,301</td><td class="num">37.7%</td><td class="num">40.3%</td><td class="num chg">-2.5</td></tr>
+<tr class="fall" data-change="-2.406547378383017" data-cur="39.53348079630002"><td>Sherwood Forest Hospitals FT</td><td>Midlands</td><td class="num">4,973</td><td class="num">39.5%</td><td class="num">41.9%</td><td class="num chg">-2.4</td></tr>
+<tr class="fall" data-change="-2.1305024455313415" data-cur="35.73076923076923"><td>Bradford District Care FT</td><td>North East And Yorkshire</td><td class="num">2,600</td><td class="num">35.7%</td><td class="num">37.9%</td><td class="num chg">-2.1</td></tr>
+<tr class="fall" data-change="-2.1136268367916315" data-cur="43.18643258091485"><td>York And Scarborough Teaching Hospitals FT</td><td>North East And Yorkshire</td><td class="num">8,373</td><td class="num">43.2%</td><td class="num">45.3%</td><td class="num chg">-2.1</td></tr>
+<tr class="fall" data-change="-2.0108782968926917" data-cur="54.05027932960894"><td>Rotherham Doncaster And South Humber FT</td><td>North East And Yorkshire</td><td class="num">2,864</td><td class="num">54.1%</td><td class="num">56.1%</td><td class="num chg">-2.0</td></tr>
+<tr class="fall low" data-change="-1.9026857693902386" data-cur="29.925348912690687"><td>North East Ambulance Service FT</td><td>North East And Yorkshire</td><td class="num">3,081</td><td class="num">29.9%</td><td class="num">31.8%</td><td class="num chg">-1.9</td></tr>
+<tr class="fall" data-change="-1.8271470324676784" data-cur="35.39995815607783"><td>Northern Care Alliance FT</td><td>North West</td><td class="num">14,339</td><td class="num">35.4%</td><td class="num">37.2%</td><td class="num chg">-1.8</td></tr>
+<tr class="fall" data-change="-1.6023924469981523" data-cur="47.10450410472598"><td>Buckinghamshire Healthcare Trust</td><td>South East</td><td class="num">4,507</td><td class="num">47.1%</td><td class="num">48.7%</td><td class="num chg">-1.6</td></tr>
+<tr class="fall" data-change="-1.5769295611071925" data-cur="36.24893071000855"><td>Stockport FT</td><td>North West</td><td class="num">4,676</td><td class="num">36.2%</td><td class="num">37.8%</td><td class="num chg">-1.6</td></tr>
+<tr class="fall" data-change="-1.4952080122958264" data-cur="48.83577168761591"><td>University Hospital Southampton FT</td><td>South East</td><td class="num">9,706</td><td class="num">48.8%</td><td class="num">50.3%</td><td class="num chg">-1.5</td></tr>
+<tr class="fall" data-change="-1.442105124317699" data-cur="56.787224048849225"><td>Cambridge University Hospitals FT</td><td>East Of England</td><td class="num">10,645</td><td class="num">56.8%</td><td class="num">58.2%</td><td class="num chg">-1.4</td></tr>
+<tr class="fall" data-change="-1.420874247703516" data-cur="49.750554323725055"><td>The Rotherham FT</td><td>North East And Yorkshire</td><td class="num">3,608</td><td class="num">49.8%</td><td class="num">51.2%</td><td class="num chg">-1.4</td></tr>
+<tr class="fall" data-change="-1.3636388234458963" data-cur="45.84199584199584"><td>East Kent Hospitals University FT</td><td>South East</td><td class="num">6,734</td><td class="num">45.8%</td><td class="num">47.2%</td><td class="num chg">-1.4</td></tr>
+<tr class="fall" data-change="-1.2484652376927698" data-cur="43.621417076247226"><td>Bristol FT</td><td>South West</td><td class="num">22,991</td><td class="num">43.6%</td><td class="num">44.9%</td><td class="num chg">-1.2</td></tr>
+<tr class="fall" data-change="-1.2338262885868048" data-cur="42.578125"><td>James Paget University Hospitals FT</td><td>East Of England</td><td class="num">3,584</td><td class="num">42.6%</td><td class="num">43.8%</td><td class="num chg">-1.2</td></tr>
+<tr class="fall" data-change="-1.2212349374022367" data-cur="39.8849712428107"><td>Cornwall Partnership FT</td><td>South West</td><td class="num">3,999</td><td class="num">39.9%</td><td class="num">41.1%</td><td class="num chg">-1.2</td></tr>
+<tr class="fall" data-change="-1.046711824427959" data-cur="42.501258178158025"><td>West Suffolk FT</td><td>East Of England</td><td class="num">3,974</td><td class="num">42.5%</td><td class="num">43.5%</td><td class="num chg">-1.0</td></tr>
+<tr class="fall" data-change="-0.9905909927576246" data-cur="49.212736179146255"><td>North West Anglia FT</td><td>East Of England</td><td class="num">5,716</td><td class="num">49.2%</td><td class="num">50.2%</td><td class="num chg">-1.0</td></tr>
+<tr class="fall" data-change="-0.925193772444338" data-cur="51.20366832250669"><td>Royal United Hospitals Bath FT</td><td>South West</td><td class="num">5,234</td><td class="num">51.2%</td><td class="num">52.1%</td><td class="num chg">-0.9</td></tr>
+<tr class="fall" data-change="-0.8915410984628878" data-cur="58.38327340524704"><td>Norfolk And Norwich University Hospitals FT</td><td>East Of England</td><td class="num">7,509</td><td class="num">58.4%</td><td class="num">59.3%</td><td class="num chg">-0.9</td></tr>
+<tr class="fall" data-change="-0.7935998476861243" data-cur="37.271594684385384"><td>North West Ambulance Service Trust</td><td>North West</td><td class="num">4,816</td><td class="num">37.3%</td><td class="num">38.1%</td><td class="num chg">-0.8</td></tr>
+<tr class="fall" data-change="-0.7652800643946094" data-cur="41.164418644357184"><td>Calderdale And Huddersfield FT</td><td>North East And Yorkshire</td><td class="num">5,857</td><td class="num">41.2%</td><td class="num">41.9%</td><td class="num chg">-0.8</td></tr>
+<tr class="fall" data-change="-0.6530933869919266" data-cur="37.11322963706306"><td>East Sussex Healthcare Trust</td><td>South East</td><td class="num">5,979</td><td class="num">37.1%</td><td class="num">37.8%</td><td class="num chg">-0.7</td></tr>
+<tr class="fall" data-change="-0.5570307085005055" data-cur="48.54161726345743"><td>Gateshead Health FT</td><td>North East And Yorkshire</td><td class="num">4,217</td><td class="num">48.5%</td><td class="num">49.1%</td><td class="num chg">-0.6</td></tr>
+<tr class="fall" data-change="-0.4219841298862832" data-cur="37.47126436781609"><td>Tees, Esk And Wear Valleys FT</td><td>North East And Yorkshire</td><td class="num">6,090</td><td class="num">37.5%</td><td class="num">37.9%</td><td class="num chg">-0.4</td></tr>
+<tr class="fall" data-change="-0.35121279556164353" data-cur="42.65331664580726"><td>Chesterfield Royal Hospital FT</td><td>Midlands</td><td class="num">3,995</td><td class="num">42.7%</td><td class="num">43.0%</td><td class="num chg">-0.4</td></tr>
+<tr class="fall" data-change="-0.18184738957041446" data-cur="38.03516306536036"><td>Hull University Teaching Hospitals Trust</td><td>North East And Yorkshire</td><td class="num">7,451</td><td class="num">38.0%</td><td class="num">38.2%</td><td class="num chg">-0.2</td></tr>
+<tr class="fall" data-change="-0.14700239218790045" data-cur="41.87949417307216"><td>Avon And Wiltshire Mental Health Partnership Trust</td><td>South West</td><td class="num">4,033</td><td class="num">41.9%</td><td class="num">42.0%</td><td class="num chg">-0.1</td></tr>
+<tr class="fall" data-change="-0.1303779096114539" data-cur="38.72568745808182"><td>Mersey And West Lancashire Teaching Hospitals Trust</td><td>North West</td><td class="num">7,455</td><td class="num">38.7%</td><td class="num">38.9%</td><td class="num chg">-0.1</td></tr>
+<tr class="fall" data-change="-0.014244846102002384" data-cur="46.66128706879161"><td>North Tees And Hartlepool FT</td><td>North East And Yorkshire</td><td class="num">4,957</td><td class="num">46.7%</td><td class="num">46.7%</td><td class="num chg">-0.0</td></tr>
+<tr class="rise" data-change="0.13392950232202594" data-cur="54.631083202511775"><td>Sheffield Children&#x27;S FT</td><td>North East And Yorkshire</td><td class="num">2,548</td><td class="num">54.6%</td><td class="num">54.5%</td><td class="num chg">+0.1</td></tr>
+<tr class="rise" data-change="0.2998775671975622" data-cur="38.69035032071615"><td>University Hospitals Of Leicester Trust</td><td>Midlands</td><td class="num">14,187</td><td class="num">38.7%</td><td class="num">38.4%</td><td class="num chg">+0.3</td></tr>
+<tr class="rise" data-change="0.3749487884622056" data-cur="46.57190635451505"><td>Lincolnshire Community Health Services Trust</td><td>Midlands</td><td class="num">1,196</td><td class="num">46.6%</td><td class="num">46.2%</td><td class="num chg">+0.4</td></tr>
+<tr class="rise" data-change="0.4080320585150474" data-cur="39.15181315304241"><td>Shropshire Community Health Trust</td><td>Midlands</td><td class="num">1,627</td><td class="num">39.2%</td><td class="num">38.7%</td><td class="num chg">+0.4</td></tr>
+<tr class="rise" data-change="0.4687947353263908" data-cur="37.85109228711547"><td>South Central Ambulance Service FT</td><td>South East</td><td class="num">2,243</td><td class="num">37.9%</td><td class="num">37.4%</td><td class="num chg">+0.5</td></tr>
+<tr class="rise" data-change="0.4850052271669867" data-cur="45.22821576763486"><td>Countess Of Chester Hospital FT</td><td>North West</td><td class="num">3,856</td><td class="num">45.2%</td><td class="num">44.7%</td><td class="num chg">+0.5</td></tr>
+<tr class="rise low" data-change="0.4980581844484213" data-cur="25.316635833214747"><td>East London FT</td><td>London</td><td class="num">7,027</td><td class="num">25.3%</td><td class="num">24.8%</td><td class="num chg">+0.5</td></tr>
+<tr class="rise" data-change="0.5489934860035817" data-cur="41.41488577745026"><td>Wirral Community Health And Care FT</td><td>North West</td><td class="num">1,357</td><td class="num">41.4%</td><td class="num">40.9%</td><td class="num chg">+0.5</td></tr>
+<tr class="rise" data-change="0.5801690203388716" data-cur="46.33488600147095"><td>Oxford University Hospitals FT</td><td>South East</td><td class="num">12,237</td><td class="num">46.3%</td><td class="num">45.8%</td><td class="num chg">+0.6</td></tr>
+<tr class="rise" data-change="0.6378419081219278" data-cur="44.78955007256894"><td>Barnsley Hospital FT</td><td>North East And Yorkshire</td><td class="num">3,445</td><td class="num">44.8%</td><td class="num">44.2%</td><td class="num chg">+0.6</td></tr>
+<tr class="rise" data-change="0.6451353798522064" data-cur="34.76027397260274"><td>Herefordshire And Worcestershire Health And Care Trust</td><td>Midlands</td><td class="num">3,504</td><td class="num">34.8%</td><td class="num">34.1%</td><td class="num chg">+0.6</td></tr>
+<tr class="rise" data-change="0.7218254315759509" data-cur="43.19391634980988"><td>University Hospitals Of North Midlands Trust</td><td>Midlands</td><td class="num">10,520</td><td class="num">43.2%</td><td class="num">42.5%</td><td class="num chg">+0.7</td></tr>
+<tr class="rise low" data-change="0.7263606963305236" data-cur="28.887247401466787"><td>Royal Free London FT</td><td>London</td><td class="num">18,953</td><td class="num">28.9%</td><td class="num">28.2%</td><td class="num chg">+0.7</td></tr>
+<tr class="rise" data-change="0.8183696170347972" data-cur="41.601779755283644"><td>Queen Victoria Hospital FT</td><td>South East</td><td class="num">899</td><td class="num">41.6%</td><td class="num">40.8%</td><td class="num chg">+0.8</td></tr>
+<tr class="rise" data-change="0.8794323889727025" data-cur="38.26815642458101"><td>Dorset Healthcare University FT</td><td>South West</td><td class="num">5,012</td><td class="num">38.3%</td><td class="num">37.4%</td><td class="num chg">+0.9</td></tr>
+<tr class="rise" data-change="0.9144881442189003" data-cur="44.927195866604045"><td>Sussex Community FT</td><td>South East</td><td class="num">4,258</td><td class="num">44.9%</td><td class="num">44.0%</td><td class="num chg">+0.9</td></tr>
+<tr class="rise" data-change="0.9812922195197729" data-cur="42.299794661190965"><td>South West Yorkshire Partnership Teaching FT</td><td>North East And Yorkshire</td><td class="num">3,896</td><td class="num">42.3%</td><td class="num">41.3%</td><td class="num chg">+1.0</td></tr>
+<tr class="rise" data-change="1.0095699675524656" data-cur="38.84462151394422"><td>The Walton Centre FT</td><td>North West</td><td class="num">1,004</td><td class="num">38.8%</td><td class="num">37.8%</td><td class="num chg">+1.0</td></tr>
+<tr class="rise" data-change="1.042891401032307" data-cur="39.62741652021089"><td>Nottingham University Hospitals Trust</td><td>Midlands</td><td class="num">14,225</td><td class="num">39.6%</td><td class="num">38.6%</td><td class="num chg">+1.0</td></tr>
+<tr class="rise" data-change="1.0444321997568835" data-cur="47.28149272386394"><td>Somerset FT</td><td>South West</td><td class="num">11,201</td><td class="num">47.3%</td><td class="num">46.2%</td><td class="num chg">+1.0</td></tr>
+<tr class="rise" data-change="1.0933754193831717" data-cur="41.618000687049125"><td>Royal Cornwall Hospitals Trust</td><td>South West</td><td class="num">5,822</td><td class="num">41.6%</td><td class="num">40.5%</td><td class="num chg">+1.1</td></tr>
+<tr class="rise" data-change="1.1151586115643681" data-cur="53.687821612349914"><td>Hampshire Hospitals FT</td><td>South East</td><td class="num">5,247</td><td class="num">53.7%</td><td class="num">52.6%</td><td class="num chg">+1.1</td></tr>
+<tr class="rise" data-change="1.207441698228795" data-cur="30.933604680742814"><td>Oxleas FT</td><td>London</td><td class="num">3,931</td><td class="num">30.9%</td><td class="num">29.7%</td><td class="num chg">+1.2</td></tr>
+<tr class="rise" data-change="1.2351489133663094" data-cur="43.79051518253156"><td>Maidstone And Tunbridge Wells Trust</td><td>South East</td><td class="num">5,862</td><td class="num">43.8%</td><td class="num">42.6%</td><td class="num chg">+1.2</td></tr>
+<tr class="rise" data-change="1.2389648287598476" data-cur="43.18766066838046"><td>Royal Surrey FT</td><td>South East</td><td class="num">5,057</td><td class="num">43.2%</td><td class="num">41.9%</td><td class="num chg">+1.2</td></tr>
+<tr class="rise" data-change="1.310833382921345" data-cur="33.75041708375042"><td>Epsom And St Helier University Hospitals Trust</td><td>London</td><td class="num">5,994</td><td class="num">33.8%</td><td class="num">32.4%</td><td class="num chg">+1.3</td></tr>
+<tr class="rise" data-change="1.364341331144594" data-cur="49.28843710292249"><td>United Lincolnshire Teaching Hospitals Trust</td><td>Midlands</td><td class="num">7,870</td><td class="num">49.3%</td><td class="num">47.9%</td><td class="num chg">+1.4</td></tr>
+<tr class="rise" data-change="1.3868261686299164" data-cur="51.88933873144399"><td>Hertfordshire Community Trust</td><td>East Of England</td><td class="num">1,482</td><td class="num">51.9%</td><td class="num">50.5%</td><td class="num chg">+1.4</td></tr>
+<tr class="rise" data-change="1.4400230936625675" data-cur="33.794466403162055"><td>Greater Manchester Mental Health FT</td><td>North West</td><td class="num">5,060</td><td class="num">33.8%</td><td class="num">32.4%</td><td class="num chg">+1.4</td></tr>
+<tr class="rise" data-change="1.4747174634823281" data-cur="40.23345153664303"><td>Mid Yorkshire Teaching Trust</td><td>North East And Yorkshire</td><td class="num">6,768</td><td class="num">40.2%</td><td class="num">38.8%</td><td class="num chg">+1.5</td></tr>
+<tr class="rise" data-change="1.6058802405301762" data-cur="41.779469825155104"><td>South Tyneside And Sunderland FT</td><td>North East And Yorkshire</td><td class="num">7,092</td><td class="num">41.8%</td><td class="num">40.2%</td><td class="num chg">+1.6</td></tr>
+<tr class="rise" data-change="1.7028271683190326" data-cur="42.60803639120546"><td>The Robert Jones And Agnes Hunt Orthopaedic Hospital FT</td><td>Midlands</td><td class="num">1,319</td><td class="num">42.6%</td><td class="num">40.9%</td><td class="num chg">+1.7</td></tr>
+<tr class="rise" data-change="1.8232371698083654" data-cur="37.23825693265422"><td>Northampton General Hospital Trust</td><td>Midlands</td><td class="num">5,301</td><td class="num">37.2%</td><td class="num">35.4%</td><td class="num chg">+1.8</td></tr>
+<tr class="rise" data-change="1.8311172422963153" data-cur="39.11469933184855"><td>Milton Keynes University Hospital FT</td><td>East Of England</td><td class="num">3,592</td><td class="num">39.1%</td><td class="num">37.3%</td><td class="num chg">+1.8</td></tr>
+<tr class="rise" data-change="1.979023062634802" data-cur="34.382456539029654"><td>Midlands Partnership University FT</td><td>Midlands</td><td class="num">8,801</td><td class="num">34.4%</td><td class="num">32.4%</td><td class="num chg">+2.0</td></tr>
+<tr class="rise" data-change="2.1201102803371974" data-cur="32.19071361794952"><td>Lancashire &amp; South Cumbria FT</td><td>North West</td><td class="num">6,418</td><td class="num">32.2%</td><td class="num">30.1%</td><td class="num chg">+2.1</td></tr>
+<tr class="rise" data-change="2.136634933209386" data-cur="41.23018519468527"><td>Manchester University FT</td><td>North West</td><td class="num">19,493</td><td class="num">41.2%</td><td class="num">39.1%</td><td class="num chg">+2.1</td></tr>
+<tr class="rise" data-change="2.1585642089739494" data-cur="42.36890601440778"><td>Northern Lincolnshire And Goole FT</td><td>North East And Yorkshire</td><td class="num">5,969</td><td class="num">42.4%</td><td class="num">40.2%</td><td class="num chg">+2.2</td></tr>
+<tr class="rise" data-change="2.181914178895923" data-cur="38.826114249843066"><td>Airedale FT</td><td>North East And Yorkshire</td><td class="num">3,186</td><td class="num">38.8%</td><td class="num">36.6%</td><td class="num chg">+2.2</td></tr>
+<tr class="rise" data-change="2.185223725286157" data-cur="40.062434963579605"><td>Royal National Orthopaedic Hospital Trust</td><td>London</td><td class="num">961</td><td class="num">40.1%</td><td class="num">37.9%</td><td class="num chg">+2.2</td></tr>
+<tr class="rise" data-change="2.2769441549201304" data-cur="44.33748584371461"><td>East Of England Ambulance Service Trust</td><td>East Of England</td><td class="num">3,532</td><td class="num">44.3%</td><td class="num">42.1%</td><td class="num chg">+2.3</td></tr>
+<tr class="rise" data-change="2.3251803623586937" data-cur="34.879054731913946"><td>Mersey Care FT</td><td>North West</td><td class="num">8,971</td><td class="num">34.9%</td><td class="num">32.6%</td><td class="num chg">+2.3</td></tr>
+<tr class="rise" data-change="2.3790215072875895" data-cur="35.9375"><td>The Princess Alexandra Hospital Trust</td><td>East Of England</td><td class="num">3,264</td><td class="num">35.9%</td><td class="num">33.6%</td><td class="num chg">+2.4</td></tr>
+<tr class="rise" data-change="2.454907414258713" data-cur="47.09115895556574"><td>Derbyshire Community Health Services FT</td><td>Midlands</td><td class="num">2,183</td><td class="num">47.1%</td><td class="num">44.6%</td><td class="num chg">+2.5</td></tr>
+<tr class="rise" data-change="2.4557085960789458" data-cur="30.56229327453142"><td>South London And Maudsley FT</td><td>London</td><td class="num">4,535</td><td class="num">30.6%</td><td class="num">28.1%</td><td class="num chg">+2.5</td></tr>
+<tr class="rise" data-change="2.536057774516415" data-cur="56.20637329286799"><td>Dorset County Hospital FT</td><td>South West</td><td class="num">3,295</td><td class="num">56.2%</td><td class="num">53.7%</td><td class="num chg">+2.5</td></tr>
+<tr class="rise" data-change="2.555179954692335" data-cur="46.93785310734464"><td>Mid Cheshire Hospitals FT</td><td>North West</td><td class="num">4,425</td><td class="num">46.9%</td><td class="num">44.4%</td><td class="num chg">+2.6</td></tr>
+<tr class="rise" data-change="2.5633940707513716" data-cur="37.29763387297634"><td>Surrey And Borders Partnership FT</td><td>South East</td><td class="num">1,606</td><td class="num">37.3%</td><td class="num">34.7%</td><td class="num chg">+2.6</td></tr>
+<tr class="rise" data-change="2.59131429139633" data-cur="33.00869565217391"><td>Northamptonshire Healthcare FT</td><td>Midlands</td><td class="num">5,750</td><td class="num">33.0%</td><td class="num">30.4%</td><td class="num chg">+2.6</td></tr>
+<tr class="rise" data-change="2.6284819304723257" data-cur="43.43863912515189"><td>North Staffordshire Combined Healthcare Trust</td><td>Midlands</td><td class="num">1,646</td><td class="num">43.4%</td><td class="num">40.8%</td><td class="num chg">+2.6</td></tr>
+<tr class="rise" data-change="2.651011194842205" data-cur="36.10598470867387"><td>East Lancashire Hospitals Trust</td><td>North West</td><td class="num">7,586</td><td class="num">36.1%</td><td class="num">33.5%</td><td class="num chg">+2.7</td></tr>
+<tr class="rise" data-change="2.665174185906295" data-cur="39.96786042240588"><td>Kent Community Health FT</td><td>South East</td><td class="num">4,356</td><td class="num">40.0%</td><td class="num">37.3%</td><td class="num chg">+2.7</td></tr>
+<tr class="rise" data-change="2.72873019577807" data-cur="37.915159487010854"><td>Bradford Teaching Hospitals FT</td><td>North East And Yorkshire</td><td class="num">6,082</td><td class="num">37.9%</td><td class="num">35.2%</td><td class="num chg">+2.7</td></tr>
+<tr class="rise low" data-change="2.7474218061690507" data-cur="27.302363488182557"><td>Croydon Health Services Trust</td><td>London</td><td class="num">3,681</td><td class="num">27.3%</td><td class="num">24.6%</td><td class="num chg">+2.7</td></tr>
+<tr class="rise" data-change="2.763234189427969" data-cur="35.04804974561899"><td>Tameside And Glossop Integrated Care FT</td><td>North West</td><td class="num">3,538</td><td class="num">35.0%</td><td class="num">32.3%</td><td class="num chg">+2.8</td></tr>
+<tr class="rise" data-change="2.7807112666797806" data-cur="42.05002233139795"><td>Birmingham Women&#x27;S And Children&#x27;S FT</td><td>Midlands</td><td class="num">4,478</td><td class="num">42.1%</td><td class="num">39.3%</td><td class="num chg">+2.8</td></tr>
+<tr class="rise" data-change="2.799298997977168" data-cur="39.86975397973951"><td>Doncaster And Bassetlaw Teaching Hospitals FT</td><td>North East And Yorkshire</td><td class="num">5,528</td><td class="num">39.9%</td><td class="num">37.1%</td><td class="num chg">+2.8</td></tr>
+<tr class="rise" data-change="2.8023996434322456" data-cur="46.55671296296296"><td>Devon Partnership Trust</td><td>South West</td><td class="num">3,456</td><td class="num">46.6%</td><td class="num">43.8%</td><td class="num chg">+2.8</td></tr>
+<tr class="rise" data-change="2.8146617534159617" data-cur="47.90490341753343"><td>Norfolk And Suffolk FT</td><td>East Of England</td><td class="num">3,365</td><td class="num">47.9%</td><td class="num">45.1%</td><td class="num chg">+2.8</td></tr>
+<tr class="rise" data-change="2.895417309363893" data-cur="46.92113442113442"><td>University Hospitals Of Derby And Burton FT</td><td>Midlands</td><td class="num">10,296</td><td class="num">46.9%</td><td class="num">44.0%</td><td class="num chg">+2.9</td></tr>
+<tr class="rise" data-change="2.908041245560689" data-cur="40.12601260126012"><td>Leicestershire Partnership Trust</td><td>Midlands</td><td class="num">5,555</td><td class="num">40.1%</td><td class="num">37.2%</td><td class="num chg">+2.9</td></tr>
+<tr class="rise" data-change="2.9830826989518684" data-cur="42.62295081967213"><td>Cambridgeshire And Peterborough FT</td><td>East Of England</td><td class="num">3,904</td><td class="num">42.6%</td><td class="num">39.6%</td><td class="num chg">+3.0</td></tr>
+<tr class="rise" data-change="3.092327517152512" data-cur="38.82352941176471"><td>Bedfordshire Hospitals FT</td><td>East Of England</td><td class="num">6,970</td><td class="num">38.8%</td><td class="num">35.7%</td><td class="num chg">+3.1</td></tr>
+<tr class="rise" data-change="3.0946926963719648" data-cur="45.742838107928044"><td>University Hospitals Plymouth Trust</td><td>South West</td><td class="num">7,505</td><td class="num">45.7%</td><td class="num">42.6%</td><td class="num chg">+3.1</td></tr>
+<tr class="rise" data-change="3.131014857820851" data-cur="44.544682657609854"><td>Frimley Health FT</td><td>South East</td><td class="num">9,422</td><td class="num">44.5%</td><td class="num">41.4%</td><td class="num chg">+3.1</td></tr>
+<tr class="rise" data-change="3.169725090147111" data-cur="35.90462833099579"><td>Sussex Partnership FT</td><td>South East</td><td class="num">4,278</td><td class="num">35.9%</td><td class="num">32.7%</td><td class="num chg">+3.2</td></tr>
+<tr class="rise" data-change="3.2075983650929913" data-cur="54.9652882583761"><td>East Midlands Ambulance Service Trust</td><td>Midlands</td><td class="num">3,313</td><td class="num">55.0%</td><td class="num">51.8%</td><td class="num chg">+3.2</td></tr>
+<tr class="rise" data-change="3.2695619130585953" data-cur="61.80677540777917"><td>Harrogate And District FT</td><td>North East And Yorkshire</td><td class="num">3,985</td><td class="num">61.8%</td><td class="num">58.5%</td><td class="num chg">+3.3</td></tr>
+<tr class="rise low" data-change="3.27430956365491" data-cur="26.91842900302115"><td>Barking, Havering And Redbridge University Hospitals Trust</td><td>London</td><td class="num">6,620</td><td class="num">26.9%</td><td class="num">23.6%</td><td class="num chg">+3.3</td></tr>
+<tr class="rise" data-change="3.320614955542297" data-cur="33.817449379836745"><td>King&#x27;s College Hospital FT</td><td>London</td><td class="num">9,433</td><td class="num">33.8%</td><td class="num">30.5%</td><td class="num chg">+3.3</td></tr>
+<tr class="rise" data-change="3.355094705278752" data-cur="47.011261911637305"><td>Wye Valley Trust</td><td>Midlands</td><td class="num">3,463</td><td class="num">47.0%</td><td class="num">43.7%</td><td class="num chg">+3.4</td></tr>
+<tr class="rise" data-change="3.501678470669191" data-cur="51.025802391441154"><td>Gloucestershire Hospitals FT</td><td>South West</td><td class="num">7,945</td><td class="num">51.0%</td><td class="num">47.5%</td><td class="num chg">+3.5</td></tr>
+<tr class="rise" data-change="3.527117590956202" data-cur="39.12452419793366"><td>Kettering General Hospital FT</td><td>Midlands</td><td class="num">3,678</td><td class="num">39.1%</td><td class="num">35.6%</td><td class="num chg">+3.5</td></tr>
+<tr class="rise" data-change="3.6851407287851714" data-cur="41.817900996215926"><td>University Hospitals Sussex FT</td><td>South East</td><td class="num">12,949</td><td class="num">41.8%</td><td class="num">38.1%</td><td class="num chg">+3.7</td></tr>
+<tr class="rise" data-change="3.8090322380344475" data-cur="39.04034896401309"><td>The Royal Orthopaedic Hospital FT</td><td>Midlands</td><td class="num">917</td><td class="num">39.0%</td><td class="num">35.2%</td><td class="num chg">+3.8</td></tr>
+<tr class="rise" data-change="3.815500667437128" data-cur="48.298259288126786"><td>Great Ormond Street Hospital For Children FT</td><td>London</td><td class="num">3,849</td><td class="num">48.3%</td><td class="num">44.5%</td><td class="num chg">+3.8</td></tr>
+<tr class="rise" data-change="3.905966639352478" data-cur="37.0025765817349"><td>Nottinghamshire Healthcare FT</td><td>Midlands</td><td class="num">6,986</td><td class="num">37.0%</td><td class="num">33.1%</td><td class="num chg">+3.9</td></tr>
+<tr class="rise" data-change="4.008877666648587" data-cur="48.31488314883149"><td>Gloucestershire Health And Care FT</td><td>South West</td><td class="num">4,065</td><td class="num">48.3%</td><td class="num">44.3%</td><td class="num chg">+4.0</td></tr>
+<tr class="rise" data-change="4.069318060505651" data-cur="47.74341830338487"><td>Bolton FT</td><td>North West</td><td class="num">4,786</td><td class="num">47.7%</td><td class="num">43.7%</td><td class="num chg">+4.1</td></tr>
+<tr class="rise" data-change="4.132353931388078" data-cur="31.923743500866554"><td>Whittington Health Trust</td><td>London</td><td class="num">2,885</td><td class="num">31.9%</td><td class="num">27.8%</td><td class="num chg">+4.1</td></tr>
+<tr class="rise" data-change="4.186492711738701" data-cur="38.806948541461814"><td>Worcestershire Acute Hospitals Trust</td><td>Midlands</td><td class="num">6,102</td><td class="num">38.8%</td><td class="num">34.6%</td><td class="num chg">+4.2</td></tr>
+<tr class="rise" data-change="4.37761421945396" data-cur="41.35620749162521"><td>Hampshire And Isle Of Wight Healthcare FT</td><td>South East</td><td class="num">9,851</td><td class="num">41.4%</td><td class="num">37.0%</td><td class="num chg">+4.4</td></tr>
+<tr class="rise" data-change="4.3937068534147095" data-cur="36.23227187583623"><td>Pennine Care FT</td><td>North West</td><td class="num">3,737</td><td class="num">36.2%</td><td class="num">31.8%</td><td class="num chg">+4.4</td></tr>
+<tr class="rise" data-change="4.407600270736449" data-cur="33.17744154057772"><td>Hertfordshire Partnership University FT</td><td>East Of England</td><td class="num">3,635</td><td class="num">33.2%</td><td class="num">28.8%</td><td class="num chg">+4.4</td></tr>
+<tr class="rise" data-change="4.414903278539647" data-cur="45.48633184996822"><td>Dartford And Gravesham Trust</td><td>South East</td><td class="num">3,146</td><td class="num">45.5%</td><td class="num">41.1%</td><td class="num chg">+4.4</td></tr>
+<tr class="rise" data-change="4.442220284340152" data-cur="41.28745837957825"><td>East Cheshire Trust</td><td>North West</td><td class="num">1,802</td><td class="num">41.3%</td><td class="num">36.8%</td><td class="num chg">+4.4</td></tr>
+<tr class="rise" data-change="4.443495146735202" data-cur="37.56205184776613"><td>Derbyshire Healthcare FT</td><td>Midlands</td><td class="num">1,813</td><td class="num">37.6%</td><td class="num">33.1%</td><td class="num chg">+4.4</td></tr>
+<tr class="rise" data-change="4.457927151363812" data-cur="49.215328467153284"><td>Oxford Health FT</td><td>South East</td><td class="num">5,480</td><td class="num">49.2%</td><td class="num">44.8%</td><td class="num chg">+4.5</td></tr>
+<tr class="rise" data-change="4.525225464505532" data-cur="46.83573891193829"><td>Leeds Teaching Hospitals Trust</td><td>North East And Yorkshire</td><td class="num">17,113</td><td class="num">46.8%</td><td class="num">42.3%</td><td class="num chg">+4.5</td></tr>
+<tr class="rise" data-change="4.537158548891501" data-cur="30.868273357543746"><td>South West London And St George&#x27;S Mental Health Trust</td><td>London</td><td class="num">3,029</td><td class="num">30.9%</td><td class="num">26.3%</td><td class="num chg">+4.5</td></tr>
+<tr class="rise low" data-change="4.546311082961491" data-cur="29.970326409495552"><td>Barts Health Trust</td><td>London</td><td class="num">21,905</td><td class="num">30.0%</td><td class="num">25.4%</td><td class="num chg">+4.5</td></tr>
+<tr class="rise" data-change="4.660013928790747" data-cur="56.46687697160884"><td>Salisbury FT</td><td>South West</td><td class="num">3,170</td><td class="num">56.5%</td><td class="num">51.8%</td><td class="num chg">+4.7</td></tr>
+<tr class="rise" data-change="4.730088694701223" data-cur="43.03507046869879"><td>South Western Ambulance Service FT</td><td>South West</td><td class="num">3,051</td><td class="num">43.0%</td><td class="num">38.3%</td><td class="num chg">+4.7</td></tr>
+<tr class="rise" data-change="4.791269138158199" data-cur="42.226613965744406"><td>Chelsea And Westminster Hospital FT</td><td>London</td><td class="num">6,072</td><td class="num">42.2%</td><td class="num">37.4%</td><td class="num chg">+4.8</td></tr>
+<tr class="rise" data-change="4.8376353431634485" data-cur="47.56832797427653"><td>Surrey And Sussex Healthcare Trust</td><td>South East</td><td class="num">4,976</td><td class="num">47.6%</td><td class="num">42.7%</td><td class="num chg">+4.8</td></tr>
+<tr class="rise" data-change="4.899977203620558" data-cur="39.40450643776824"><td>Homerton Healthcare FT</td><td>London</td><td class="num">3,728</td><td class="num">39.4%</td><td class="num">34.5%</td><td class="num chg">+4.9</td></tr>
+<tr class="rise" data-change="4.939574715036997" data-cur="55.05698005698005"><td>Northumbria Healthcare FT</td><td>North East And Yorkshire</td><td class="num">7,020</td><td class="num">55.1%</td><td class="num">50.1%</td><td class="num chg">+4.9</td></tr>
+<tr class="rise" data-change="5.034579700127146" data-cur="31.624590479861247"><td>Central And North West London FT</td><td>London</td><td class="num">5,189</td><td class="num">31.6%</td><td class="num">26.6%</td><td class="num chg">+5.0</td></tr>
+<tr class="rise" data-change="5.075007979572298" data-cur="58.921161825726145"><td>University Hospitals Of Morecambe Bay FT</td><td>North West</td><td class="num">4,820</td><td class="num">58.9%</td><td class="num">53.8%</td><td class="num chg">+5.1</td></tr>
+<tr class="rise low" data-change="5.091435807971774" data-cur="27.895927601809955"><td>West London Trust</td><td>London</td><td class="num">4,420</td><td class="num">27.9%</td><td class="num">22.8%</td><td class="num chg">+5.1</td></tr>
+<tr class="rise" data-change="5.102282119112267" data-cur="44.666530695492554"><td>Royal Berkshire FT</td><td>South East</td><td class="num">4,903</td><td class="num">44.7%</td><td class="num">39.6%</td><td class="num chg">+5.1</td></tr>
+<tr class="rise" data-change="5.207171815043715" data-cur="44.49868073878628"><td>University Hospitals Dorset FT</td><td>South West</td><td class="num">7,580</td><td class="num">44.5%</td><td class="num">39.3%</td><td class="num chg">+5.2</td></tr>
+<tr class="rise" data-change="5.233287212537995" data-cur="48.374164810690424"><td>Leeds Community Healthcare Trust</td><td>North East And Yorkshire</td><td class="num">2,245</td><td class="num">48.4%</td><td class="num">43.1%</td><td class="num chg">+5.2</td></tr>
+<tr class="rise" data-change="5.280286457708485" data-cur="55.91576814530719"><td>The Newcastle Upon Tyne Hospitals FT</td><td>North East And Yorkshire</td><td class="num">13,819</td><td class="num">55.9%</td><td class="num">50.6%</td><td class="num chg">+5.3</td></tr>
+<tr class="rise" data-change="5.364075746771256" data-cur="38.095238095238095"><td>London North West University Healthcare Trust</td><td>London</td><td class="num">7,455</td><td class="num">38.1%</td><td class="num">32.7%</td><td class="num chg">+5.4</td></tr>
+<tr class="rise low" data-change="5.412883495595931" data-cur="26.169240809223403"><td>Birmingham And Solihull Mental Health FT</td><td>Midlands</td><td class="num">4,597</td><td class="num">26.2%</td><td class="num">20.8%</td><td class="num chg">+5.4</td></tr>
+<tr class="rise" data-change="5.428734818162916" data-cur="53.14191960623462"><td>Portsmouth Hospitals University Trust</td><td>South East</td><td class="num">6,095</td><td class="num">53.1%</td><td class="num">47.7%</td><td class="num chg">+5.4</td></tr>
+<tr class="rise low" data-change="5.460181694512922" data-cur="28.625364681654368"><td>North London FT</td><td>London</td><td class="num">5,827</td><td class="num">28.6%</td><td class="num">23.2%</td><td class="num chg">+5.5</td></tr>
+<tr class="rise" data-change="5.489053357330803" data-cur="37.90028374543981"><td>Leeds And York Partnership FT</td><td>North East And Yorkshire</td><td class="num">2,467</td><td class="num">37.9%</td><td class="num">32.4%</td><td class="num chg">+5.5</td></tr>
+<tr class="rise" data-change="5.496524056407317" data-cur="38.84562528630325"><td>Coventry And Warwickshire Partnership Trust</td><td>Midlands</td><td class="num">2,183</td><td class="num">38.8%</td><td class="num">33.3%</td><td class="num chg">+5.5</td></tr>
+<tr class="rise" data-change="5.540732118493711" data-cur="32.31872818922063"><td>Wrightington, Wigan And Leigh Teaching Hospitals FT</td><td>North West</td><td class="num">5,158</td><td class="num">32.3%</td><td class="num">26.8%</td><td class="num chg">+5.5</td></tr>
+<tr class="rise" data-change="5.574229691876752" data-cur="30.672268907563026"><td>Black Country Healthcare FT</td><td>Midlands</td><td class="num">3,094</td><td class="num">30.7%</td><td class="num">25.1%</td><td class="num chg">+5.6</td></tr>
+<tr class="rise" data-change="5.611793471014913" data-cur="56.494294731730996"><td>East Of England Community Health And Care Trust</td><td>East Of England</td><td class="num">4,119</td><td class="num">56.5%</td><td class="num">50.9%</td><td class="num chg">+5.6</td></tr>
+<tr class="rise" data-change="5.638614390228682" data-cur="47.65976597659766"><td>East And North Hertfordshire Teaching Trust</td><td>East Of England</td><td class="num">4,444</td><td class="num">47.7%</td><td class="num">42.0%</td><td class="num chg">+5.6</td></tr>
+<tr class="rise" data-change="5.762591664472737" data-cur="49.77787180029617"><td>Torbay And South Devon FT</td><td>South West</td><td class="num">4,727</td><td class="num">49.8%</td><td class="num">44.0%</td><td class="num chg">+5.8</td></tr>
+<tr class="rise" data-change="5.796117261709746" data-cur="38.69538957116972"><td>Liverpool University Hospitals FT</td><td>North West</td><td class="num">9,934</td><td class="num">38.7%</td><td class="num">32.9%</td><td class="num chg">+5.8</td></tr>
+<tr class="rise" data-change="5.99579168687815" data-cur="46.24277456647399"><td>South Tees Hospitals FT</td><td>North East And Yorkshire</td><td class="num">7,785</td><td class="num">46.2%</td><td class="num">40.2%</td><td class="num chg">+6.0</td></tr>
+<tr class="rise" data-change="6.021391158595787" data-cur="34.82832046845888"><td>The Royal Wolverhampton Trust</td><td>Midlands</td><td class="num">7,514</td><td class="num">34.8%</td><td class="num">28.8%</td><td class="num chg">+6.0</td></tr>
+<tr class="rise" data-change="6.053997139470674" data-cur="38.110191264630316"><td>Cheshire And Wirral Partnership FT</td><td>North West</td><td class="num">3,503</td><td class="num">38.1%</td><td class="num">32.1%</td><td class="num chg">+6.1</td></tr>
+<tr class="rise low" data-change="6.081380079561065" data-cur="28.746004888136866"><td>North East London FT</td><td>London</td><td class="num">5,319</td><td class="num">28.7%</td><td class="num">22.7%</td><td class="num chg">+6.1</td></tr>
+<tr class="rise" data-change="6.143304644700322" data-cur="46.135167948199104"><td>Berkshire Healthcare FT</td><td>South East</td><td class="num">2,471</td><td class="num">46.1%</td><td class="num">40.0%</td><td class="num chg">+6.1</td></tr>
+<tr class="rise" data-change="6.143525988885031" data-cur="41.88082462581192"><td>Birmingham Community Healthcare FT</td><td>Midlands</td><td class="num">3,541</td><td class="num">41.9%</td><td class="num">35.7%</td><td class="num chg">+6.1</td></tr>
+<tr class="rise" data-change="6.178660514077286" data-cur="50.054093040028846"><td>Alder Hey Children&#x27;S FT</td><td>North West</td><td class="num">2,773</td><td class="num">50.1%</td><td class="num">43.9%</td><td class="num chg">+6.2</td></tr>
+<tr class="rise" data-change="6.199421688854393" data-cur="34.872922776148584"><td>Central London Community Healthcare Trust</td><td>London</td><td class="num">4,092</td><td class="num">34.9%</td><td class="num">28.7%</td><td class="num chg">+6.2</td></tr>
+<tr class="rise low" data-change="6.237846551791112" data-cur="22.132471728594506"><td>Essex Partnership University FT</td><td>East Of England</td><td class="num">5,571</td><td class="num">22.1%</td><td class="num">15.9%</td><td class="num chg">+6.2</td></tr>
+<tr class="rise" data-change="6.523666906486852" data-cur="50.847457627118644"><td>The Clatterbridge Cancer Centre FT</td><td>North West</td><td class="num">1,121</td><td class="num">50.8%</td><td class="num">44.3%</td><td class="num chg">+6.5</td></tr>
+<tr class="rise" data-change="6.551834436392248" data-cur="33.891938746027165"><td>Walsall Healthcare Trust</td><td>Midlands</td><td class="num">3,461</td><td class="num">33.9%</td><td class="num">27.3%</td><td class="num chg">+6.6</td></tr>
+<tr class="rise" data-change="6.589233444338035" data-cur="47.85992217898833"><td>Sheffield Health Partnership University FT</td><td>North East And Yorkshire</td><td class="num">2,056</td><td class="num">47.9%</td><td class="num">41.3%</td><td class="num chg">+6.6</td></tr>
+<tr class="rise" data-change="6.649612558152967" data-cur="41.65454839230894"><td>Cumbria, Northumberland, Tyne And Wear FT</td><td>North East And Yorkshire</td><td class="num">6,189</td><td class="num">41.7%</td><td class="num">35.0%</td><td class="num chg">+6.6</td></tr>
+<tr class="rise" data-change="6.725578955638433" data-cur="47.41561181434599"><td>Isle Of Wight Trust</td><td>South East</td><td class="num">1,896</td><td class="num">47.4%</td><td class="num">40.7%</td><td class="num chg">+6.7</td></tr>
+<tr class="rise" data-change="6.801846828250049" data-cur="43.86779568423928"><td>Kingston And Richmond FT</td><td>London</td><td class="num">3,661</td><td class="num">43.9%</td><td class="num">37.1%</td><td class="num chg">+6.8</td></tr>
+<tr class="rise" data-change="6.95632615704973" data-cur="43.657398010960016"><td>South Warwickshire University FT</td><td>Midlands</td><td class="num">4,927</td><td class="num">43.7%</td><td class="num">36.7%</td><td class="num chg">+7.0</td></tr>
+<tr class="rise" data-change="7.179784593027655" data-cur="43.266129032258064"><td>Lincolnshire Partnership FT</td><td>Midlands</td><td class="num">2,480</td><td class="num">43.3%</td><td class="num">36.1%</td><td class="num chg">+7.2</td></tr>
+<tr class="rise" data-change="7.33735577537751" data-cur="39.59104309101173"><td>Guy&#x27;S And St Thomas&#x27; FT</td><td>London</td><td class="num">15,943</td><td class="num">39.6%</td><td class="num">32.3%</td><td class="num chg">+7.3</td></tr>
+<tr class="rise" data-change="7.431153558315444" data-cur="45.82455612398435"><td>Sheffield Teaching Hospitals FT</td><td>North East And Yorkshire</td><td class="num">13,292</td><td class="num">45.8%</td><td class="num">38.4%</td><td class="num chg">+7.4</td></tr>
+<tr class="rise" data-change="7.4610765204060385" data-cur="49.978333092589914"><td>County Durham And Darlington FT</td><td>North East And Yorkshire</td><td class="num">6,923</td><td class="num">50.0%</td><td class="num">42.5%</td><td class="num chg">+7.5</td></tr>
+<tr class="rise" data-change="7.908261135352767" data-cur="60.500853727945355"><td>Royal Papworth Hospital FT</td><td>East Of England</td><td class="num">1,757</td><td class="num">60.5%</td><td class="num">52.6%</td><td class="num chg">+7.9</td></tr>
+<tr class="rise" data-change="8.49985673217408" data-cur="44.88471787741861"><td>East Suffolk And North Essex FT</td><td>East Of England</td><td class="num">8,631</td><td class="num">44.9%</td><td class="num">36.4%</td><td class="num chg">+8.5</td></tr>
+<tr class="rise" data-change="8.622411376503237" data-cur="50.166462239355184"><td>North Cumbria Integrated Care FT</td><td>North East And Yorkshire</td><td class="num">5,707</td><td class="num">50.2%</td><td class="num">41.5%</td><td class="num chg">+8.6</td></tr>
+<tr class="rise" data-change="8.652971700636606" data-cur="38.88888888888889"><td>Kent And Medway Mental Health Trust</td><td>South East</td><td class="num">2,448</td><td class="num">38.9%</td><td class="num">30.2%</td><td class="num chg">+8.7</td></tr>
+<tr class="rise" data-change="8.811981160753621" data-cur="36.56036446469248"><td>The Dudley Group FT</td><td>Midlands</td><td class="num">5,268</td><td class="num">36.6%</td><td class="num">27.7%</td><td class="num chg">+8.8</td></tr>
+<tr class="rise" data-change="9.30910326611626" data-cur="42.335570469798654"><td>West Hertfordshire Teaching Hospitals Trust</td><td>East Of England</td><td class="num">3,725</td><td class="num">42.3%</td><td class="num">33.0%</td><td class="num chg">+9.3</td></tr>
+<tr class="rise" data-change="9.400983631332089" data-cur="47.806191117092865"><td>London Ambulance Service Trust</td><td>London</td><td class="num">3,715</td><td class="num">47.8%</td><td class="num">38.4%</td><td class="num chg">+9.4</td></tr>
+<tr class="rise" data-change="9.406360117325818" data-cur="38.81865505152449"><td>Imperial College Healthcare Trust</td><td>London</td><td class="num">9,413</td><td class="num">38.8%</td><td class="num">29.4%</td><td class="num chg">+9.4</td></tr>
+<tr class="rise low" data-change="9.810698945724326" data-cur="29.353846153846153"><td>Lewisham And Greenwich Trust</td><td>London</td><td class="num">6,500</td><td class="num">29.4%</td><td class="num">19.5%</td><td class="num chg">+9.8</td></tr>
+<tr class="rise" data-change="9.876181505230946" data-cur="46.047038821195805"><td>The Royal Marsden FT</td><td>London</td><td class="num">3,529</td><td class="num">46.0%</td><td class="num">36.2%</td><td class="num chg">+9.9</td></tr>
+<tr class="rise-big" data-change="10.12456231322875" data-cur="46.42341785198928"><td>Wirral University Teaching Hospital FT</td><td>North West</td><td class="num">4,851</td><td class="num">46.4%</td><td class="num">36.3%</td><td class="num chg">+10.1</td></tr>
+<tr class="rise-big" data-change="10.634155118512496" data-cur="45.72490706319702"><td>Liverpool Heart And Chest Hospital FT</td><td>North West</td><td class="num">1,076</td><td class="num">45.7%</td><td class="num">35.1%</td><td class="num chg">+10.6</td></tr>
+<tr class="rise-big" data-change="10.652799328799873" data-cur="41.58878504672897"><td>University College London Hospitals FT</td><td>London</td><td class="num">8,346</td><td class="num">41.6%</td><td class="num">30.9%</td><td class="num chg">+10.7</td></tr>
+<tr class="rise-big" data-change="11.500108477064714" data-cur="46.39414494823277"><td>Blackpool Teaching Hospitals FT</td><td>North West</td><td class="num">5,602</td><td class="num">46.4%</td><td class="num">34.9%</td><td class="num chg">+11.5</td></tr>
+<tr class="rise-big" data-change="12.940343187714316" data-cur="34.27140120819213"><td>St George&#x27;S University Hospitals FT</td><td>London</td><td class="num">6,787</td><td class="num">34.3%</td><td class="num">21.3%</td><td class="num chg">+12.9</td></tr>
+<tr class="rise-big" data-change="13.098209701589106" data-cur="48.83488681757657"><td>The Christie FT</td><td>North West</td><td class="num">3,004</td><td class="num">48.8%</td><td class="num">35.7%</td><td class="num chg">+13.1</td></tr>
+<tr class="rise-big" data-change="13.310120616355345" data-cur="40.67547723935389"><td>Liverpool Women&#x27;S FT</td><td>North West</td><td class="num">1,362</td><td class="num">40.7%</td><td class="num">27.4%</td><td class="num chg">+13.3</td></tr>
+<tr class="rise-big" data-change="14.806038525715081" data-cur="54.52346395742622"><td>North Cheshire And Mersey FT</td><td>North West</td><td class="num">4,134</td><td class="num">54.5%</td><td class="num">39.7%</td><td class="num chg">+14.8</td></tr>
+<tr class="rise-big" data-change="14.83698104693141" data-cur="40.46875"><td>Medway FT</td><td>South East</td><td class="num">3,840</td><td class="num">40.5%</td><td class="num">25.6%</td><td class="num chg">+14.8</td></tr>
+<tr class="rise-big" data-change="16.655821271239773" data-cur="41.755821271239775"><td>The Hillingdon Hospitals FT</td><td>London</td><td class="num">3,178</td><td class="num">41.8%</td><td class="num">25.1%</td><td class="num chg">+16.7</td></tr>
+<tr class="rise-big" data-change="17.10694375726262" data-cur="36.64732632899482"><td>Sandwell And West Birmingham Hospitals Trust</td><td>Midlands</td><td class="num">6,377</td><td class="num">36.6%</td><td class="num">19.5%</td><td class="num chg">+17.1</td></tr>
+<tr class="rise-big" data-change="18.44578560079907" data-cur="71.32895816242822"><td>West Midlands Ambulance Service University FT</td><td>Midlands</td><td class="num">4,876</td><td class="num">71.3%</td><td class="num">52.9%</td><td class="num chg">+18.4</td></tr>
+<tr class="rise-big" data-change="22.860229664943795" data-cur="32.68900532781471"><td>University Hospitals Birmingham FT</td><td>Midlands</td><td class="num">22,711</td><td class="num">32.7%</td><td class="num">9.8%</td><td class="num chg">+22.9</td></tr>
+<tr class="rise-big" data-change="22.90845623823681" data-cur="39.0139751552795"><td>University Hospitals Coventry And Warwickshire Trust</td><td>Midlands</td><td class="num">7,728</td><td class="num">39.0%</td><td class="num">16.1%</td><td class="num chg">+22.9</td></tr>
+<tr class="rise-big" data-change="27.106559148350797" data-cur="36.541466158365104"><td>Mid And South Essex FT</td><td>East Of England</td><td class="num">16,001</td><td class="num">36.5%</td><td class="num">9.4%</td><td class="num chg">+27.1</td></tr>
+<tr class="rise-big" data-change="40.26287445643421" data-cur="54.092261904761905"><td>South East Coast Ambulance Service FT</td><td>South East</td><td class="num">2,688</td><td class="num">54.1%</td><td class="num">13.8%</td><td class="num chg">+40.3</td></tr>
+</tbody>
+</table>
+<p class="foot">Sort any column by clicking its header. 201 trusts matched in both years. Change column defaults to showing the biggest year-on-year fallers at the top.</p>
+<script>
+function sortBy(col, numeric) {
+  const tb = document.querySelector('#t tbody');
+  const rows = Array.from(tb.querySelectorAll('tr'));
+  const dir = tb.getAttribute('data-dir-'+col) === 'asc' ? 'desc' : 'asc';
+  tb.setAttribute('data-dir-'+col, dir);
+  rows.sort((a,b) => {
+    let av = a.cells[col].textContent.trim();
+    let bv = b.cells[col].textContent.trim();
+    if (numeric) {
+      av = parseFloat(av.replace(/[^\d.\-]/g,'')) || -9999;
+      bv = parseFloat(bv.replace(/[^\d.\-]/g,'')) || -9999;
+    }
+    if (av < bv) return dir==='asc' ? -1 : 1;
+    if (av > bv) return dir==='asc' ? 1 : -1;
+    return 0;
+  });
+  rows.forEach(r => tb.appendChild(r));
+}
+function filterRows(kind, btn) {
+  document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const rows = document.querySelectorAll('#t tbody tr');
+  rows.forEach(r => {
+    let show = true;
+    if (kind === 'fall') show = r.classList.contains('fall') || r.classList.contains('fall-big');
+    else if (kind === 'low') {
+      const cur = parseFloat(r.getAttribute('data-cur'));
+      show = !isNaN(cur) && cur < 40;
+    }
+    else if (kind === 'rise-big') show = r.classList.contains('rise-big');
+    r.style.display = show ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
